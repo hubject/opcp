@@ -4,6 +4,20 @@ Here you can find all documents and information about the open source OPCP.
 
 The OPCP protocol is already productivly used since 2019. Many vehicle OEMs, Mobility Operators and Chargepoint Operators are already using this protocol in creating, tranfering, signing ect. of Plug&Charge related infomration based on the standard ISO15118-2 and the VDE Application Guide.
 
+OPCP enables and reflects folling usecases:
+  - independend Service Operation
+    - PCP Service
+    - CPS Service
+    - CCP Service
+    - PKI Authorities
+  - Authentication Method
+  - Role specific authentication
+  - Multiple Contracts (EMAIDs) for one Vehicle (PCID)
+  - Standardized Event Service
+  - Interoperability between Ecosystems, V2G Root Operators etc
+    - Multi Root -> CertificateSigningCertificate ability
+    - Pool collaboration
+  - ISO15118-20 prepared (seperate Namespace already in account)   
 
 
 

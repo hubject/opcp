@@ -9,6 +9,7 @@ As it is important to archieve best possible interoperability in the eMobility m
 ## OPCP enables and reflects folling usecases:
   - independend Service Operation
     - PCP Service
+    - RCP Service
     - CPS Service
     - CCP Service
     - PKI Authorities

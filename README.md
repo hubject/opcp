@@ -2,7 +2,9 @@
 
 Here you can find all documents and information about the open source OPCP.
 
-The OPCP protocol is already productivly used since 2019. Many vehicle OEMs, Mobility Operators and Chargepoint Operators are already using this protocol in creating, tranfering, signing ect. of Plug&Charge related infomration based on the standard ISO15118-2 and the VDE Application Guide.
+The OPCP protocol is already productivly used since 2019. Many vehicle OEMs, Mobility Operators and Chargepoint Operators are already using this protocol in creating, tranfering, signing ect. of Plug&Charge related infomration based on the standard ISO15118-2 and the VDE Application Guide. 
+
+As it is important to archieve best possible interoperability in the eMobility market it is crucial to use same protocols in the Plug&Charge usecase.
 
 ## OPCP enables and reflects folling usecases:
   - independend Service Operation

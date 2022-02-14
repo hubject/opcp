@@ -23,7 +23,7 @@ As it is important to archieve best possible interoperability in the eMobility m
   - ISO15118-20 prepared (seperate Namespace already in account)   
 
 ## Releases
-  - [OPCP 1.0.0](/opcp/tree/master/OPCP-1.0.0)
+  - [OPCP 1.0.0](./OPCP-1.0.0/README.md)
 
 
 ## License

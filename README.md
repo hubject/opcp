@@ -7,7 +7,7 @@ The OPCP protocol is already productivly used since 2019. Many vehicle OEMs, Mob
 As it is important to archieve best possible interoperability in the eMobility market it is crucial to use same protocols in the Plug&Charge usecase.
 
 ## OPCP enables and reflects folling usecases:
-  - independend Service Operation
+  - independent Service Operation
     - PCP Service
     - RCP Service
     - CPS Service

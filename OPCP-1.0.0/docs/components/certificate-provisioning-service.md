@@ -12,5 +12,5 @@ The Certificate Provisioning Service can receive and sign a contract data throug
 
 ![CCP interfaces](../../assets/images/interfaces_cps.png)
 
-All CCP API documenatation can be found at `cps.v1.yaml`.
+All CCP API documenatation can be found at [cps.v1.json](./../../reference/cps.v1.json).
 

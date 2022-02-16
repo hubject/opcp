@@ -13,7 +13,7 @@ The Ecosystem Administration creates a node for each MO after the provider ID co
 
 The Contract Certificate Pool offers a REST API supporting registered contract certificate requests.
 
-All CCP API's documentation are available at `ccp.v1.yaml`.
+All CCP API's documentation are available at [ccp.v1.json](../../reference/ccp.v1.json).
 
 ## Processes
 
@@ -27,7 +27,7 @@ The Contract Certificate pool can receive contracts by two means:
 
 <!-- theme: info -->
 
-> Publishing a Contract Certificate in the pool can trigger an instant push notification to the OEM enrolled in the WMI corresponding to the contract's PCID. See [Webhooks Service](#webhook-service)
+> Publishing a Contract Certificate in the pool can trigger an instant push notification to the OEM enrolled in the WMI corresponding to the contract's PCID. See [Webhooks Service](./webhook-service)
 
 ### 2. Update a Contract Certificate
 
@@ -37,7 +37,7 @@ The update process overwrites the existing Contract Certificate with the same EM
 
 <!-- theme: info -->
 
-> An update of a Contract Certificate in the pool can trigger an instant push notification to the OEM enrolled in the WMI corresponding to the contract's PCID. See [Webhooks Service](webhook-service.md)
+> An update of a Contract Certificate in the pool can trigger an instant push notification to the OEM enrolled in the WMI corresponding to the contract's PCID. See [Webhooks Service](./webhook-service.md)
 
 
 ### 3. Delete a Contract Certificate
@@ -46,7 +46,7 @@ In case the Contract Certificate under one EMAID needs be removed from the ecosy
 
 <!-- theme: info -->
 
-> A deletion of a contract certificate in the pool can trigger an instant push notification to the OEM enrolled in the WMI corresponding to the contract's PCID. See [Webhooks Service](webhook-service.md)
+> A deletion of a contract certificate in the pool can trigger an instant push notification to the OEM enrolled in the WMI corresponding to the contract's PCID. See [Webhooks Service](./webhook-service.md)
 
 ## Data Cleansing
          

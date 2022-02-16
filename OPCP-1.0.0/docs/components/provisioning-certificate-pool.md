@@ -26,7 +26,7 @@ The Provisioning Certificate Pool offers a REST API to request registered Provis
 
 ![PCP interfaces](../../assets/images/interfaces_pcp.png)
 
-All documentation can be found in the PCP API Schema at `pcp.v1.yaml`.
+All documentation can be found in the PCP API Schema at [pcp.v1.json](../../reference/pcp.v1.json).
 
 
 

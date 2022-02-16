@@ -12,7 +12,7 @@ The root certificate pool offers a REST API to request registered root certifica
 
 ![RCP interfaces](../../assets/images/interfaces_rcp.png)
 
-The documenatation can be found at `rcp.v1.json`.
+The documenatation can be found at [rcp.v1.json](../../reference/rcp.v1.json).
 
 ## Processes
 

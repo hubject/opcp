@@ -1,0 +1,238 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "accessToken",
+    "version": "1.0",
+    "description": "It is recommended to operate a Plug&Charge system a [JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519) is needed. This is a standardized, secure and flexible authentication method (e.g., Hubject is using Auth0 as Token provider with OAuth2).",
+    "contact": {
+      "name": "Hubject GmbH",
+      "url": "https://hubject.com",
+      "email": "support@pnc.hubject.com"
+    },
+    "termsOfService": "https://www.hubject.com/pki/",
+    "license": {
+      "name": "Attribution-ShareAlike 4.0 International",
+      "url": "http://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  "servers": [],
+  "paths": {
+    "/oauth/token": {
+      "post": {
+        "summary": "Create New User",
+        "operationId": "issue-token",
+        "responses": {
+          "200": {
+            "description": "User Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "scope": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "expires_in": {
+                      "type": "number"
+                    },
+                    "token_type": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "access_token",
+                    "scope",
+                    "expires_in",
+                    "token_type"
+                  ]
+                },
+                "examples": {
+                  "Token Response": {
+                    "value": {
+                      "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkJ3eEV0TkFGUnpSM3JlNVF2elM2QyJ9.eyJodHRwczovL2V1LnBsdWduY2hhcmdlLXFhLmh1YmplY3QuY29tL3JvbGUiOlsiQ1BPIiwiT0VNIiwiQVVESSIsIk1PX0hVQkpFQ1RfUEtJIiwiTU9fRVhURVJOQUxfUEtJIl0sImh0dHBzOi8vZXUucGx1Z25jaGFyZ2UtcWEuaHViamVjdC5jb20vcGNpZCI6WyJFQ0QiXSwiaHR0cHM6Ly9ldS5wbHVnbmNoYXJnZS1xYS5odWJqZWN0LmNvbS9lbWFpZCI6WyJERUVDRCJdLCJodHRwczovL2V1LnBsdWduY2hhcmdlLXFhLmh1YmplY3QuY29tL2NsaWVudF9uYW1lIjpbIkVDNERfVGVzdF9Vc2VyIl0sImlzcyI6Imh0dHBzOi8vYXV0aC5ldS5wbHVnbmNoYXJnZS5odWJqZWN0LmNvbS8iLCJzdWIiOiI2RWd4OXZQRkZiODNCZ0h3Y3VtTkh5VVNOd2hNZzBwUkBjbGllbnRzIiwiYXVkIjoiaHR0cHM6Ly9ldS5wbHVnbmNoYXJnZS1xYS5odWJqZWN0LmNvbSIsImlhdCI6MTYxNDc5MDg4MiwiZXhwIjoxNjE0ODc3MjgyLCJhenAiOiI2RWd4OXZQRkZiODNCZ0h3Y3VtTkh5VVNOd2hNZzBwUiIsInNjb3BlIjoicmNwc2VydmljZSBjY3BzZXJ2aWNlIHBjcHNlcnZpY2UgY3BzZXJ2aWNlIGF1ZGktb2VtLWJhY2tlbmQgcGtpZ2F0ZXdheSIsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsInBlcm1pc3Npb25zIjpbInJjcHNlcnZpY2UiLCJjY3BzZXJ2aWNlIiwicGNwc2VydmljZSIsImNwc2VydmljZSIsImF1ZGktb2VtLWJhY2tlbmQiLCJwa2lnYXRld2F5Il19.sR-Cv-AR0isjBqLl5d_chMyZ7iiaUaHSgSeSS6-WmDZgUiTbdERzli9amSNeLa7kbfLY7yYvQ8SdRaZfLt7XzTGZv0xQwYh09OSSI5GFTU7vyR6v_0xxb8ZklPxGF7qei8k_dr4tBtraVZEEtUeXgA9VuK01m7Cf_Tdq6w0xa0GF0q8SAd_4qLBZVeNJdi6-FKfDCvdkn7dARxU9itKJZQ1_p8PCZ3NAwKNu2qyZt1jNcSYF7qRtlg-EFAA31BlPTqIkO37dionu9bMvS3H_e0WUWKTYUZaL9qah8rZq-FcXvB5hMA2HXk8wPOhpVJzwS_7urjCzO_GeG1K1fjBx5Q",
+                      "scope": "rcpservice ccpservice pcpservice cpservice audi-oem-backend pkigateway",
+                      "expires_in": 86400,
+                      "token_type": "Bearer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing Required Information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "error_description": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "error_description"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "error_description": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "error_description"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "client_id": {
+                    "type": "string",
+                    "example": "tbzKdWxuPU6yia9koc5S0f0SM1zjdi1A"
+                  },
+                  "client_secret": {
+                    "type": "string",
+                    "example": "xxx-nlwufmUKaxaxxaxadsadqASDSADASdwSDASDDXBKxxxM2Z8YA2NDU"
+                  },
+                  "audience": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://eu.plugncharge-qa.hubject.com",
+                    "description": "Url of the stage and worldregion"
+                  },
+                  "grant_type": {
+                    "type": "string",
+                    "default": "client_credentials",
+                    "example": "client_credentials"
+                  }
+                },
+                "required": [
+                  "client_id",
+                  "client_secret",
+                  "audience",
+                  "grant_type"
+                ]
+              },
+              "examples": {
+                "QA EU Token": {
+                  "value": {
+                    "client_id": "abcd",
+                    "client_secret": "abcd",
+                    "audience": "https://eu.plugncharge-qa.hubject.com",
+                    "grant_type": "client_credentials"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Post the necessary fields for the API to issue a new token."
+        },
+        "description": "Issue a new token (a token is valid for 24h)",
+        "tags": [
+          "Authentication"
+        ]
+      },
+      "parameters": []
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "title": "User",
+        "type": "object",
+        "description": "",
+        "x-examples": {
+          "Alice Smith": {
+            "id": 142,
+            "firstName": "Alice",
+            "lastName": "Smith",
+            "email": "alice.smith@gmail.com",
+            "dateOfBirth": "1997-10-31",
+            "emailVerified": true,
+            "signUpDate": "2019-08-24"
+          }
+        },
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the given user."
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date",
+            "example": "1997-10-31"
+          },
+          "emailVerified": {
+            "type": "boolean",
+            "description": "Set to true if the user's email has been verified."
+          },
+          "createDate": {
+            "type": "string",
+            "format": "date",
+            "description": "The date that the user was created."
+          }
+        },
+        "required": [
+          "id",
+          "firstName",
+          "lastName",
+          "email",
+          "emailVerified"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Authentication endpoints to issue access token."
+    }
+  ]
+}

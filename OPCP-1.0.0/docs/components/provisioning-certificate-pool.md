@@ -1,8 +1,8 @@
 # Provisioning Certificate Pool
 
-The Provisioning Certificate Pool Service provides interfaces to exchange Provisioning Certificates between OEMs and MOs. For this purpose, MOs send the PCID of a Provisioning Certificate issued by the OEM and receive the appropriate Provisioning Certificate and the corresponding certificate chain.
+The Provisioning Certificate Pool provides interfaces to exchange Provisioning Certificates between OEMs and MOs,under the following workflow: MO sends the PCID of a Provisioning Certificate issued by the OEM, and receives its Provisioning Certificate with the corresponding certificate chain.
 
-OEMs publish their Provisioning Certificates to the pool after their generation, e.g. after the cars get manufactured. MOs request foreign Provisioning Certificates from the pool by PCID.
+OEMs publish their Provisioning Certificates on the pool after their generation, e.g. after the car get manufactured. MOs request foreign Provisioning Certificates from the pool by PCID.
 
 The PCP communicates with the following actors and services:
  * OEM
@@ -14,11 +14,11 @@ The PCP communicates with the following actors and services:
 
 ## Data Access
 
-It is ensured that the security precautions of ISO 15118 are adhered to and that only trustworthy MOs are granted access.  In addition, no confidential OEM data such as the number of available electric vehicles can be displayed when querying the available OEM Provisioning Certificates.
+It is ensured that the safety precautions of ISO 15118 are complied with, and only trustworthy MOs have granted access. In addition, no confidential OEM data, such as the number of available electric vehicles, can be displayed when querying the available OEM Provisioning Certificates.
 
 Every authorized MO access is granted to all available Provisioning Certificates in the pool.
 
-The OEM Provisioning Certificates of each OEM are separetad by access rules. The defined access rules prevent access to other OEM containers. Each OEM can manage (create/update/delete) only Provisioning Certificates of their company. To achieve this the client credentials of each OEM gets whitelisted for a ist of World manufacturer identifier (WMI) codes (see ISO 3780).
+The Provisioning Certificates of each OEM are separated by access rules. The defined access rules prevent access to other OEM containers. Each OEM can only manage (create/update/delete) Provisioning Certificates of their company. To achieve this, the client credentials of each OEM get white-listed for a list of World manufacturer identifier (WMI) codes (see ISO 3780).
 
 ## API
 
@@ -32,18 +32,18 @@ All documentation can be found in the PCP API Schema at `pcp.v1.yaml`.
 
 ## Processes
 
-The Provisioning Certificate Pool (PCP) is involved in multiple processes across the ecosystem. In the following only direct processes are described.
+The Provisioning Certificate Pool (PCP) is involved in multiple processes across the ecosystem. The Direct Processes are described bellow:
 
 
 ### 1. Publish a Provisioning Certificate
 
-With the production or activation of a vehicle, the OEM must create a Provisioning Certificate for the vehicle. Each Provisioning Certificate must have an unique Provisioning Certificate Identifier (PCID). The OEM then publishes this Provisioning Certificate as well as its certification chain by sending it to the Provisioning Certificate Pool.
+With the production of a vehicle, the OEM must create a Provisioning Certificate for the vehicle. Each Provisioning Certificate must have an unique Provisioning Certificate Identifier (PCID). The OEM then publishes this Provisioning Certificate as well as its certification chain by sending it to the Provisioning Certificate Pool.
 
 The PCID is the identifier for a vehicle and must match the ISO pattern [PCID Format](#handling-of-ids). The Provisioning Certificate Pool authorizes the OEM client based on this code. [see Data Access](#data-access)
 
 With the publication of a Provisioning Certificate to the pool, no information is given to the MO. Trusted MOs can only retrieve individual Provisioning Certificates if they request them through the PCID.
 
-Therefore the car customers shall also receive the PCID of their vehicles to give it to the MOs during the conclusion of a charging contract.
+Therefore the OEM's costumers shall also receive the PCID of their vehicles to give it to the MOs during the conclusion of a charging contract.
 
 The required V2G root certificates shall be stored in the vehicle for the trusted communication with charging devices.
 
@@ -59,7 +59,7 @@ The PCP responds with an corresponding error code for the first occurring error 
 
 ### 2. Update a Provisioning Certificate
 
-In case an OEM needs to renew a Provisioning Certificate they may do so by sending an updated Certificate to the pool.
+In case an OEM needs to renew a Provisioning Certificate, they may do so by sending an updated Certificate to the pool.
 
 The update process overwrites the existing Provisioning Certificate with the same PCID.
 
@@ -70,11 +70,11 @@ The update process overwrites the existing Provisioning Certificate with the sam
 
 ### 3. Delete a Provisioning Certificate
 
-In case the Provisioning Certificate under one PCID shall be removed from the ecosystem, the OEM may delete own it from the pool.
+In case the Provisioning Certificate under one PCID shall be removed from the ecosystem, the OEM that owns it may delete it from the pool.
 
 <!-- theme: info -->
 
-> This operations triggers the Contract Certificate Pool to delete all existing Contract Certificates linked to this Provisioning Certificate.
+> This operations triggers the Contract Certificate Pool to delete all existing Contract Certificates linked to this Provisioning Certificate. See [Webhooks Service](#webhook-service)
 
 
 ### 4. Request a Provisioning Certificate
@@ -87,4 +87,4 @@ This method can be used by the MO to determine for a given PCID if a Provisionin
 
 ## Data Cleansing
 
-The stored OEM Provisioning Certificates are checked regularly with automated processes, expired and revoked certificates will be deleted. The deletion of a provisioning certificate triggers a deletion of all connected COntract Certificates from the [Contract Certificate Pool](#contract-certificate-pool)
+The stored OEM Provisioning Certificates are checked regularly with automated processes, expired and revoked certificates will be deleted. The deletion of a provisioning certificate triggers a deletion of all connected Contract Certificates from the [Contract Certificate Pool](#contract-certificate-pool)

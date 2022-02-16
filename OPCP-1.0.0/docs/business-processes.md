@@ -1,6 +1,6 @@
 # Business Processes
 
-THis section summarizes all processes of Plug and Charge as described as _Certificate Provisioning_ in ISO 15118 Section 7.9.2.5 and explained in more detail in Appendix E.3.
+This section summarizes all processes of Plug and Charge as described as _Certificate Provisioning_ in ISO 15118 Section 7.9.2.5 and explained in more detail in Appendix E.3.
 
 The VDE Application Rule focusses on these processes and details each process flow for further understanding. The following figure shows the overall process with components and flows, which are based on the VDE Application Rule.
 
@@ -14,10 +14,10 @@ During contract provisioning, several sub-processes are also required, which can
  2. **Contract conclusion and vehicle assignment**
    - The MO concludes a charging contract for a specific customer's electric vehicle, using the vehicles Provisioning Certificate from the Provisioning Certificate Pool.
    - Providing contract data to the Certificate Provisioning Service or
-   - Providing contract information to V2G Mobility Operator CA
-  3. **(Periodic) provisioning of contract data**
+   - Providing contract information to Hubject Mobility Operator CA
+ 3. **(Periodic) provisioning of contract data**
    - Signing contract data and storing in the CCP
-   - Generating contract data in V2G Mobility Operator CA and storing in the CCP
+   - Generating contract data in Hubject Mobility Operator CA and storing in the CCP
  4. **Installation of contract data**
    - Providing signed contract data to CPO-backend on request
    - Delivery of signed contract data to OEM-backend
@@ -55,7 +55,7 @@ The MO must receive the contract information from a customer including the PCID 
 After verifying the authenticity of the trust chain with the OEM root certificate (which has been received from the Root Certificate Pool), the MO can generate a unique e-mobility account identifier for this contract. To create a contract for the customer, MOs have two possibilities:
 
  - Create and send the contract data to the CPS using the MOs own CA, which is described in the “Providing Contract Data to Certificate Provisioning Service” process;
- - Or use V2G-PKI MO CA services to create, sign and store the contract data
+ - Or use Hubject’s MO CA services to create, sign and store the contract data, which is described in the “Providing Contract Information to Hubject Mobility Operator CA” process.
 
 
 ### Providing Contract Data to Certificate Provisioning Service
@@ -66,21 +66,21 @@ If the MO uses its own CA, it must create a contract data with the following par
  - contractSignatureEncryptedPrivateKey,
  - EMAID
 
-The created contract data must be signed by the CPS.
+The created contract data must be signed by the CPS, this signature will be used as a trust anchor.
 
 Moving forward, MOs have two possibilities:
  - Using createAndForwardSignedContratData interface for signing and storing of signed contract data in the CCP;
- - Or sending the contract data with createSignedContractData interface of OPCP to receive the signed contract data back after the signing by the CPS.
+ - Or sending the contract data with createSignedContractData interface of Hubject to receive the signed contract data back after the signing by the CPS.
 
 
 <!-- ![Providing contract data to certificate Provisioning Service](../assets/images/process_providing_contract_data_to_certificate_provisioning_service.png) -->
 
 
-### Providing Contract Information to V2G-PKI Mobility Operator CA
+### Providing Contract Information to Hubject Mobility Operator CA
 
-In this process, MOs would not use the createSignedContractData interface. CPS Operator would do this based on the generateSignedContractData interface. After receiving a PCID from the customer and generating an EMAID, the MO sends the contract information to the V2G Mobility Operator CA to create a contract data. The contract information includes PCID, EMAID and contracts begin and end dates.
+In this process, MOs would not use the createSignedContractData interface. Hubject would do this based on the generateSignedContractData interface. After receiving a PCID from the customer and generating an EMAID, the MO sends the contract information to the Hubject Mobility Operator CA to create a contract data. The contract information includes PCID, EMAID and contracts begin and end dates.
 
-![Providing contract information to V2G Mobility Operator CA](../assets/images/process_providing_contract_information_to_hubject_mobility_operator_ca.png)
+![Providing contract information to Hubject Mobility Operator CA](../assets/images/process_providing_contract_information_to_hubject_mobility_operator_ca.png)
 
 
 ### Periodic Provisioning of Contract Data
@@ -92,11 +92,11 @@ In this latter method, the MO would have to use addSignedContractData to store c
 ![Signing contract data and storing in CCP](../assets/images/process_signing_contract_data_and_storing_in_ccp.png)
 
 
-### Generating Contract Data with CPS Mobility Operator CA and Storing in CCP
+### Generating Contract Data in Hubject Mobility Operator CA and Storing in CCP
 
-If the MO does not create and sign the contract data (using createSignedContractData method), the COS Operator Mobility Operator CA can generate a contract data with the received contract information from the MO. The CPS Operator would then send the contract data to the CPS for signing and then store the signed contract data in the CCP.
+If the MO does not create and sign the contract data (using createSignedContractData method), the Hubject Mobility Operator CA can generate a contract data with the received contract information from the MO. Hubject would then send the contract data to the CPS for signing and then store the signed contract data in the CCP.
 
-![Generating contract data with the CPS Mobility Operator CA service and storing in CCP](../assets/images/process_generating_contract_data_in_hubject_mo_ca.png)
+![Generating contract data in Hubject Mobility Operator CA and storing in CCP](../assets/images/process_generating_contract_data_in_hubject_mo_ca.png)
 
 
 

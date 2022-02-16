@@ -1,6 +1,6 @@
 # Plug and Charge Ecosystems
 
-**Interface description Version 1.0**
+**Interface description Version DOC_DATE**
 
 ## Introduction
 
@@ -9,11 +9,12 @@ PnC-Ecosystems manage certificates from V2G-, OEM- and MO PKIs. It manages the p
 
 The interfaces of the OPCP are fully compatible with ISO 15118-2: 2014 and the VDE application rule (“VDE Anwendungsregel”). It is also fully interoperable for all relaying parties. The specific implementation/description is based on international best practices, security of communication and protection of data.
 
-A Plug&Charge Ecosystem components can be divided into two main categories:
- * The Plug&Charge Certificate Pools and Certificate Provisioning Service
+The Ecosystem components can be divided into two main categories:
+ * The Plug&Charge Certificate pools and Certificate Provisioning Service
  * The Plug&Charge PKI Services
+ * The Plug&Charge Callback Service
 
-Plug&Charge PKI Services are managed services of V2G Root Operators like Hubject (Europe & North America), to provide all necessary certificates for EV OEMs, Mobility Operators, Certificate Provisioning Services and Charge Point Operators.
+Plug&Charge PKI Services are managed service of V2G Root Operators like Hubject (Europe & North America), to provide all necessary certificates for EV OEMs, Mobility Operators, Certificate Provisioning Services and Charge Point Operators.
 
 The Certificate pools and Certificate Provisioning Service are for publishing certificates and contracts between all ISO 15118 involved backends.
 
@@ -25,18 +26,18 @@ The Certificate pools and Certificate Provisioning Service are for publishing ce
 
 ## Further reading
 
- * [Business Processes](./business-processes.md)
- * [Handling of IDs](./handling-of-ids.md)
- * [Abbreviations](./abbreviations.md)
+ * [Business Processes](#business-processes)
+ * [Handling of IDs](#handling-of-ids)
+ * [Abbreviations](#list-of-abbreviations)
 
 
 ## System-Components
 
 This section describes the components of the Hubject Plug&Charge Ecosystem and their purpose of use.
 
-* [Root Certificate Pool – RCP](./components/root-certificate-pool.md) Stores and distributes root certificates of all participating PKIs.
-* [Provisioning Certificate Pool – PCP](./components/provisioning-certificate-pool.md) stores OEM provisiong certificates and makes them available to the MOs.
-* [Certificate Provisioning Service – CPS](./components/certificate-provisioning-service.md) provisions contract certificates to prepare them to get installed in the EV.
-* [Contract Certificate Pool – CCP](./components/contract-certificate-pool.md) stores provisioned contract certificates waiting to get installed.
-* [Plug&Charge PKI Services](./components/v2g-pki-services.md)
-* [Plug&Charge Callback/Webhook Service](./components/webhook-service.md)
+* [Root Certificate Pool – RCP](#root-certificate-pool) Stores and distributes root certificates of all participating PKIs.
+* [Provisioning Certificate Pool – PCP](#provisioning-certificate-pool) stores OEM provisiong certificates and makes them available to the MOs.
+* [Certificate Provisioning Service – CPS](#certificate-provisioning-service) provisions contract certificates to prepare them to get installed in the EV.
+* [Contract Certificate Pool – CCP](#contract-certificate-pool) stores provisioned contract certificates waiting to get installed.
+* [Plug&Charge PKI Services](#pki-services)
+* [Plug&Charge Callback/Webhook Service](#webhook-service)

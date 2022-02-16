@@ -10,19 +10,19 @@ A Plug&Charge PKI Service includes all necessary components of a PKI infrastruct
 
 These services provide interfaces to CPOs, MOs and OEMs for issuing/signing certificates and also request certificate statuses.
 
-![Plug&Charge V2G PKI Services Interfaces](../../assets/images/process_PKI_services.png)
+![Plug&Charge V2G PKI Services Interfaces](../../assets/images/process_hubject_PKI_services.png)
 
 
 ## MO Plug&Charge Contract Service
 
-MO Plug&Charge Contract Service can be part of a Plug&Charge CPS Services and provides interfaces for MOs to issue and sign their contract certificates/bundles without the need for any own MO-PKI. This service creates certificates and performs all needed cryptographic operations to created ISO15118 compliant signed contract data.
+MO Plug&Charge Contract Service can be part of Plug&Charge CPS Services and provides interfaces for MOs to issue and sign their contract certificates/bundles without the need for any own MO-PKI. This service creates certificates and performs all needed cryptographic operations to created ISO15118 compliant signed contract data.
 
 ![Mobility Operator CA Interfaces](../../assets/images/interfaces_mo-ca.png)
 
 
 ## EST interface
 
-EST interface receives CSRs from CPOs, CPSs, MOs or OEMs, signs them and delivers an ISO 15118 leaf certificate. The V2G-PKI Certificate Manager creates the leaf certificates from the reagarding Sub 2 CA of the respective part of the V2G Root CA.
+EST interface receives CSRs from CPOs, CPSs, MOs or OEMs, signs them and delivers an ISO 15118 leaf certificate. The Hubject Certificate Manager creates the leaf certificates from the reagarding Sub 2 CA of the respective part of the V2G Root CA.
 
 This interface can create certificates for CPOs (EVSE leaf certificate), MOs (contract leaf certificate), CPSs (certificate provisioinig certificates) and OEMs (OEM provisioning certificates)
 
@@ -38,12 +38,12 @@ Operation| Operation path  | Details in RFC
  Enrollment of Clients | /simpleenroll  | [RFC Section 4.2](https://tools.ietf.org/html/rfc7030#section-4.2)
 
 
-The EST interface of the Plug&Charge PKI Services shall be fully compliant with RFC7030.
+The EST interface of the Hubject Plug&Charge PKI Services is fully compliant with RFC7030.
 
 > For the implementation of an EST client, you can use the open source library [libest from CISCO](https://github.com/cisco/libest/tree/master/example/client-simple) or the EST package from [BouncyCastle](https://www.bouncycastle.org/docs/pkixdocs1.5on/org/bouncycastle/est/package-summary.html)
 
 ### EVSE leaf certificates (SECC certificate)
-By means of the charge point certificate, the charge point provides its authentication to the vehicle. During a TLS handshake, the charge point establishes a TLS connection to the vehicle. In doing so, it provides its authentication to the vehicle by sending its charge point certificate and the CPO sub-CA certificates. This certificate chain has been derived from a V2G root CA.
+By means of the charge point certificate, the charge point provides its authentication to the vehicle. During a TLS handshake, the charge point establishes a TLS connection to the vehicle. That provides its authentication to the vehicle by sending its charge point certificate and the CPO sub-CA certificates. This certificate chain has been derived from a V2G root CA.
 The associated private key of a charge point certificate is stored in the charge point.
 
 The EVSE leaf certificate contains its EVSE ID as common name, the structure of which is defined in the [identifier description chapter](#handling-of-ids)
@@ -64,16 +64,16 @@ The OEM provisioning certificate contains a PCID as common name, the structure o
 An CPS Provisioning signing certificate is issued regularly by a CPS Operator by a V2G PKI Authority. It shall be possible to renew the provisioning signing certificate. It is used to sign contract data and install them securly into an EV. It is derived from the V2G root CA via a chain of CPS Sub-CAs.
 
 ### Certificate Signing Request
-CSR or Certificate Signing request is a block of encoded text that is given to a Certificate Authority when applying for an digital Certificate. It is usually generated on the server/enddevice where the certificate will be installed and contains information that will be included in the certificate such as the organization name, common name (domain name), locality, and country. It also contains the public key that will be included in the certificate. A private key is usually created at the same time that you create the CSR, making a key pair. A CSR is generally encoded using ASN.1 according to the PKCS #10 specification.
+CSR or Certificate Signing request, is a block of encoded text that is given to a Certificate Authority when applying for an digital Certificate. It is usually generated on the server/end-device, where the certificate will be installed, and contains information that will be included in the certificate, such as the organization name, common name (domain name), locality, and country. It also contains the public key that will be included in the certificate. A private key is usually created at the same time that you create the CSR, making a key pair. A CSR is generally encoded using ASN.1 according to the PKCS #10 specification.
 
-A certificate authority will use a CSR to create your digital certificate, but it does not need your private key. You need to keep your private key secret. The certificate created with a particular CSR will only work with the private key that was generated with it. So if you lose the private key, the certificate will no longer work.
+A certificate authority will use a CSR to create your digital certificate, but it does not need your private key. You need to keep your private key secret. The certificate created with a particular CSR will only work with the private key that was generated with it. In the case of losing the private key, the certificate will no longer work.
 
 #### Required CSR Datafields
 
 Name|Explanantion|Example
 ----|--------|-----
 Common Name|The unique [ISO15118 description](#handling-of-ids) for the certificate. This must match exactly to the ISO15118 and VDE Application Guide standard or you will receive a name mismatch error in the PnC Ecosystem|PCID: e.g. WP012345678901234
-Organization|	The legal name of your organization. |Porsche AG
+Organization|	The legal name of your organization. This should not be abbreviated and should include suffixes such as Inc, Corp, or LLC.|Hubject GmbH
 
 #### CSR Example
 ```

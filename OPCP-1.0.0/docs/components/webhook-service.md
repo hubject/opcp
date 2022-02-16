@@ -1,8 +1,8 @@
 # Webhook Notification Service
 
-Listen for relevant events within the ecosystem so your backend can automatically trigger reactions.
+PnC Ecosystem Operator uses webhooks so when some event happens in our ecosystem your backend system is notified, being able to automatically trigger reactions. 
 
-PnC Ecosystem Operators use webhooks to notify client backend-system when some event happens in our ecosystem. Webhooks are particularly useful for asynchronous events like when a `contract created` or `root certificate expired`.
+Webhooks are particularly useful for asynchronous events like when a `contract created` or `root certificate expired`.
 
 The following figure provides a high level overview on the interface concept of the webhook service. The service is subscribed to all relevant events within the ecosystem. The partners can register at the webhook service to observe assets in the ecosystem. Relevant events from the other ecosystem components are collected by the callback service and forwarded to the partners system.
 
@@ -10,33 +10,13 @@ The following figure provides a high level overview on the interface concept of 
 
 ## What are webhooks 
 
-A webhook enables to our ecosystem to push real-time notifications to your backend systems. Webhooks Service uses HTTPS to send these notifications to your backend endpoint as a JSON payload. You can then use these notifications to execute actions in your backend systems.
-
-## Use cases
-
-You can use webhook event notifications to alert your backend:
+A webhook enables our ecosystem to push real-time notifications to your backend systems. Webhooks Service uses HTTPS to send these notifications to your backend endpoint as a JSON payload. You can then use these notifications to execute actions in your backend systems.
 
 ### Available Events
 
 The following actions trigger the event notification. The messages are routed to the observing backends as noted.
 
-|Relevant for Role|Status Verb|Message  (Logging example for customer)|Description|
-|-|-|-|-|
-|All|root.cert.added|"New Root available”|A new root got added to the root pool (RCP), important for CPOs to check if it is a MO Root CA for authorising a PnC sessions.|
-|All|root.cert.expired|"Root expired”|A root expired and will be removed from the RCP.|
-|All|root.cert.revoked|"Root revoked”|A root got revoked and will be removed from the RCP.|
-|MO|mo.prov.cert.deleted|"PnC is currently disabled, because the OEM<br /> provisioning certificate was deleted/revoked."|The OEM Provisioning Certificate got deleted from PCP. <br />Operator deleted all ContractData for that PCID from CCP.|
-|MO|mo.prov.cert.updated.factory.reset|"New contract certificate shall be created<br />, because a new OEM provisioning certificate was issued"|The OEM Provisioning Certificate got updated. <br />Operator deleted all existing ContractData <br />for that PCID from the CCP, due to they are <br />not valid any more. The mobility operator <br />is asked to generate new contract data. <br />(Werkstattfall)|
-|MO|mo.prov.cert.updated|"Contract Certificate revoked and deleted<br />, because a new OEM provisioning certificate <br />was issued due to a factory reset or selling of the car."|The OEM Provisioning Certificate got updated. <br />Operator deleted all existing ContractData <br />for that PCID from the CCP, due to they <br />are not valid any more. The mobility operator <br />shall not generate new contractData for that PCID. <br />(Factory Reset in case of Selling of the vehicle).|
-|MO|mo.contract.created.sent.to.oem|"Info about ContractData Creation <br />(oem.contract.created) got delivered to OEM”|Contract Information got delivered to OEM backend.<br /> Positive Response of OEM Backend received information <br />about new contract data.|
-|MO|mo.contract.updated.sent.to.oem|"Info about ContractData Update <br />(oem.contract.updated) got delivered to OEM”|Contract Information got delivered to OEM backend.<br /> Positive Response of OEM Backend received information <br />about updated contract data.|
-|MO|mo.contract.deleted.sent.to.oem|"Info about ContractData Deletion <br />(oem.contract.deleted) got delivered to OEM”|Contract Information got delivered to OEM backend.<br /> Positive Response of OEM Backend received information <br />about deleted contract data. ·       <br />deletePushDataToOEM |
-|MO|mo.contract.delivered.to.oem|"Contract certificate successfully delivered to OEM."|Successful Delivery of ContractData. <br />The ContractData with the given EMAID got either: <br />got pulled from OEM Backend or <br />Installed over EVSE (certificateInstallationRequest)|
-|MO|mo.contract.rejected.by.oem|"Info about Contract Creation/Update/Deletion<br />(oem.contract.*) could not be delivered to OEM”|Contract Information got rejected from OEM Backend. <br />Negative Response of OEM Backend on information <br />about new, updated or deleted contract data. <br />Action stopped in case OEM send HTTP400 or <br />HTTP409. Otherwise Retry started to OEM.|
-|MO|mo.contract.queued.to.oem|"Retry started for installation <br />or deletion of contract certificate."|Retry to OEM started to send )|
-|OEM|oem.contract.created|"New contract data available for PCID <br />… with EMAID …”|Info to OEM Backend about new ContractData in CCP|
-|OEM|oem.contract.updated|"Updated contract data available for PCID <br />… with EMAID …”|Info to OEM Backend about updated ContractData in CCP|
-|OEM|oem.contract.deleted|"Deleted contract for PCID … with EMAID …”|Info to OEM Backend about deleted ContractData in CCP|
+![Event Actions](../../assets/images/event_actions.png)
 
 ## API
 

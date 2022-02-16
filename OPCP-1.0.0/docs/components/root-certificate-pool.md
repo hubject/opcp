@@ -16,11 +16,11 @@ The documenatation can be found at `rcp.v1.json`.
 
 ## Processes
 
-The root certificate pool is involved in multiple processes across the ecosystem. In the following  only direct processes are described.
+The root certificate pool is involved in multiple processes across the ecosystem. The Direct Processes are described bellow:
 
 ### 1. Deliver Root Certificates
 
-The delivery of root certificates of the OEM, V2G, MO, and possibly PE-CAs to the Root Certificate Pool is an organizational process, which can be proceeded by different methods, like signed email, SFTP, OFTP2 or similar methodologies. After approval the new root certificates are added to the root certificate pool by the RCP Operator. Therefore the PUT and DELETE interface of the pool is restricted for authorized administrative use only.
+The delivery of root certificates of the OEM, V2G, MO, and possibly PE-CAs to the Root Certificate Pool is an organizational process, which can be proceeded by different methods, like signed email, SFTP, OFTP2 or similar methodologies. After approval the new root certificates are added to the root certificate pool by the RCP Operator. Therefore the PUT and DELETE interfaces of the pool are restricted for authorized administrative use only.
 
 
 ### 2. Request Root Certificates

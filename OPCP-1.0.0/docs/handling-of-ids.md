@@ -4,8 +4,8 @@
 
 ## EMAID (E-Mobility Authentication Identifier)
 
-EMAIDs in the definition of ISO-15118 have some representational flexibility due to optional elements. The Hubject Plug and Charge ecosystem will therefore normalize all incoming IDs to match the following expression: `/[A-Z]{2}[\dA-Z]{3}[\dA-Z]{9}/i`
-However the version with optional seperators (“-”) and check digit is allowed : `/[a-z]{2}(-?)[\da-z]{3}\1[\da-z]{9}(\1[\da-z])?/i`. Nevertheless the Hubject ecosystem will always remove Hyphens from the EMAID due to the ISO15118-2 Protocol, where just max. 15 characters can be transfered between EV and EVSE.
+EMAIDs in the definition of ISO-15118 have some representational flexibility due to optional elements. The Plug and Charge ecosystem will therefore normalize all incoming IDs to match the following expression: `/[A-Z]{2}[\dA-Z]{3}[\dA-Z]{9}/i`
+However the version with optional seperators (“-”) and check digit is allowed : `/[a-z]{2}(-?)[\da-z]{3}\1[\da-z]{9}(\1[\da-z])?/i`. Nevertheless the ecosystem will always remove Hyphens from the EMAID due to the ISO15118-2 Protocol, where just max. 15 characters can be transfered between EV and EVSE.
 
 ABNF from the ISO 15118-2:2014(E):
 
@@ -15,7 +15,7 @@ Clients can still use it but the system will normalize to the form above (no sep
 
 ## PCID (Provisioning Certificate Identifier)
 
-PCIDs in the definition of ISO-15118 are represented by the WMI (3 Characters) of the OEM, followed by 14 alphanumeric characters which uniqly identifies the vehicle and an optional check digit/alpha. The Hubject Plug and Charge ecosystem check all incoming IDs to match the following expression: `^[a-zA-Z0-9]{17,18}$`
+PCIDs in the definition of ISO-15118 are represented by the WMI (3 Characters) of the OEM, followed by 14 alphanumeric characters which uniqly identifies the vehicle and an optional check digit/alpha. The Plug and Charge ecosystem check all incoming IDs to match the following expression: `^[a-zA-Z0-9]{17,18}$`
 
 ABNF from VDE-AR-E 2802-100-1:2019-12 (en)
 `<PCID>` = `<WMI>` `<OEM's own unique ID>` `<check digit>`

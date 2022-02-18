@@ -1,0 +1,1103 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CPS Interface Description",
+    "version": "1.0",
+    "description": "The interfaces of the Certificate Provisioning Service (CPS) are used to request the provisioning of Contract Data. The [Contract Certificate Pool (CCP)](docs/components/contract-certificate-pool.md) only accepts Contract Data signed by a trusted CPS. Optionally the data can be forwarded to the CCP directly by the CPS. \n\nThis service provides the following interfaces:\n * Sign Contract Data by CPS\n * Generate Signed Contract Data\n * Create Signed Contract Data - deprecated\n * Create and Forward Signed Contract Data - deprecated\n\n### Clients\n\nThe CPS communicates with the following actors and services:\n\n * The _Mobility Operator_ calls the CPS API actively to send/create Contract Data.\n * The _Contract Certificate Pool_ receives Signed Contract Data forwarded by the CPS.\n * OCSP Responders of the Contract Certificates\n * Root Certificate Pool",
+    "contact": {
+      "name": "Hubject GmbH",
+      "url": "https://hubject.com",
+      "email": "support@pnc.hubject.com"
+    },
+    "termsOfService": "https://www.hubject.com/pki/",
+    "license": {
+      "name": "Attribution-ShareAlike 4.0 International",
+      "url": "http://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  "servers": [],
+  "tags": [
+    {
+      "name": "MO",
+      "description": "API relevant for Mobility Operators"
+    },
+    {
+      "name": "certificate-provisioning-api-controller",
+      "description": "internal identifier"
+    }
+  ],
+  "paths": {
+    "/v1/cps/contractData/signed": {
+      "put": {
+        "summary": "Sign Contract Data by CPS",
+        "operationId": "put-v1-cps-signContractData",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignedContractDataResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignedContractDataRequest"
+              }
+            }
+          }
+        },
+        "description": "This interface signs [Contract Data](cps.v1.json/components/schemas/ContractData) in the CPS and sends it as [Signed Contract Data](models/signed-contract-data.v1.json) back to the MO. By using the Parameter _PCID_ the Signed Contract Data are getting stored in the Contract Certificate Pool, and it is made available for the OEM and CPO backend.\n\n\n> #### How to store Signed Data in CCP\n> If the parameter _PCID_ is set and valid, the signed contractdata will be stored in the CCP as well. If the paramter is not set, the signed object will not be stored in the CCP.\n\n> #### This combines to deprecated calls\n> This function bundles to deprecated functions: \n> - /v1/cps/signedContractData\n> - /v1/cps/forward/signedContractData"
+      },
+      "parameters": []
+    },
+    "/v1/cps/forward/signedContractData": {
+      "parameters": [],
+      "put": {
+        "summary": "Create and forward Signed Contract Data",
+        "operationId": "createAndForwardSignedContractData",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Invalid PrivateKey": {
+                    "value": {
+                      "errorMessages": [
+                        "contractData.contractSignatureEncryptedPrivateKey : must match \"^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$\""
+                      ],
+                      "traceId": "3cf35ee3-13ac-4387-b37e-6a72af668727"
+                    }
+                  },
+                  "Invalid DH-Public-Key": {
+                    "value": {
+                      "errorMessages": [
+                        "contractData.dHpublickey : must match \"^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$\""
+                      ],
+                      "traceId": "e0e6eaa3-f2ce-4bfd-b067-50fd88a88bfd"
+                    }
+                  },
+                  "Invalid ContractCert": {
+                    "value": {
+                      "errorMessages": [
+                        "contractData.contractSignatureCertChain.contractSignatureCertChainCertificate : must match \"^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$\""
+                      ],
+                      "traceId": "fa6f880b-6b96-4499-8a99-036083377006"
+                    }
+                  },
+                  "Invalid Contract CA": {
+                    "value": {
+                      "errorMessages": [
+                        "Invalid certificate format on contractSignatureCertChainSubCertificates list"
+                      ],
+                      "traceId": "ef689caa-7c3b-4be0-bcb5-c667782480fd"
+                    }
+                  },
+                  "Invalid PCID": {
+                    "value": {
+                      "errorMessages": [
+                        "pcid : must match \"^[a-zA-Z0-9]{17,18}$\""
+                      ],
+                      "traceId": "634cdfa3-4fe7-419d-9963-bb412929b0f3"
+                    }
+                  },
+                  "Invalid Emaid": {
+                    "value": {
+                      "errorMessages": [
+                        "emaid : must match \"^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$\""
+                      ],
+                      "traceId": "57a24dd5-08e2-4d78-8a77-b49b9db411f2"
+                    }
+                  },
+                  "EMAID already used": {
+                    "value": {
+                      "errorMessages": [
+                        "Invalid Tupple - EMAID is already used by other PCID."
+                      ],
+                      "traceId": "3e002e2a-580b-48e4-88a5-6b782cae636b"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "tags": [
+          "MO",
+          "certificate-provisioning-api-controller"
+        ],
+        "description": "This interface signs [Contract Data](cps.v1.json/components/schemas/ContractData) in the CPS and stores them in the CCP. \n\n<!-- theme: warning -->\n> #### Deprecated!\n> Please be aware that this method is deprecated. Please use /v1/cps/contractData/signed",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSignedContractDataRequest"
+              }
+            }
+          },
+          "description": "Expects a [Contract Data V1](models/contract-data.v1.json) object."
+        },
+        "security": [
+          {
+            "MO_with_own_PKI": []
+          }
+        ],
+        "deprecated": true
+      }
+    },
+    "/v1/cps/signedContractData": {
+      "put": {
+        "summary": "Create Signed Contract Data",
+        "operationId": "createSignedContractData",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSignedContractDataResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "description": "This interface signs [Contract Data](cps.v1.json/components/schemas/contract-data) in the CPS and sends it as [Signed Contract Data](cps.v1.json/components/schemas/CreateSignedContractDataResponse) back to the MO. By using this method Signed Contract Data is not stored in the Contract Certificate Pool, and it is not made available for the OEM and CPO backend. After using this method, the _Add Signed Contract Data_ method of the Contract Certificate Pool could be used to store the Signed Contract Data in CCP or its getting stored in another CCP\n\n<!-- theme: warning -->\n> #### Deprecated!\n> Please be aware that this method is deprecated. Please use /v1/cps/contractData/signed",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSignedContractDataRequest"
+              }
+            }
+          }
+        },
+        "tags": [
+          "MO",
+          "certificate-provisioning-api-controller"
+        ],
+        "security": [
+          {
+            "MO_with_own_PKI": []
+          }
+        ],
+        "deprecated": true
+      },
+      "parameters": []
+    },
+    "/v1/cps/generate/signedContractData": {
+      "parameters": [],
+      "put": {
+        "summary": "Generate Signed Contract Data",
+        "operationId": "generateSignedContractData",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "EMAID already used": {
+                    "value": {
+                      "errorMessages": [
+                        "Invalid Tupple - EMAID is already used by other PCID."
+                      ],
+                      "traceId": "3e002e2a-580b-48e4-88a5-6b782cae636b"
+                    }
+                  },
+                  "Invalid EMAID": {
+                    "value": {
+                      "errorMessages": [
+                        "emaid : must match \"^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$\""
+                      ],
+                      "traceId": "57a24dd5-08e2-4d78-8a77-b49b9db411f2"
+                    }
+                  },
+                  "Invalid PCID": {
+                    "value": {
+                      "errorMessages": [
+                        "pcid : must match \"^[a-zA-Z0-9]{17,18}$\""
+                      ],
+                      "traceId": "a29a7734-0599-4394-9300-d912a6bfd914"
+                    }
+                  },
+                  "Invalid Date": {
+                    "value": {
+                      "errorMessages": [
+                        "The given contractEnds date is in the past."
+                      ],
+                      "traceId": "8185b433-8598-463e-a83f-9dbfea8a33e0"
+                    }
+                  },
+                  "PCID not Available": {
+                    "value": {
+                      "errorMessages": [
+                        "The OEM provisioning certificate with the given PCID is not available."
+                      ],
+                      "traceId": "fb683590-7de9-4c3e-ae41-a83ccb578628"
+                    }
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "tags": [
+          "MO",
+          "certificate-provisioning-api-controller"
+        ],
+        "description": "This service creates and signs contractData for delivered contract information. The contract certificate will be signed by the MO SUB CA2 which is derived from the V2G Root CA\n\nThe created and signed contractData is stored in the contract certificate pool for provisioning to the OEM- and CPO-backend. \n\nTo update a contractData, the interface must be called again with the same PCID and EMAID. The system will replace the old contractData with the new one.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateSignedContractDataRequest"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                  "contractBegins": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "contractEnds": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "pcid": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "emaid": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "xsdMsgDefNamespace": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "contractBegins",
+                  "contractEnds",
+                  "pcid",
+                  "emaid",
+                  "xsdMsgDefNamespace"
+                ],
+                "x-examples": {
+                  "example-1": {
+                    "contractBegins": "2021-05-11T00:00:00Z",
+                    "contractEnds": "2022-12-10T11:42:59Z",
+                    "pcid": "huboemprovcqa0615",
+                    "emaid": "EMP99CQATest001",
+                    "xsdMsgDefNamespace": "urn:iso:15118:2:2013:MsgDef"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateSignedContractDataRequest"
+              }
+            }
+          },
+          "description": ""
+        },
+        "security": [
+          {
+            "MO_without_PKI": []
+          }
+        ]
+      }
+    },
+    "/cps/signer": {
+      "get": {
+        "summary": "getAllCpsSigners",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllCpsSignerResponse"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "cpsCertificates": [
+                        {
+                          "cpsDistinguishedName": "DC=CPS,CN=CPS 2022.2 QA,O=Hubject GmbH,C=EU",
+                          "cpsCertificate": "MIICIDCCAcegAwIBAgIQY/Uw1ZVuIEjy6Pl6fJO3zDAKBggqhkjOPQQDAjBaMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMR8wHQYDVQQDExZQcm92IFN1YjIgQ0EgUUEgRzEuMS4xMRMwEQYKCZImiZPyLGQBGRYDVjJHMB4XDTIyMDIwNzIzMDAwOVoXDTIzMDQyNjA4NDcwMFowUTELMAkGA1UEBhMCRVUxFTATBgNVBAoTDEh1YmplY3QgR21iSDEWMBQGA1UEAxMNQ1BTIDIwMjIuMiBRQTETMBEGCgmSJomT8ixkARkWA0NQUzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKV293MvIi2Fe7sJKUgcIlustux6VBbFgewEnyFZWHbR4MHUYYQMFl0A8W7LnHfem62lNOnIRf2S1mUGsmvhi5KjeDB2MA8GA1UdEwEB/wQFMAMBAQAwEQYDVR0OBAoECE5/L1+WYFS/MBMGA1UdIwQMMAqACE/cA3gKEqgFMDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL29jc3AtcWEuaHViamVjdC5jb206ODA4MDAKBggqhkjOPQQDAgNHADBEAiBnXkR2/CSOnrQYp3JV6Hm2Dj21B3uxWUlmvxzxAmSjKQIgY27glhG1OyRzcM9A4GMfniVEiacQGHor2yDAkmHv50g=",
+                          "validFrom": "2022-02-08T21:59:59Z",
+                          "validTo": "2022-05-08T21:59:59Z",
+                          "organizationName": "Hubject GmbH",
+                          "cpsRootCertificateId": "e6c58da2-aeaf-438c-b484-40c3cca35e97",
+                          "cpsRootDistinguishedName": "CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE",
+                          "cpsCa2Certificate": "MIIChDCCAiqgAwIBAgIQaiLIxLrHTTKZppAFbA0tkTAKBggqhkjOPQQDAjBYMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMR0wGwYDVQQDExRQcm92IFN1YjEgQ0EgUUEgRzEuMTAeFw0xOTA1MDIwODEyMTNaFw0yMzA0MjYwODQ3MDBaMFoxCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxIdWJqZWN0IEdtYkgxHzAdBgNVBAMTFlByb3YgU3ViMiBDQSBRQSBHMS4xLjExEzARBgoJkiaJk/IsZAEZFgNWMkcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAARJN5Hwu15jQHBqrRi8DeiitywYcIEviB0tAOK65s9w9BmlgzkicogeRlJuX7HShTgMFLyKZLBA9NqVAKji60A3o4HTMIHQMBIGA1UdEwEB/wQIMAYBAf8CAQAwEQYDVR0OBAoECE/cA3gKEqgFMEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAISPi/B9abbpMwOwYIKwYBBQUHAQEELzAtMCsGCCsGAQUFBzABhh9odHRwOi8vb2NzcC1xYS5odWJqZWN0LmNvbTo4MDgwMA4GA1UdDwEB/wQEAwIBBjAKBggqhkjOPQQDAgNIADBFAiEAupTZ1xzK8lKLMw4xgTuHFYSIY+XyATWeXqli7s1fNRECIHWN5MahWUZhCdhjSrEMWHlthjAEYEmt4jbKP/Vl15Vq",
+                          "cpsCa1Certificate": "MIICfzCCAiWgAwIBAgIQO7sfgiJ78Yq08qwINseZ2DAKBggqhkjOPQQDAjBVMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRowGAYDVQQDExFWMkcgUm9vdCBDQSBRQSBHMTAeFw0xOTA0MjYwODQ3MDBaFw0yMzA0MjYwODQ3MDBaMFgxCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxIdWJqZWN0IEdtYkgxEzARBgoJkiaJk/IsZAEZFgNWMkcxHTAbBgNVBAMTFFByb3YgU3ViMSBDQSBRQSBHMS4xMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEVMZZjSfXbfLrLQeubbl7gTi/1IIXy4hwCsoW7013L/ZDzbkRQZLU/Ayzb5gepGS29KTkPIAZKJgO076tHbJSgqOB0zCB0DASBgNVHRMBAf8ECDAGAQH/AgEBMBEGA1UdDgQKBAhI+L8H1ptukzBFBgNVHSAEPjA8MDoGDCsGAQQBgsQ1AQIBADAqMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5odWJqZWN0LmNvbS9wa2kvMBMGA1UdIwQMMAqACEtF/4Il/BCWMDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL29jc3AtcWEuaHViamVjdC5jb206ODA4MDAOBgNVHQ8BAf8EBAMCAQYwCgYIKoZIzj0EAwIDSAAwRQIgOwQW0FEOqJrZADr0p8X/tLjA1OPoXg9o64cz2Ic2mi0CIQCokEKf6HvLlAgV7J/RUZz60sYkov+E21KN8ht9DO4W/Q=="
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "get-cps-signer",
+        "description": "For using getAllCpsSigners interface, no input is necessary. The Interface returns a list of all available CPS signer certificates available of the CPS operator. This method can be used by MOs to detect and define with which CPS signer the contract shall be signed",
+        "security": [
+          {
+            "MO_without_PKI": []
+          },
+          {
+            "MO_with_own_PKI": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "MO_without_PKI": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "",
+            "tokenUrl": "",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        },
+        "description": "OAuth2 is used to grant access to the endpoint. In the case of \"MO without PKI\" role, the MO is using Hubject V2G PKI to sign certificates."
+      },
+      "MO_with_own_PKI": {
+        "type": "oauth2",
+        "description": "OAuth2 is used to grant access to the endpoint. ",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "",
+            "tokenUrl": "",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        }
+      }
+    },
+    "schemas": {
+      "contract-data": {
+        "description": "",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "contractSignatureCertChain": {
+              "contractSignatureCertChainCertificate": "MIIB7jCCAZSgAwIBAgIQQihl/GZf3VrjEbtD8OftBDAKBggqhkjOPQQDAjBYMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMR0wGwYDVQQDExRNTyBTdWIyIENBIFFBIEcxLjEuMTETMBEGCgmSJomT8ixkARkWA1YyRzAeFw0yMjAyMDcyMzE3MzdaFw0yMjEyMTAxMTQyNTlaMDExFTATBgNVBAoTDEh1YmplY3QgR21iSDEYMBYGA1UEAxMPRU1QOTlDUUFURVNUMDAxMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDB59w53BxLuMBDDYTzDqpJLoJqIZEJoZWlYti+n97erJYD8JHaA0630uzghrNnjVa8sZKqBv8XX6V9H6H+gYS6NnMGUwEQYDVR0OBAoECEPJRNHvPWNdMBMGA1UdIwQMMAqACEf6f9verOzVMDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL29jc3AtcWEuaHViamVjdC5jb206ODA4MDAKBggqhkjOPQQDAgNIADBFAiEA3S6DrF1uTpyZW/eF3XPeykX2L6ubl/2fiNujT4ENX1cCIF/D/ftiHiIKcuDLrHRVFxpcXeQfQ8NmUHhThtNZRDRC",
+              "contractSignatureCertChainSubCertificates": [
+                "MIICgDCCAiagAwIBAgIQV3xs5x1SZUQzUaM1BxVzNDAKBggqhkjOPQQDAjBWMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRswGQYDVQQDExJNTyBTdWIxIENBIFFBIEcxLjEwHhcNMTkwNTAyMDgwOTQwWhcNMjkwNTAyMDgwOTQwWjBYMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMR0wGwYDVQQDExRNTyBTdWIyIENBIFFBIEcxLjEuMTETMBEGCgmSJomT8ixkARkWA1YyRzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKJ4aspMPXpAx1ZDFMLASHPproU8C7PMUzZt0dxyO318KZBXaKsUI0ReE1bAAOmxxeOHnNs1kiiUPWM6KKg0fHyjgdMwgdAwEgYDVR0TAQH/BAgwBgEB/wIBADARBgNVHQ4ECgQIR/p/296s7NUwRQYDVR0gBD4wPDA6BgwrBgEEAYLENQECAQAwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuaHViamVjdC5jb20vcGtpLzATBgNVHSMEDDAKgAhInhY/vHd0mjA7BggrBgEFBQcBAQQvMC0wKwYIKwYBBQUHMAGGH2h0dHA6Ly9vY3NwLXFhLmh1YmplY3QuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIQCyh1nEBXQAQeJbz/6FK+vzr62IDu1kZHOSJexZPgDh/AIgLtAet8c9uX79c3skG+hmv4eu/ZPH1yr48fAWq2uKl0E=",
+                "MIICfTCCAiOgAwIBAgIQWt/tqVhH27TWNDXDvucEejAKBggqhkjOPQQDAjBVMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRowGAYDVQQDExFWMkcgUm9vdCBDQSBRQSBHMTAeFw0xOTA0MjYwOTA0MDFaFw0zOTA0MjYwOTA0MDFaMFYxCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxIdWJqZWN0IEdtYkgxEzARBgoJkiaJk/IsZAEZFgNWMkcxGzAZBgNVBAMTEk1PIFN1YjEgQ0EgUUEgRzEuMTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABNDMXgBjwC/fVHNBhQkXMNHzTEnJDMJ+KQ9Sm0L2uPM6fA8M2yk29dvTwzI6mLCR+xoVnZy75z2iUCkBqSTPVDajgdMwgdAwEgYDVR0TAQH/BAgwBgEB/wIBATARBgNVHQ4ECgQISJ4WP7x3dJowRQYDVR0gBD4wPDA6BgwrBgEEAYLENQECAQAwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuaHViamVjdC5jb20vcGtpLzATBgNVHSMEDDAKgAhLRf+CJfwQljA7BggrBgEFBQcBAQQvMC0wKwYIKwYBBQUHMAGGH2h0dHA6Ly9vY3NwLXFhLmh1YmplY3QuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIQCXW26pWJ3LZ2GTnQYXEHBqrR2BLeyl1PEbYfzYK3pAVgIgYE1kZzYxj6tQUjrFV8sD+1J9YWeVU3d4/kmUvwMoUdo="
+              ]
+            },
+            "contractSignatureEncryptedPrivateKey": "PD5/v8Z005yianHegxvs2vE/uRPOjBaP4byhAVwyj6APg6BFOZexCpCacHTxgELr",
+            "dHpublickey": "BC//bjmXFWisWCxnJeoA2kMBZmEHfx9h/ZKlTMhbJUvm6cdc/WBuKwPlC5qVHnxguI5RouU59fc9P3y2qU0Qu0c=",
+            "emaid": "EMP99CQATEST001"
+          }
+        },
+        "properties": {
+          "contractSignatureCertChain": {
+            "type": "object",
+            "required": [
+              "contractSignatureCertChainCertificate",
+              "contractSignatureCertChainSubCertificates"
+            ],
+            "properties": {
+              "contractSignatureCertChainCertificate": {
+                "type": "string",
+                "description": "Contract Certificate in base64 encoded DER form",
+                "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
+                "maxLength": 800
+              },
+              "contractSignatureCertChainSubCertificates": {
+                "type": "array",
+                "description": "Contract Certificate SUB CAs in base64 encoded DER form, array starting with SUB MO CA2 followed by MO SUB CA1",
+                "maxItems": 2,
+                "minItems": 1,
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "contractSignatureEncryptedPrivateKey": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Encryted contract certificate private key"
+          },
+          "dHpublickey": {
+            "type": "string",
+            "minLength": 1,
+            "description": "DH Public Key as defined in the ISO15118"
+          },
+          "emaid": {
+            "type": "string",
+            "minLength": 1,
+            "description": "contract identifier of contract certificate. Needs to fit to the common name in the contract certificate"
+          }
+        },
+        "required": [
+          "contractSignatureCertChain",
+          "contractSignatureEncryptedPrivateKey",
+          "dHpublickey",
+          "emaid"
+        ]
+      },
+      "CreateSignedContractDataRequest": {
+        "type": "object",
+        "title": "CPS createSignedContractDataRequest (V1)",
+        "description": "",
+        "x-examples": {
+          "example-1": {
+            "contractData": {
+              "contractSignatureCertChain": {
+                "contractSignatureCertChainCertificate": "MIIB7jCCAZSgAwIBAgIQQihl/GZf3VrjEbtD8OftBDAKBggqhkjOPQQDAjBYMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMR0wGwYDVQQDExRNTyBTdWIyIENBIFFBIEcxLjEuMTETMBEGCgmSJomT8ixkARkWA1YyRzAeFw0yMjAyMDcyMzE3MzdaFw0yMjEyMTAxMTQyNTlaMDExFTATBgNVBAoTDEh1YmplY3QgR21iSDEYMBYGA1UEAxMPRU1QOTlDUUFURVNUMDAxMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDB59w53BxLuMBDDYTzDqpJLoJqIZEJoZWlYti+n97erJYD8JHaA0630uzghrNnjVa8sZKqBv8XX6V9H6H+gYS6NnMGUwEQYDVR0OBAoECEPJRNHvPWNdMBMGA1UdIwQMMAqACEf6f9verOzVMDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL29jc3AtcWEuaHViamVjdC5jb206ODA4MDAKBggqhkjOPQQDAgNIADBFAiEA3S6DrF1uTpyZW/eF3XPeykX2L6ubl/2fiNujT4ENX1cCIF/D/ftiHiIKcuDLrHRVFxpcXeQfQ8NmUHhThtNZRDRC",
+                "contractSignatureCertChainSubCertificates": [
+                  "MIICgDCCAiagAwIBAgIQV3xs5x1SZUQzUaM1BxVzNDAKBggqhkjOPQQDAjBWMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRswGQYDVQQDExJNTyBTdWIxIENBIFFBIEcxLjEwHhcNMTkwNTAyMDgwOTQwWhcNMjkwNTAyMDgwOTQwWjBYMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMR0wGwYDVQQDExRNTyBTdWIyIENBIFFBIEcxLjEuMTETMBEGCgmSJomT8ixkARkWA1YyRzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKJ4aspMPXpAx1ZDFMLASHPproU8C7PMUzZt0dxyO318KZBXaKsUI0ReE1bAAOmxxeOHnNs1kiiUPWM6KKg0fHyjgdMwgdAwEgYDVR0TAQH/BAgwBgEB/wIBADARBgNVHQ4ECgQIR/p/296s7NUwRQYDVR0gBD4wPDA6BgwrBgEEAYLENQECAQAwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuaHViamVjdC5jb20vcGtpLzATBgNVHSMEDDAKgAhInhY/vHd0mjA7BggrBgEFBQcBAQQvMC0wKwYIKwYBBQUHMAGGH2h0dHA6Ly9vY3NwLXFhLmh1YmplY3QuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIQCyh1nEBXQAQeJbz/6FK+vzr62IDu1kZHOSJexZPgDh/AIgLtAet8c9uX79c3skG+hmv4eu/ZPH1yr48fAWq2uKl0E=",
+                  "MIICfTCCAiOgAwIBAgIQWt/tqVhH27TWNDXDvucEejAKBggqhkjOPQQDAjBVMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRowGAYDVQQDExFWMkcgUm9vdCBDQSBRQSBHMTAeFw0xOTA0MjYwOTA0MDFaFw0zOTA0MjYwOTA0MDFaMFYxCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxIdWJqZWN0IEdtYkgxEzARBgoJkiaJk/IsZAEZFgNWMkcxGzAZBgNVBAMTEk1PIFN1YjEgQ0EgUUEgRzEuMTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABNDMXgBjwC/fVHNBhQkXMNHzTEnJDMJ+KQ9Sm0L2uPM6fA8M2yk29dvTwzI6mLCR+xoVnZy75z2iUCkBqSTPVDajgdMwgdAwEgYDVR0TAQH/BAgwBgEB/wIBATARBgNVHQ4ECgQISJ4WP7x3dJowRQYDVR0gBD4wPDA6BgwrBgEEAYLENQECAQAwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuaHViamVjdC5jb20vcGtpLzATBgNVHSMEDDAKgAhLRf+CJfwQljA7BggrBgEFBQcBAQQvMC0wKwYIKwYBBQUHMAGGH2h0dHA6Ly9vY3NwLXFhLmh1YmplY3QuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIQCXW26pWJ3LZ2GTnQYXEHBqrR2BLeyl1PEbYfzYK3pAVgIgYE1kZzYxj6tQUjrFV8sD+1J9YWeVU3d4/kmUvwMoUdo="
+                ]
+              },
+              "contractSignatureEncryptedPrivateKey": "PD5/v8Z005yianHegxvs2vE/uRPOjBaP4byhAVwyj6APg6BFOZexCpCacHTxgELr",
+              "dHpublickey": "BC//bjmXFWisWCxnJeoA2kMBZmEHfx9h/ZKlTMhbJUvm6cdc/WBuKwPlC5qVHnxguI5RouU59fc9P3y2qU0Qu0c=",
+              "emaid": "EMP99CQATEST001"
+            },
+            "emaid": "EMP99CQATEST001",
+            "pcid": "huboemprovcqa0615",
+            "xsdMsgDefNamespace": "urn:iso:15118:2:2013:MsgDef"
+          }
+        },
+        "minProperties": 4,
+        "properties": {
+          "xsdMsgDefNamespace": {
+            "type": "string",
+            "x-constraint": "@ValidXsdMsgDefNamespace",
+            "example": "urn:iso:15118:2:2013:MsgDef",
+            "default": "urn:iso:15118:2:2013:MsgDef"
+          },
+          "contractData": {
+            "$ref": "#/components/schemas/contract-data"
+          },
+          "metaData": {
+            "type": "string",
+            "description": "could be used for further application/information exchange"
+          },
+          "pcid": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]{17,18}$",
+            "description": "PCID of the Provisioning certificate which need to fit to the common Name of the provisiong cetificate which shall be used for the validation.",
+            "minLength": 17,
+            "maxLength": 18
+          },
+          "emaid": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
+            "description": "EMAID of the contract which need to fit to the common Name of the contract certificate itself",
+            "minLength": 14,
+            "maxLength": 15
+          },
+          "cpsRootCertificateId": {
+            "type": "string",
+            "description": "The UUID of the desired V2G root CA which shall be used to sign these data with the regarding CPS signing certificate. Its optional. If not given, the CPS will decide which CPS signing V2G PKI will be used",
+            "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
+            "example": "896b6655-180e-4304-b642-606bb00df8f0"
+          }
+        },
+        "required": [
+          "xsdMsgDefNamespace",
+          "contractData",
+          "pcid",
+          "emaid"
+        ]
+      },
+      "CreateSignedContractDataResponse": {
+        "title": "Signed Contract Data (V1)",
+        "type": "object",
+        "description": "Object containing the signed contract data which got sigend from the CPS\n\nDeprecated: Use SignedContractDataResponse",
+        "x-examples": {
+          "example": {
+            "pcid": "huboemprovcqa0615",
+            "emaid": "EMP99CQATest001",
+            "xsdMsgDefNamespace": "urn:iso:15118:2:2013:MsgDef",
+            "signedData": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxuczY6VjJHX01lc3NhZ2UgeG1sbnM6bnM2PSJ1cm46aXNvOjE1MTE4OjI6MjAxMzpNc2dEZWYiIHhtbG5zOm5zNT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyIgeG1sbnM6bnM3PSJ1cm46aXNvOjE1MTE4OjI6MjAxMzpNc2dCb2R5IiB4bWxuczpuczI9InVybjppc286MTUxMTg6MjoyMDEwOkFwcFByb3RvY29sIiB4bWxuczpuczQ9InVybjppc286MTUxMTg6MjoyMDEzOk1zZ0RhdGFUeXBlcyIgeG1sbnM6bnMzPSJ1cm46aXNvOjE1MTE4OjI6MjAxMzpNc2dIZWFkZXIiPjxuczY6SGVhZGVyPjxuczU6U2lnbmF0dXJlPjxuczU6U2lnbmVkSW5mbz48bnM1OkNhbm9uaWNhbGl6YXRpb25NZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy9UUi9jYW5vbmljYWwtZXhpLyIvPjxuczU6U2lnbmF0dXJlTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxkc2lnLW1vcmUjZWNkc2Etc2hhMjU2Ii8+PG5zNTpSZWZlcmVuY2UgVVJJPSIjSUQyIj48bnM1OlRyYW5zZm9ybXM+PG5zNTpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy9UUi9jYW5vbmljYWwtZXhpLyIvPjwvbnM1OlRyYW5zZm9ybXM+PG5zNTpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGVuYyNzaGEyNTYiLz48bnM1OkRpZ2VzdFZhbHVlPjIwQkdnS1A3SGE0cHNUcUlvcFh5N0hoRTd0SjJQeVBtVlJXR1JuenpuL3M9PC9uczU6RGlnZXN0VmFsdWU+PC9uczU6UmVmZXJlbmNlPjxuczU6UmVmZXJlbmNlIFVSST0iI0lEMSI+PG5zNTpUcmFuc2Zvcm1zPjxuczU6VHJhbnNmb3JtIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvVFIvY2Fub25pY2FsLWV4aS8iLz48L25zNTpUcmFuc2Zvcm1zPjxuczU6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PG5zNTpEaWdlc3RWYWx1ZT4yOWtVeUppWVBkM1AwaW16TEFGRFdPQXdFWU9pNExRalF0SlZyb1pJZ0pjPTwvbnM1OkRpZ2VzdFZhbHVlPjwvbnM1OlJlZmVyZW5jZT48bnM1OlJlZmVyZW5jZSBVUkk9IiNJRDQiPjxuczU6VHJhbnNmb3Jtcz48bnM1OlRyYW5zZm9ybSBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnL1RSL2Nhbm9uaWNhbC1leGkvIi8+PC9uczU6VHJhbnNmb3Jtcz48bnM1OkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxuczU6RGlnZXN0VmFsdWU+QUdPT3V3NjA3QkhSL01hS3B3QUFzb3pYQXpFZUpicEFraFpGY1krUU9kMD08L25zNTpEaWdlc3RWYWx1ZT48L25zNTpSZWZlcmVuY2U+PG5zNTpSZWZlcmVuY2UgVVJJPSIjSUQzIj48bnM1OlRyYW5zZm9ybXM+PG5zNTpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy9UUi9jYW5vbmljYWwtZXhpLyIvPjwvbnM1OlRyYW5zZm9ybXM+PG5zNTpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGVuYyNzaGEyNTYiLz48bnM1OkRpZ2VzdFZhbHVlPmJjcWxvUy9ONDBqMnE2WHViYWFMdlB2dDc0L25kTXRSOWRLNjR0d0kwNXM9PC9uczU6RGlnZXN0VmFsdWU+PC9uczU6UmVmZXJlbmNlPjwvbnM1OlNpZ25lZEluZm8+PG5zNTpTaWduYXR1cmVWYWx1ZT5DWlNocEpHRW9TM2dZcUpGS1QyNk5BNjUzY0NXQWIyOWI4QWc1c3lMTG9vOVMxMFp5cDAxTVJWZ055RXgrbUZ3THBNcXRHYTlBeVNKVnJkVTVRUjNwZz09PC9uczU6U2lnbmF0dXJlVmFsdWU+PC9uczU6U2lnbmF0dXJlPjwvbnM2OkhlYWRlcj48bnM2OkJvZHk+PG5zNzpDZXJ0aWZpY2F0ZUluc3RhbGxhdGlvblJlcz48bnM3OlJlc3BvbnNlQ29kZT5PSzwvbnM3OlJlc3BvbnNlQ29kZT48bnM3OlNBUHJvdmlzaW9uaW5nQ2VydGlmaWNhdGVDaGFpbj48bnM0OkNlcnRpZmljYXRlPk1JSUNJRENDQWNlZ0F3SUJBZ0lRWS9VdzFaVnVJRWp5NlBsNmZKTzN6REFLQmdncWhrak9QUVFEQWpCYU1Rc3dDUVlEVlFRR0V3SkVSVEVWTUJNR0ExVUVDaE1NU0hWaWFtVmpkQ0JIYldKSU1SOHdIUVlEVlFRREV4WlFjbTkySUZOMVlqSWdRMEVnVVVFZ1J6RXVNUzR4TVJNd0VRWUtDWkltaVpQeUxHUUJHUllEVmpKSE1CNFhEVEl5TURJd056SXpNREF3T1ZvWERUSXpNRFF5TmpBNE5EY3dNRm93VVRFTE1Ba0dBMVVFQmhNQ1JWVXhGVEFUQmdOVkJBb1RERWgxWW1wbFkzUWdSMjFpU0RFV01CUUdBMVVFQXhNTlExQlRJREl3TWpJdU1pQlJRVEVUTUJFR0NnbVNKb21UOGl4a0FSa1dBME5RVXpCWk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQktWMjkzTXZJaTJGZTdzSktVZ2NJbHVzdHV4NlZCYkZnZXdFbnlGWldIYlI0TUhVWVlRTUZsMEE4VzdMbkhmZW02MmxOT25JUmYyUzFtVUdzbXZoaTVLamVEQjJNQThHQTFVZEV3RUIvd1FGTUFNQkFRQXdFUVlEVlIwT0JBb0VDRTUvTDErV1lGUy9NQk1HQTFVZEl3UU1NQXFBQ0UvY0EzZ0tFcWdGTURzR0NDc0dBUVVGQndFQkJDOHdMVEFyQmdnckJnRUZCUWN3QVlZZmFIUjBjRG92TDI5amMzQXRjV0V1YUhWaWFtVmpkQzVqYjIwNk9EQTRNREFLQmdncWhrak9QUVFEQWdOSEFEQkVBaUJuWGtSMi9DU09uclFZcDNKVjZIbTJEajIxQjN1eFdVbG12eHp4QW1TaktRSWdZMjdnbGhHMU95UnpjTTlBNEdNZm5pVkVpYWNRR0hvcjJ5REFrbUh2NTBnPTwvbnM0OkNlcnRpZmljYXRlPjxuczQ6U3ViQ2VydGlmaWNhdGVzPjxuczQ6Q2VydGlmaWNhdGU+TUlJQ2hEQ0NBaXFnQXdJQkFnSVFhaUxJeExySFRUS1pwcEFGYkEwdGtUQUtCZ2dxaGtqT1BRUURBakJZTVFzd0NRWURWUVFHRXdKRVJURVZNQk1HQTFVRUNoTU1TSFZpYW1WamRDQkhiV0pJTVJNd0VRWUtDWkltaVpQeUxHUUJHUllEVmpKSE1SMHdHd1lEVlFRREV4UlFjbTkySUZOMVlqRWdRMEVnVVVFZ1J6RXVNVEFlRncweE9UQTFNREl3T0RFeU1UTmFGdzB5TXpBME1qWXdPRFEzTURCYU1Gb3hDekFKQmdOVkJBWVRBa1JGTVJVd0V3WURWUVFLRXd4SWRXSnFaV04wSUVkdFlrZ3hIekFkQmdOVkJBTVRGbEJ5YjNZZ1UzVmlNaUJEUVNCUlFTQkhNUzR4TGpFeEV6QVJCZ29Ka2lhSmsvSXNaQUVaRmdOV01rY3dXVEFUQmdjcWhrak9QUUlCQmdncWhrak9QUU1CQndOQ0FBUkpONUh3dTE1alFIQnFyUmk4RGVpaXR5d1ljSUV2aUIwdEFPSzY1czl3OUJtbGd6a2ljb2dlUmxKdVg3SFNoVGdNRkx5S1pMQkE5TnFWQUtqaTYwQTNvNEhUTUlIUU1CSUdBMVVkRXdFQi93UUlNQVlCQWY4Q0FRQXdFUVlEVlIwT0JBb0VDRS9jQTNnS0VxZ0ZNRVVHQTFVZElBUStNRHd3T2dZTUt3WUJCQUdDeERVQkFnRUFNQ293S0FZSUt3WUJCUVVIQWdFV0hHaDBkSEJ6T2k4dmQzZDNMbWgxWW1wbFkzUXVZMjl0TDNCcmFTOHdFd1lEVlIwakJBd3dDb0FJU1BpL0I5YWJicE13T3dZSUt3WUJCUVVIQVFFRUx6QXRNQ3NHQ0NzR0FRVUZCekFCaGg5b2RIUndPaTh2YjJOemNDMXhZUzVvZFdKcVpXTjBMbU52YlRvNE1EZ3dNQTRHQTFVZER3RUIvd1FFQXdJQkJqQUtCZ2dxaGtqT1BRUURBZ05JQURCRkFpRUF1cFRaMXh6SzhsS0xNdzR4Z1R1SEZZU0lZK1h5QVRXZVhxbGk3czFmTlJFQ0lIV041TWFoV1VaaENkaGpTckVNV0hsdGhqQUVZRW10NGpiS1AvVmwxNVZxPC9uczQ6Q2VydGlmaWNhdGU+PG5zNDpDZXJ0aWZpY2F0ZT5NSUlDZnpDQ0FpV2dBd0lCQWdJUU83c2ZnaUo3OFlxMDhxd0lOc2VaMkRBS0JnZ3Foa2pPUFFRREFqQlZNUXN3Q1FZRFZRUUdFd0pFUlRFVk1CTUdBMVVFQ2hNTVNIVmlhbVZqZENCSGJXSklNUk13RVFZS0NaSW1pWlB5TEdRQkdSWURWakpITVJvd0dBWURWUVFERXhGV01rY2dVbTl2ZENCRFFTQlJRU0JITVRBZUZ3MHhPVEEwTWpZd09EUTNNREJhRncweU16QTBNall3T0RRM01EQmFNRmd4Q3pBSkJnTlZCQVlUQWtSRk1SVXdFd1lEVlFRS0V3eElkV0pxWldOMElFZHRZa2d4RXpBUkJnb0praWFKay9Jc1pBRVpGZ05XTWtjeEhUQWJCZ05WQkFNVEZGQnliM1lnVTNWaU1TQkRRU0JSUVNCSE1TNHhNRmt3RXdZSEtvWkl6ajBDQVFZSUtvWkl6ajBEQVFjRFFnQUVWTVpaalNmWGJmTHJMUWV1YmJsN2dUaS8xSUlYeTRod0Nzb1c3MDEzTC9aRHpia1JRWkxVL0F5emI1Z2VwR1MyOUtUa1BJQVpLSmdPMDc2dEhiSlNncU9CMHpDQjBEQVNCZ05WSFJNQkFmOEVDREFHQVFIL0FnRUJNQkVHQTFVZERnUUtCQWhJK0w4SDFwdHVrekJGQmdOVkhTQUVQakE4TURvR0RDc0dBUVFCZ3NRMUFRSUJBREFxTUNnR0NDc0dBUVVGQndJQkZoeG9kSFJ3Y3pvdkwzZDNkeTVvZFdKcVpXTjBMbU52YlM5d2Eya3ZNQk1HQTFVZEl3UU1NQXFBQ0V0Ri80SWwvQkNXTURzR0NDc0dBUVVGQndFQkJDOHdMVEFyQmdnckJnRUZCUWN3QVlZZmFIUjBjRG92TDI5amMzQXRjV0V1YUhWaWFtVmpkQzVqYjIwNk9EQTRNREFPQmdOVkhROEJBZjhFQkFNQ0FRWXdDZ1lJS29aSXpqMEVBd0lEU0FBd1JRSWdPd1FXMEZFT3FKclpBRHIwcDhYL3RMakExT1BvWGc5bzY0Y3oySWMybWkwQ0lRQ29rRUtmNkh2TGxBZ1Y3Si9SVVp6NjBzWWtvditFMjFLTjhodDlETzRXL1E9PTwvbnM0OkNlcnRpZmljYXRlPjwvbnM0OlN1YkNlcnRpZmljYXRlcz48L25zNzpTQVByb3Zpc2lvbmluZ0NlcnRpZmljYXRlQ2hhaW4+PG5zNzpDb250cmFjdFNpZ25hdHVyZUNlcnRDaGFpbiBuczQ6SWQ9IklEMSI+PG5zNDpDZXJ0aWZpY2F0ZT5NSUlCN2pDQ0FaU2dBd0lCQWdJUVFpaGwvR1pmM1ZyakVidEQ4T2Z0QkRBS0JnZ3Foa2pPUFFRREFqQllNUXN3Q1FZRFZRUUdFd0pFUlRFVk1CTUdBMVVFQ2hNTVNIVmlhbVZqZENCSGJXSklNUjB3R3dZRFZRUURFeFJOVHlCVGRXSXlJRU5CSUZGQklFY3hMakV1TVRFVE1CRUdDZ21TSm9tVDhpeGtBUmtXQTFZeVJ6QWVGdzB5TWpBeU1EY3lNekUzTXpkYUZ3MHlNakV5TVRBeE1UUXlOVGxhTURFeEZUQVRCZ05WQkFvVERFaDFZbXBsWTNRZ1IyMWlTREVZTUJZR0ExVUVBeE1QUlUxUU9UbERVVUZVUlZOVU1EQXhNRmt3RXdZSEtvWkl6ajBDQVFZSUtvWkl6ajBEQVFjRFFnQUVEQjU5dzUzQnhMdU1CRERZVHpEcXBKTG9KcUlaRUpvWldsWXRpK245N2VySllEOEpIYUEwNjMwdXpnaHJObmpWYThzWktxQnY4WFg2VjlINkgrZ1lTNk5uTUdVd0VRWURWUjBPQkFvRUNFUEpSTkh2UFdOZE1CTUdBMVVkSXdRTU1BcUFDRWY2Zjl2ZXJPelZNRHNHQ0NzR0FRVUZCd0VCQkM4d0xUQXJCZ2dyQmdFRkJRY3dBWVlmYUhSMGNEb3ZMMjlqYzNBdGNXRXVhSFZpYW1WamRDNWpiMjA2T0RBNE1EQUtCZ2dxaGtqT1BRUURBZ05JQURCRkFpRUEzUzZEckYxdVRweVpXL2VGM1hQZXlrWDJMNnVibC8yZmlOdWpUNEVOWDFjQ0lGL0QvZnRpSGlJS2N1RExySFJWRnhwY1hlUWZROE5tVUhoVGh0TlpSRFJDPC9uczQ6Q2VydGlmaWNhdGU+PG5zNDpTdWJDZXJ0aWZpY2F0ZXM+PG5zNDpDZXJ0aWZpY2F0ZT5NSUlDZ0RDQ0FpYWdBd0lCQWdJUVYzeHM1eDFTWlVRelVhTTFCeFZ6TkRBS0JnZ3Foa2pPUFFRREFqQldNUXN3Q1FZRFZRUUdFd0pFUlRFVk1CTUdBMVVFQ2hNTVNIVmlhbVZqZENCSGJXSklNUk13RVFZS0NaSW1pWlB5TEdRQkdSWURWakpITVJzd0dRWURWUVFERXhKTlR5QlRkV0l4SUVOQklGRkJJRWN4TGpFd0hoY05NVGt3TlRBeU1EZ3dPVFF3V2hjTk1qa3dOVEF5TURnd09UUXdXakJZTVFzd0NRWURWUVFHRXdKRVJURVZNQk1HQTFVRUNoTU1TSFZpYW1WamRDQkhiV0pJTVIwd0d3WURWUVFERXhSTlR5QlRkV0l5SUVOQklGRkJJRWN4TGpFdU1URVRNQkVHQ2dtU0pvbVQ4aXhrQVJrV0ExWXlSekJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCS0o0YXNwTVBYcEF4MVpERk1MQVNIUHByb1U4QzdQTVV6WnQwZHh5TzMxOEtaQlhhS3NVSTBSZUUxYkFBT214eGVPSG5OczFraWlVUFdNNktLZzBmSHlqZ2RNd2dkQXdFZ1lEVlIwVEFRSC9CQWd3QmdFQi93SUJBREFSQmdOVkhRNEVDZ1FJUi9wLzI5NnM3TlV3UlFZRFZSMGdCRDR3UERBNkJnd3JCZ0VFQVlMRU5RRUNBUUF3S2pBb0JnZ3JCZ0VGQlFjQ0FSWWNhSFIwY0hNNkx5OTNkM2N1YUhWaWFtVmpkQzVqYjIwdmNHdHBMekFUQmdOVkhTTUVEREFLZ0FoSW5oWS92SGQwbWpBN0JnZ3JCZ0VGQlFjQkFRUXZNQzB3S3dZSUt3WUJCUVVITUFHR0gyaDBkSEE2THk5dlkzTndMWEZoTG1oMVltcGxZM1F1WTI5dE9qZ3dPREF3RGdZRFZSMFBBUUgvQkFRREFnRUdNQW9HQ0NxR1NNNDlCQU1DQTBnQU1FVUNJUUN5aDFuRUJYUUFRZUpiei82RksrdnpyNjJJRHUxa1pIT1NKZXhaUGdEaC9BSWdMdEFldDhjOXVYNzljM3NrRytobXY0ZXUvWlBIMXlyNDhmQVdxMnVLbDBFPTwvbnM0OkNlcnRpZmljYXRlPjxuczQ6Q2VydGlmaWNhdGU+TUlJQ2ZUQ0NBaU9nQXdJQkFnSVFXdC90cVZoSDI3VFdORFhEdnVjRWVqQUtCZ2dxaGtqT1BRUURBakJWTVFzd0NRWURWUVFHRXdKRVJURVZNQk1HQTFVRUNoTU1TSFZpYW1WamRDQkhiV0pJTVJNd0VRWUtDWkltaVpQeUxHUUJHUllEVmpKSE1Sb3dHQVlEVlFRREV4RldNa2NnVW05dmRDQkRRU0JSUVNCSE1UQWVGdzB4T1RBME1qWXdPVEEwTURGYUZ3MHpPVEEwTWpZd09UQTBNREZhTUZZeEN6QUpCZ05WQkFZVEFrUkZNUlV3RXdZRFZRUUtFd3hJZFdKcVpXTjBJRWR0WWtneEV6QVJCZ29Ka2lhSmsvSXNaQUVaRmdOV01rY3hHekFaQmdOVkJBTVRFazFQSUZOMVlqRWdRMEVnVVVFZ1J6RXVNVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCTkRNWGdCandDL2ZWSE5CaFFrWE1OSHpURW5KRE1KK0tROVNtMEwydVBNNmZBOE0yeWsyOWR2VHd6STZtTENSK3hvVm5aeTc1ejJpVUNrQnFTVFBWRGFqZ2RNd2dkQXdFZ1lEVlIwVEFRSC9CQWd3QmdFQi93SUJBVEFSQmdOVkhRNEVDZ1FJU0o0V1A3eDNkSm93UlFZRFZSMGdCRDR3UERBNkJnd3JCZ0VFQVlMRU5RRUNBUUF3S2pBb0JnZ3JCZ0VGQlFjQ0FSWWNhSFIwY0hNNkx5OTNkM2N1YUhWaWFtVmpkQzVqYjIwdmNHdHBMekFUQmdOVkhTTUVEREFLZ0FoTFJmK0NKZndRbGpBN0JnZ3JCZ0VGQlFjQkFRUXZNQzB3S3dZSUt3WUJCUVVITUFHR0gyaDBkSEE2THk5dlkzTndMWEZoTG1oMVltcGxZM1F1WTI5dE9qZ3dPREF3RGdZRFZSMFBBUUgvQkFRREFnRUdNQW9HQ0NxR1NNNDlCQU1DQTBnQU1FVUNJUUNYVzI2cFdKM0xaMkdUblFZWEVIQnFyUjJCTGV5bDFQRWJZZnpZSzNwQVZnSWdZRTFrWnpZeGo2dFFVanJGVjhzRCsxSjlZV2VWVTNkNC9rbVV2d01vVWRvPTwvbnM0OkNlcnRpZmljYXRlPjwvbnM0OlN1YkNlcnRpZmljYXRlcz48L25zNzpDb250cmFjdFNpZ25hdHVyZUNlcnRDaGFpbj48bnM3OkNvbnRyYWN0U2lnbmF0dXJlRW5jcnlwdGVkUHJpdmF0ZUtleSBuczQ6SWQ9IklEMiI+UEQ1L3Y4WjAwNXlpYW5IZWd4dnMydkUvdVJQT2pCYVA0YnloQVZ3eWo2QVBnNkJGT1pleENwQ2FjSFR4Z0VMcjwvbnM3OkNvbnRyYWN0U2lnbmF0dXJlRW5jcnlwdGVkUHJpdmF0ZUtleT48bnM3OkRIcHVibGlja2V5IG5zNDpJZD0iSUQzIj5CQy8vYmptWEZXaXNXQ3huSmVvQTJrTUJabUVIZng5aC9aS2xUTWhiSlV2bTZjZGMvV0J1S3dQbEM1cVZIbnhndUk1Um91VTU5ZmM5UDN5MnFVMFF1MGM9PC9uczc6REhwdWJsaWNrZXk+PG5zNzplTUFJRCBuczQ6SWQ9IklENCI+RU1QOTlDUUFURVNUMDAxPC9uczc6ZU1BSUQ+PC9uczc6Q2VydGlmaWNhdGVJbnN0YWxsYXRpb25SZXM+PC9uczY6Qm9keT48L25zNjpWMkdfTWVzc2FnZT4="
+          }
+        },
+        "properties": {
+          "emaid": {
+            "type": "string",
+            "description": "Contract identifier of contract certificate",
+            "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
+            "minLength": 14,
+            "maxLength": 15
+          },
+          "pcid": {
+            "type": "string",
+            "description": "PCID of regarding vehicle certificate",
+            "pattern": "^[a-zA-Z0-9]{17,18}$",
+            "minLength": 17,
+            "maxLength": 18
+          },
+          "signedData": {
+            "type": "string",
+            "description": "Format of certificationInstallationRes as defined in ISO 15118-2:2014 in XML encoded in Base64."
+          },
+          "metaData": {
+            "type": "string",
+            "description": "Placeholder for future adaption"
+          },
+          "xsdMsgDefNamespace": {
+            "type": "string",
+            "default": "urn:iso:15118:2:2013:MsgDef",
+            "description": "ISO Version"
+          },
+          "cpsRootCertificateId": {
+            "type": "string",
+            "description": "The UUID of the root CA which was used to sign this contract data (regarding CPS signing certificate)",
+            "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
+            "example": "896b6655-180e-4304-b642-606bb00df8f0"
+          },
+          "cpsRootDistinguishedName": {
+            "type": "string",
+            "description": "Reflects the subjects distinguished name of the used V2G Root PKI. (informative)",
+            "pattern": "^((CN|OU|O|C|DC|ST)=[^,]+,? ?)+$",
+            "example": "\"CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE\""
+          }
+        },
+        "required": [
+          "emaid",
+          "pcid",
+          "signedData",
+          "xsdMsgDefNamespace"
+        ]
+      },
+      "GenerateSignedContractDataRequest": {
+        "description": "",
+        "type": "object",
+        "title": "CPS generateSignedContractDataRequest (V1)",
+        "x-examples": {
+          "example": {
+            "contractBegins": "2021-05-11T00:00:00Z",
+            "contractEnds": "2022-12-10T11:42:59Z",
+            "pcid": "huboemprovcqa0615",
+            "emaid": "EMP99CQATest001",
+            "xsdMsgDefNamespace": "urn:iso:15118:2:2013:MsgDef"
+          }
+        },
+        "properties": {
+          "contractBegins": {
+            "type": "string",
+            "description": "Timestamp the contract will begin at.",
+            "x-constraint": "@ValidDateTime",
+            "x-constraint-message": "The contractBegins does not match the specification"
+          },
+          "contractEnds": {
+            "type": "string",
+            "description": "Timestamp until the contract is active.",
+            "x-constraint": "@ValidDateTime",
+            "x-constraint-message": "The contractEnds does not match the specification"
+          },
+          "emaid": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
+            "description": "contract identifier of contract certificate",
+            "minLength": 14,
+            "maxLength": 15
+          },
+          "pcid": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]{17,18}$",
+            "description": "PCID of vehicle certificate",
+            "minLength": 17,
+            "maxLength": 18
+          },
+          "xsdMsgDefNamespace": {
+            "type": "string",
+            "example": "urn:iso:15118:2:2013:MsgDef",
+            "x-constraint": "@ValidXsdMsgDefNamespace",
+            "default": "urn:iso:15118:2:2013:MsgDef",
+            "description": "ISO Version which shall be used for the signature"
+          },
+          "subscriptionUrl": {
+            "type": "string",
+            "example": "http://testmo.com/subscriptions/v2g",
+            "pattern": "^(https?|http)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]",
+            "description": "URL which could be given bei MO to allow extended information exchange for a given contract"
+          },
+          "cpsRootCertificateId": {
+            "type": "string",
+            "description": "The UUID of the desired root CA which shall be used to sign these data with the regarding CPS signing certificate. Its optional. If not given, the CPS will decide which CPS signing PKI will be used",
+            "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
+            "example": "896b6655-180e-4304-b642-606bb00df8f0"
+          },
+          "metaData": {
+            "type": "string",
+            "description": "Placeholder for future adaption"
+          }
+        },
+        "required": [
+          "contractBegins",
+          "contractEnds",
+          "emaid",
+          "pcid",
+          "xsdMsgDefNamespace"
+        ]
+      },
+      "cpsSigner-data": {
+        "description": "Signing Certificate Data structure",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "cpsDistinguishedName": "DC=CPS,CN=CPS 2022.2 QA,O=Hubject GmbH,C=EU",
+            "cpsCertificate": "MIICIDCCAcegAwIBAgIQY/Uw1ZVuIEjy6Pl6fJO3zDAKBggqhkjOPQQDAjBaMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMR8wHQYDVQQDExZQcm92IFN1YjIgQ0EgUUEgRzEuMS4xMRMwEQYKCZImiZPyLGQBGRYDVjJHMB4XDTIyMDIwNzIzMDAwOVoXDTIzMDQyNjA4NDcwMFowUTELMAkGA1UEBhMCRVUxFTATBgNVBAoTDEh1YmplY3QgR21iSDEWMBQGA1UEAxMNQ1BTIDIwMjIuMiBRQTETMBEGCgmSJomT8ixkARkWA0NQUzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKV293MvIi2Fe7sJKUgcIlustux6VBbFgewEnyFZWHbR4MHUYYQMFl0A8W7LnHfem62lNOnIRf2S1mUGsmvhi5KjeDB2MA8GA1UdEwEB/wQFMAMBAQAwEQYDVR0OBAoECE5/L1+WYFS/MBMGA1UdIwQMMAqACE/cA3gKEqgFMDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL29jc3AtcWEuaHViamVjdC5jb206ODA4MDAKBggqhkjOPQQDAgNHADBEAiBnXkR2/CSOnrQYp3JV6Hm2Dj21B3uxWUlmvxzxAmSjKQIgY27glhG1OyRzcM9A4GMfniVEiacQGHor2yDAkmHv50g=",
+            "validFrom": "2022-02-08T21:59:59Z",
+            "validTo": "2022-05-08T21:59:59Z",
+            "organizationName": "Hubject GmbH",
+            "cpsRootCertificateId": "e6c58da2-aeaf-438c-b484-40c3cca35e97",
+            "cpsRootDistinguishedName": "CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE",
+            "cpsCa2Certificate": "MIIChDCCAiqgAwIBAgIQaiLIxLrHTTKZppAFbA0tkTAKBggqhkjOPQQDAjBYMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMR0wGwYDVQQDExRQcm92IFN1YjEgQ0EgUUEgRzEuMTAeFw0xOTA1MDIwODEyMTNaFw0yMzA0MjYwODQ3MDBaMFoxCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxIdWJqZWN0IEdtYkgxHzAdBgNVBAMTFlByb3YgU3ViMiBDQSBRQSBHMS4xLjExEzARBgoJkiaJk/IsZAEZFgNWMkcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAARJN5Hwu15jQHBqrRi8DeiitywYcIEviB0tAOK65s9w9BmlgzkicogeRlJuX7HShTgMFLyKZLBA9NqVAKji60A3o4HTMIHQMBIGA1UdEwEB/wQIMAYBAf8CAQAwEQYDVR0OBAoECE/cA3gKEqgFMEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAISPi/B9abbpMwOwYIKwYBBQUHAQEELzAtMCsGCCsGAQUFBzABhh9odHRwOi8vb2NzcC1xYS5odWJqZWN0LmNvbTo4MDgwMA4GA1UdDwEB/wQEAwIBBjAKBggqhkjOPQQDAgNIADBFAiEAupTZ1xzK8lKLMw4xgTuHFYSIY+XyATWeXqli7s1fNRECIHWN5MahWUZhCdhjSrEMWHlthjAEYEmt4jbKP/Vl15Vq",
+            "cpsCa1Certificate": "MIICfzCCAiWgAwIBAgIQO7sfgiJ78Yq08qwINseZ2DAKBggqhkjOPQQDAjBVMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRowGAYDVQQDExFWMkcgUm9vdCBDQSBRQSBHMTAeFw0xOTA0MjYwODQ3MDBaFw0yMzA0MjYwODQ3MDBaMFgxCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxIdWJqZWN0IEdtYkgxEzARBgoJkiaJk/IsZAEZFgNWMkcxHTAbBgNVBAMTFFByb3YgU3ViMSBDQSBRQSBHMS4xMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEVMZZjSfXbfLrLQeubbl7gTi/1IIXy4hwCsoW7013L/ZDzbkRQZLU/Ayzb5gepGS29KTkPIAZKJgO076tHbJSgqOB0zCB0DASBgNVHRMBAf8ECDAGAQH/AgEBMBEGA1UdDgQKBAhI+L8H1ptukzBFBgNVHSAEPjA8MDoGDCsGAQQBgsQ1AQIBADAqMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5odWJqZWN0LmNvbS9wa2kvMBMGA1UdIwQMMAqACEtF/4Il/BCWMDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL29jc3AtcWEuaHViamVjdC5jb206ODA4MDAOBgNVHQ8BAf8EBAMCAQYwCgYIKoZIzj0EAwIDSAAwRQIgOwQW0FEOqJrZADr0p8X/tLjA1OPoXg9o64cz2Ic2mi0CIQCokEKf6HvLlAgV7J/RUZz60sYkov+E21KN8ht9DO4W/Q=="
+          }
+        },
+        "properties": {
+          "cpsDistinguishedName": {
+            "type": "string",
+            "minLength": 1,
+            "example": "DC=CPS,CN=CPS 2022.2 QA,O=Hubject GmbH,C=EU",
+            "description": "\nReflects the cps certificate distinguished name field. (informative)"
+          },
+          "cpsCertificate": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
+            "description": "Certificate Provisioning Certificate (CPS) in base64 encoded DER form"
+          },
+          "validFrom": {
+            "type": "string",
+            "description": "\nReflects the subjects not before date. (infotmative)",
+            "format": "date-time",
+            "example": "2022-02-08T21:59:59Z"
+          },
+          "validTo": {
+            "type": "string",
+            "description": "Reflects the subjects not after date. (infotmative)",
+            "example": "2022-02-08T21:59:59Z",
+            "format": "date-time"
+          },
+          "organizationName": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Hubject GmbH",
+            "description": "Reflects the subjects organization name value. (informative)"
+          },
+          "cpsRootCertificateId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
+            "example": "896b6655-180e-4304-b642-606bb00df8f0",
+            "description": "Id identifies the v2g root certificate registered in the Root Certificate Pool if available. If this field is not given, the CPS is a external CPS signer"
+          },
+          "cpsRootDistinguishedName": {
+            "type": "string",
+            "example": "CN=V2G Root CA G2, DC=V2G, O=Hubject GmbH, C=DE",
+            "pattern": "^((CN|OU|O|C|DC|ST)=[^,]+,? ?)+$",
+            "description": "Reflects the v2g root distinguished name field. (informative)"
+          },
+          "cpsSubCa1Certificate": {
+            "type": "string",
+            "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
+            "maxLength": 800,
+            "description": "Certificate Provisioning CA1 (CPS SUB CA1) in base64 encoded DER form"
+          },
+          "cpsSubCa2Certificate": {
+            "type": "string",
+            "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
+            "maxLength": 800,
+            "description": "Certificate Provisioning CA1 (CPS SUB CA2) in base64 encoded DER form. Is optional"
+          },
+          "xsdMsgDefNamespace": {
+            "type": "string",
+            "description": "ISO Version",
+            "example": "urn:iso:15118:2:2013:MsgDef"
+          }
+        },
+        "required": [
+          "cpsDistinguishedName",
+          "cpsCertificate",
+          "validFrom",
+          "validTo",
+          "organizationName",
+          "cpsRootDistinguishedName",
+          "cpsSubCa1Certificate",
+          "xsdMsgDefNamespace"
+        ]
+      },
+      "GetAllCpsSignerResponse": {
+        "title": "GetAllCpsSignerResponse",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "cpsCertificates": [
+              {
+                "cpsDistinguishedName": "DC=CPS,CN=CPS 2022.2 QA,O=Hubject GmbH,C=EU",
+                "cpsCertificate": "MIICIDCCAcegAwIBAgIQY/Uw1ZVuIEjy6Pl6fJO3zDAKBggqhkjOPQQDAjBaMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMR8wHQYDVQQDExZQcm92IFN1YjIgQ0EgUUEgRzEuMS4xMRMwEQYKCZImiZPyLGQBGRYDVjJHMB4XDTIyMDIwNzIzMDAwOVoXDTIzMDQyNjA4NDcwMFowUTELMAkGA1UEBhMCRVUxFTATBgNVBAoTDEh1YmplY3QgR21iSDEWMBQGA1UEAxMNQ1BTIDIwMjIuMiBRQTETMBEGCgmSJomT8ixkARkWA0NQUzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKV293MvIi2Fe7sJKUgcIlustux6VBbFgewEnyFZWHbR4MHUYYQMFl0A8W7LnHfem62lNOnIRf2S1mUGsmvhi5KjeDB2MA8GA1UdEwEB/wQFMAMBAQAwEQYDVR0OBAoECE5/L1+WYFS/MBMGA1UdIwQMMAqACE/cA3gKEqgFMDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL29jc3AtcWEuaHViamVjdC5jb206ODA4MDAKBggqhkjOPQQDAgNHADBEAiBnXkR2/CSOnrQYp3JV6Hm2Dj21B3uxWUlmvxzxAmSjKQIgY27glhG1OyRzcM9A4GMfniVEiacQGHor2yDAkmHv50g=",
+                "validFrom": "2022-02-08T21:59:59Z",
+                "validTo": "2022-05-08T21:59:59Z",
+                "organizationName": "Hubject GmbH",
+                "cpsRootCertificateId": "e6c58da2-aeaf-438c-b484-40c3cca35e97",
+                "cpsRootDistinguishedName": "CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE",
+                "cpsCa2Certificate": "MIIChDCCAiqgAwIBAgIQaiLIxLrHTTKZppAFbA0tkTAKBggqhkjOPQQDAjBYMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMR0wGwYDVQQDExRQcm92IFN1YjEgQ0EgUUEgRzEuMTAeFw0xOTA1MDIwODEyMTNaFw0yMzA0MjYwODQ3MDBaMFoxCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxIdWJqZWN0IEdtYkgxHzAdBgNVBAMTFlByb3YgU3ViMiBDQSBRQSBHMS4xLjExEzARBgoJkiaJk/IsZAEZFgNWMkcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAARJN5Hwu15jQHBqrRi8DeiitywYcIEviB0tAOK65s9w9BmlgzkicogeRlJuX7HShTgMFLyKZLBA9NqVAKji60A3o4HTMIHQMBIGA1UdEwEB/wQIMAYBAf8CAQAwEQYDVR0OBAoECE/cA3gKEqgFMEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAISPi/B9abbpMwOwYIKwYBBQUHAQEELzAtMCsGCCsGAQUFBzABhh9odHRwOi8vb2NzcC1xYS5odWJqZWN0LmNvbTo4MDgwMA4GA1UdDwEB/wQEAwIBBjAKBggqhkjOPQQDAgNIADBFAiEAupTZ1xzK8lKLMw4xgTuHFYSIY+XyATWeXqli7s1fNRECIHWN5MahWUZhCdhjSrEMWHlthjAEYEmt4jbKP/Vl15Vq",
+                "cpsCa1Certificate": "MIICfzCCAiWgAwIBAgIQO7sfgiJ78Yq08qwINseZ2DAKBggqhkjOPQQDAjBVMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRowGAYDVQQDExFWMkcgUm9vdCBDQSBRQSBHMTAeFw0xOTA0MjYwODQ3MDBaFw0yMzA0MjYwODQ3MDBaMFgxCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxIdWJqZWN0IEdtYkgxEzARBgoJkiaJk/IsZAEZFgNWMkcxHTAbBgNVBAMTFFByb3YgU3ViMSBDQSBRQSBHMS4xMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEVMZZjSfXbfLrLQeubbl7gTi/1IIXy4hwCsoW7013L/ZDzbkRQZLU/Ayzb5gepGS29KTkPIAZKJgO076tHbJSgqOB0zCB0DASBgNVHRMBAf8ECDAGAQH/AgEBMBEGA1UdDgQKBAhI+L8H1ptukzBFBgNVHSAEPjA8MDoGDCsGAQQBgsQ1AQIBADAqMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5odWJqZWN0LmNvbS9wa2kvMBMGA1UdIwQMMAqACEtF/4Il/BCWMDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL29jc3AtcWEuaHViamVjdC5jb206ODA4MDAOBgNVHQ8BAf8EBAMCAQYwCgYIKoZIzj0EAwIDSAAwRQIgOwQW0FEOqJrZADr0p8X/tLjA1OPoXg9o64cz2Ic2mi0CIQCokEKf6HvLlAgV7J/RUZz60sYkov+E21KN8ht9DO4W/Q=="
+              }
+            ]
+          }
+        },
+        "properties": {
+          "cpsCertificates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/cpsSigner-data"
+            }
+          }
+        }
+      },
+      "SignedContractDataRequest": {
+        "description": "",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "contractData": {
+              "contractSignatureCertChain": {
+                "contractSignatureCertChainCertificate": "MIIB7jCCAZSgAwIBAgIQQihl/GZf3VrjEbtD8OftBDAKBggqhkjOPQQDAjBYMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMR0wGwYDVQQDExRNTyBTdWIyIENBIFFBIEcxLjEuMTETMBEGCgmSJomT8ixkARkWA1YyRzAeFw0yMjAyMDcyMzE3MzdaFw0yMjEyMTAxMTQyNTlaMDExFTATBgNVBAoTDEh1YmplY3QgR21iSDEYMBYGA1UEAxMPRU1QOTlDUUFURVNUMDAxMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDB59w53BxLuMBDDYTzDqpJLoJqIZEJoZWlYti+n97erJYD8JHaA0630uzghrNnjVa8sZKqBv8XX6V9H6H+gYS6NnMGUwEQYDVR0OBAoECEPJRNHvPWNdMBMGA1UdIwQMMAqACEf6f9verOzVMDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL29jc3AtcWEuaHViamVjdC5jb206ODA4MDAKBggqhkjOPQQDAgNIADBFAiEA3S6DrF1uTpyZW/eF3XPeykX2L6ubl/2fiNujT4ENX1cCIF/D/ftiHiIKcuDLrHRVFxpcXeQfQ8NmUHhThtNZRDRC",
+                "contractSignatureCertChainSubCertificates": [
+                  "MIICgDCCAiagAwIBAgIQV3xs5x1SZUQzUaM1BxVzNDAKBggqhkjOPQQDAjBWMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRswGQYDVQQDExJNTyBTdWIxIENBIFFBIEcxLjEwHhcNMTkwNTAyMDgwOTQwWhcNMjkwNTAyMDgwOTQwWjBYMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMR0wGwYDVQQDExRNTyBTdWIyIENBIFFBIEcxLjEuMTETMBEGCgmSJomT8ixkARkWA1YyRzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKJ4aspMPXpAx1ZDFMLASHPproU8C7PMUzZt0dxyO318KZBXaKsUI0ReE1bAAOmxxeOHnNs1kiiUPWM6KKg0fHyjgdMwgdAwEgYDVR0TAQH/BAgwBgEB/wIBADARBgNVHQ4ECgQIR/p/296s7NUwRQYDVR0gBD4wPDA6BgwrBgEEAYLENQECAQAwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuaHViamVjdC5jb20vcGtpLzATBgNVHSMEDDAKgAhInhY/vHd0mjA7BggrBgEFBQcBAQQvMC0wKwYIKwYBBQUHMAGGH2h0dHA6Ly9vY3NwLXFhLmh1YmplY3QuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIQCyh1nEBXQAQeJbz/6FK+vzr62IDu1kZHOSJexZPgDh/AIgLtAet8c9uX79c3skG+hmv4eu/ZPH1yr48fAWq2uKl0E=",
+                  "MIICfTCCAiOgAwIBAgIQWt/tqVhH27TWNDXDvucEejAKBggqhkjOPQQDAjBVMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRowGAYDVQQDExFWMkcgUm9vdCBDQSBRQSBHMTAeFw0xOTA0MjYwOTA0MDFaFw0zOTA0MjYwOTA0MDFaMFYxCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxIdWJqZWN0IEdtYkgxEzARBgoJkiaJk/IsZAEZFgNWMkcxGzAZBgNVBAMTEk1PIFN1YjEgQ0EgUUEgRzEuMTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABNDMXgBjwC/fVHNBhQkXMNHzTEnJDMJ+KQ9Sm0L2uPM6fA8M2yk29dvTwzI6mLCR+xoVnZy75z2iUCkBqSTPVDajgdMwgdAwEgYDVR0TAQH/BAgwBgEB/wIBATARBgNVHQ4ECgQISJ4WP7x3dJowRQYDVR0gBD4wPDA6BgwrBgEEAYLENQECAQAwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuaHViamVjdC5jb20vcGtpLzATBgNVHSMEDDAKgAhLRf+CJfwQljA7BggrBgEFBQcBAQQvMC0wKwYIKwYBBQUHMAGGH2h0dHA6Ly9vY3NwLXFhLmh1YmplY3QuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIQCXW26pWJ3LZ2GTnQYXEHBqrR2BLeyl1PEbYfzYK3pAVgIgYE1kZzYxj6tQUjrFV8sD+1J9YWeVU3d4/kmUvwMoUdo="
+                ]
+              },
+              "contractSignatureEncryptedPrivateKey": "PD5/v8Z005yianHegxvs2vE/uRPOjBaP4byhAVwyj6APg6BFOZexCpCacHTxgELr",
+              "dHpublickey": "BC//bjmXFWisWCxnJeoA2kMBZmEHfx9h/ZKlTMhbJUvm6cdc/WBuKwPlC5qVHnxguI5RouU59fc9P3y2qU0Qu0c=",
+              "emaid": "EMP99CQATEST001"
+            },
+            "emaid": "EMP99CQATEST001",
+            "pcid": "huboemprovcqa0615",
+            "xsdMsgDefNamespace": "urn:iso:15118:2:2013:MsgDef"
+          }
+        },
+        "title": "Signed Contract Data Request",
+        "properties": {
+          "contractData": {
+            "$ref": "#/components/schemas/ContractData"
+          },
+          "pcid": {
+            "type": "string",
+            "description": "PCID of the Provisioning certificate",
+            "pattern": "^[a-zA-Z0-9]{17,18}$",
+            "minLength": 17,
+            "maxLength": 18
+          },
+          "xsdMsgDefNamespace": {
+            "type": "string",
+            "description": "ISO Version",
+            "example": "urn:iso:15118:2:2013:MsgDef"
+          },
+          "cpsRootCertificateId": {
+            "type": "string",
+            "description": "The UUID of the desired root CA which shall be used to sign these data with the regarding CPS signing certificate. Its optional. If not given, the CPS will decide which CPS signing PKI will be used",
+            "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
+            "example": "896b6655-180e-4304-b642-606bb00df8f0"
+          }
+        },
+        "required": [
+          "contractData",
+          "xsdMsgDefNamespace"
+        ]
+      },
+      "SignedContractDataResponse": {
+        "description": "",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "pcid": "huboemprovcqa0615",
+            "emaid": "EMP99CQATest001",
+            "xsdMsgDefNamespace": "urn:iso:15118:2:2013:MsgDef",
+            "signedData": "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxuczY6VjJHX01lc3NhZ2UgeG1sbnM6bnM2PSJ1cm46aXNvOjE1MTE4OjI6MjAxMzpNc2dEZWYiIHhtbG5zOm5zNT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyIgeG1sbnM6bnM3PSJ1cm46aXNvOjE1MTE4OjI6MjAxMzpNc2dCb2R5IiB4bWxuczpuczI9InVybjppc286MTUxMTg6MjoyMDEwOkFwcFByb3RvY29sIiB4bWxuczpuczQ9InVybjppc286MTUxMTg6MjoyMDEzOk1zZ0RhdGFUeXBlcyIgeG1sbnM6bnMzPSJ1cm46aXNvOjE1MTE4OjI6MjAxMzpNc2dIZWFkZXIiPjxuczY6SGVhZGVyPjxuczU6U2lnbmF0dXJlPjxuczU6U2lnbmVkSW5mbz48bnM1OkNhbm9uaWNhbGl6YXRpb25NZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy9UUi9jYW5vbmljYWwtZXhpLyIvPjxuczU6U2lnbmF0dXJlTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxkc2lnLW1vcmUjZWNkc2Etc2hhMjU2Ii8+PG5zNTpSZWZlcmVuY2UgVVJJPSIjSUQyIj48bnM1OlRyYW5zZm9ybXM+PG5zNTpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy9UUi9jYW5vbmljYWwtZXhpLyIvPjwvbnM1OlRyYW5zZm9ybXM+PG5zNTpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGVuYyNzaGEyNTYiLz48bnM1OkRpZ2VzdFZhbHVlPjIwQkdnS1A3SGE0cHNUcUlvcFh5N0hoRTd0SjJQeVBtVlJXR1JuenpuL3M9PC9uczU6RGlnZXN0VmFsdWU+PC9uczU6UmVmZXJlbmNlPjxuczU6UmVmZXJlbmNlIFVSST0iI0lEMSI+PG5zNTpUcmFuc2Zvcm1zPjxuczU6VHJhbnNmb3JtIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvVFIvY2Fub25pY2FsLWV4aS8iLz48L25zNTpUcmFuc2Zvcm1zPjxuczU6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PG5zNTpEaWdlc3RWYWx1ZT4yOWtVeUppWVBkM1AwaW16TEFGRFdPQXdFWU9pNExRalF0SlZyb1pJZ0pjPTwvbnM1OkRpZ2VzdFZhbHVlPjwvbnM1OlJlZmVyZW5jZT48bnM1OlJlZmVyZW5jZSBVUkk9IiNJRDQiPjxuczU6VHJhbnNmb3Jtcz48bnM1OlRyYW5zZm9ybSBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnL1RSL2Nhbm9uaWNhbC1leGkvIi8+PC9uczU6VHJhbnNmb3Jtcz48bnM1OkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxuczU6RGlnZXN0VmFsdWU+QUdPT3V3NjA3QkhSL01hS3B3QUFzb3pYQXpFZUpicEFraFpGY1krUU9kMD08L25zNTpEaWdlc3RWYWx1ZT48L25zNTpSZWZlcmVuY2U+PG5zNTpSZWZlcmVuY2UgVVJJPSIjSUQzIj48bnM1OlRyYW5zZm9ybXM+PG5zNTpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy9UUi9jYW5vbmljYWwtZXhpLyIvPjwvbnM1OlRyYW5zZm9ybXM+PG5zNTpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGVuYyNzaGEyNTYiLz48bnM1OkRpZ2VzdFZhbHVlPmJjcWxvUy9ONDBqMnE2WHViYWFMdlB2dDc0L25kTXRSOWRLNjR0d0kwNXM9PC9uczU6RGlnZXN0VmFsdWU+PC9uczU6UmVmZXJlbmNlPjwvbnM1OlNpZ25lZEluZm8+PG5zNTpTaWduYXR1cmVWYWx1ZT5DWlNocEpHRW9TM2dZcUpGS1QyNk5BNjUzY0NXQWIyOWI4QWc1c3lMTG9vOVMxMFp5cDAxTVJWZ055RXgrbUZ3THBNcXRHYTlBeVNKVnJkVTVRUjNwZz09PC9uczU6U2lnbmF0dXJlVmFsdWU+PC9uczU6U2lnbmF0dXJlPjwvbnM2OkhlYWRlcj48bnM2OkJvZHk+PG5zNzpDZXJ0aWZpY2F0ZUluc3RhbGxhdGlvblJlcz48bnM3OlJlc3BvbnNlQ29kZT5PSzwvbnM3OlJlc3BvbnNlQ29kZT48bnM3OlNBUHJvdmlzaW9uaW5nQ2VydGlmaWNhdGVDaGFpbj48bnM0OkNlcnRpZmljYXRlPk1JSUNJRENDQWNlZ0F3SUJBZ0lRWS9VdzFaVnVJRWp5NlBsNmZKTzN6REFLQmdncWhrak9QUVFEQWpCYU1Rc3dDUVlEVlFRR0V3SkVSVEVWTUJNR0ExVUVDaE1NU0hWaWFtVmpkQ0JIYldKSU1SOHdIUVlEVlFRREV4WlFjbTkySUZOMVlqSWdRMEVnVVVFZ1J6RXVNUzR4TVJNd0VRWUtDWkltaVpQeUxHUUJHUllEVmpKSE1CNFhEVEl5TURJd056SXpNREF3T1ZvWERUSXpNRFF5TmpBNE5EY3dNRm93VVRFTE1Ba0dBMVVFQmhNQ1JWVXhGVEFUQmdOVkJBb1RERWgxWW1wbFkzUWdSMjFpU0RFV01CUUdBMVVFQXhNTlExQlRJREl3TWpJdU1pQlJRVEVUTUJFR0NnbVNKb21UOGl4a0FSa1dBME5RVXpCWk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQktWMjkzTXZJaTJGZTdzSktVZ2NJbHVzdHV4NlZCYkZnZXdFbnlGWldIYlI0TUhVWVlRTUZsMEE4VzdMbkhmZW02MmxOT25JUmYyUzFtVUdzbXZoaTVLamVEQjJNQThHQTFVZEV3RUIvd1FGTUFNQkFRQXdFUVlEVlIwT0JBb0VDRTUvTDErV1lGUy9NQk1HQTFVZEl3UU1NQXFBQ0UvY0EzZ0tFcWdGTURzR0NDc0dBUVVGQndFQkJDOHdMVEFyQmdnckJnRUZCUWN3QVlZZmFIUjBjRG92TDI5amMzQXRjV0V1YUhWaWFtVmpkQzVqYjIwNk9EQTRNREFLQmdncWhrak9QUVFEQWdOSEFEQkVBaUJuWGtSMi9DU09uclFZcDNKVjZIbTJEajIxQjN1eFdVbG12eHp4QW1TaktRSWdZMjdnbGhHMU95UnpjTTlBNEdNZm5pVkVpYWNRR0hvcjJ5REFrbUh2NTBnPTwvbnM0OkNlcnRpZmljYXRlPjxuczQ6U3ViQ2VydGlmaWNhdGVzPjxuczQ6Q2VydGlmaWNhdGU+TUlJQ2hEQ0NBaXFnQXdJQkFnSVFhaUxJeExySFRUS1pwcEFGYkEwdGtUQUtCZ2dxaGtqT1BRUURBakJZTVFzd0NRWURWUVFHRXdKRVJURVZNQk1HQTFVRUNoTU1TSFZpYW1WamRDQkhiV0pJTVJNd0VRWUtDWkltaVpQeUxHUUJHUllEVmpKSE1SMHdHd1lEVlFRREV4UlFjbTkySUZOMVlqRWdRMEVnVVVFZ1J6RXVNVEFlRncweE9UQTFNREl3T0RFeU1UTmFGdzB5TXpBME1qWXdPRFEzTURCYU1Gb3hDekFKQmdOVkJBWVRBa1JGTVJVd0V3WURWUVFLRXd4SWRXSnFaV04wSUVkdFlrZ3hIekFkQmdOVkJBTVRGbEJ5YjNZZ1UzVmlNaUJEUVNCUlFTQkhNUzR4TGpFeEV6QVJCZ29Ka2lhSmsvSXNaQUVaRmdOV01rY3dXVEFUQmdjcWhrak9QUUlCQmdncWhrak9QUU1CQndOQ0FBUkpONUh3dTE1alFIQnFyUmk4RGVpaXR5d1ljSUV2aUIwdEFPSzY1czl3OUJtbGd6a2ljb2dlUmxKdVg3SFNoVGdNRkx5S1pMQkE5TnFWQUtqaTYwQTNvNEhUTUlIUU1CSUdBMVVkRXdFQi93UUlNQVlCQWY4Q0FRQXdFUVlEVlIwT0JBb0VDRS9jQTNnS0VxZ0ZNRVVHQTFVZElBUStNRHd3T2dZTUt3WUJCQUdDeERVQkFnRUFNQ293S0FZSUt3WUJCUVVIQWdFV0hHaDBkSEJ6T2k4dmQzZDNMbWgxWW1wbFkzUXVZMjl0TDNCcmFTOHdFd1lEVlIwakJBd3dDb0FJU1BpL0I5YWJicE13T3dZSUt3WUJCUVVIQVFFRUx6QXRNQ3NHQ0NzR0FRVUZCekFCaGg5b2RIUndPaTh2YjJOemNDMXhZUzVvZFdKcVpXTjBMbU52YlRvNE1EZ3dNQTRHQTFVZER3RUIvd1FFQXdJQkJqQUtCZ2dxaGtqT1BRUURBZ05JQURCRkFpRUF1cFRaMXh6SzhsS0xNdzR4Z1R1SEZZU0lZK1h5QVRXZVhxbGk3czFmTlJFQ0lIV041TWFoV1VaaENkaGpTckVNV0hsdGhqQUVZRW10NGpiS1AvVmwxNVZxPC9uczQ6Q2VydGlmaWNhdGU+PG5zNDpDZXJ0aWZpY2F0ZT5NSUlDZnpDQ0FpV2dBd0lCQWdJUU83c2ZnaUo3OFlxMDhxd0lOc2VaMkRBS0JnZ3Foa2pPUFFRREFqQlZNUXN3Q1FZRFZRUUdFd0pFUlRFVk1CTUdBMVVFQ2hNTVNIVmlhbVZqZENCSGJXSklNUk13RVFZS0NaSW1pWlB5TEdRQkdSWURWakpITVJvd0dBWURWUVFERXhGV01rY2dVbTl2ZENCRFFTQlJRU0JITVRBZUZ3MHhPVEEwTWpZd09EUTNNREJhRncweU16QTBNall3T0RRM01EQmFNRmd4Q3pBSkJnTlZCQVlUQWtSRk1SVXdFd1lEVlFRS0V3eElkV0pxWldOMElFZHRZa2d4RXpBUkJnb0praWFKay9Jc1pBRVpGZ05XTWtjeEhUQWJCZ05WQkFNVEZGQnliM1lnVTNWaU1TQkRRU0JSUVNCSE1TNHhNRmt3RXdZSEtvWkl6ajBDQVFZSUtvWkl6ajBEQVFjRFFnQUVWTVpaalNmWGJmTHJMUWV1YmJsN2dUaS8xSUlYeTRod0Nzb1c3MDEzTC9aRHpia1JRWkxVL0F5emI1Z2VwR1MyOUtUa1BJQVpLSmdPMDc2dEhiSlNncU9CMHpDQjBEQVNCZ05WSFJNQkFmOEVDREFHQVFIL0FnRUJNQkVHQTFVZERnUUtCQWhJK0w4SDFwdHVrekJGQmdOVkhTQUVQakE4TURvR0RDc0dBUVFCZ3NRMUFRSUJBREFxTUNnR0NDc0dBUVVGQndJQkZoeG9kSFJ3Y3pvdkwzZDNkeTVvZFdKcVpXTjBMbU52YlM5d2Eya3ZNQk1HQTFVZEl3UU1NQXFBQ0V0Ri80SWwvQkNXTURzR0NDc0dBUVVGQndFQkJDOHdMVEFyQmdnckJnRUZCUWN3QVlZZmFIUjBjRG92TDI5amMzQXRjV0V1YUhWaWFtVmpkQzVqYjIwNk9EQTRNREFPQmdOVkhROEJBZjhFQkFNQ0FRWXdDZ1lJS29aSXpqMEVBd0lEU0FBd1JRSWdPd1FXMEZFT3FKclpBRHIwcDhYL3RMakExT1BvWGc5bzY0Y3oySWMybWkwQ0lRQ29rRUtmNkh2TGxBZ1Y3Si9SVVp6NjBzWWtvditFMjFLTjhodDlETzRXL1E9PTwvbnM0OkNlcnRpZmljYXRlPjwvbnM0OlN1YkNlcnRpZmljYXRlcz48L25zNzpTQVByb3Zpc2lvbmluZ0NlcnRpZmljYXRlQ2hhaW4+PG5zNzpDb250cmFjdFNpZ25hdHVyZUNlcnRDaGFpbiBuczQ6SWQ9IklEMSI+PG5zNDpDZXJ0aWZpY2F0ZT5NSUlCN2pDQ0FaU2dBd0lCQWdJUVFpaGwvR1pmM1ZyakVidEQ4T2Z0QkRBS0JnZ3Foa2pPUFFRREFqQllNUXN3Q1FZRFZRUUdFd0pFUlRFVk1CTUdBMVVFQ2hNTVNIVmlhbVZqZENCSGJXSklNUjB3R3dZRFZRUURFeFJOVHlCVGRXSXlJRU5CSUZGQklFY3hMakV1TVRFVE1CRUdDZ21TSm9tVDhpeGtBUmtXQTFZeVJ6QWVGdzB5TWpBeU1EY3lNekUzTXpkYUZ3MHlNakV5TVRBeE1UUXlOVGxhTURFeEZUQVRCZ05WQkFvVERFaDFZbXBsWTNRZ1IyMWlTREVZTUJZR0ExVUVBeE1QUlUxUU9UbERVVUZVUlZOVU1EQXhNRmt3RXdZSEtvWkl6ajBDQVFZSUtvWkl6ajBEQVFjRFFnQUVEQjU5dzUzQnhMdU1CRERZVHpEcXBKTG9KcUlaRUpvWldsWXRpK245N2VySllEOEpIYUEwNjMwdXpnaHJObmpWYThzWktxQnY4WFg2VjlINkgrZ1lTNk5uTUdVd0VRWURWUjBPQkFvRUNFUEpSTkh2UFdOZE1CTUdBMVVkSXdRTU1BcUFDRWY2Zjl2ZXJPelZNRHNHQ0NzR0FRVUZCd0VCQkM4d0xUQXJCZ2dyQmdFRkJRY3dBWVlmYUhSMGNEb3ZMMjlqYzNBdGNXRXVhSFZpYW1WamRDNWpiMjA2T0RBNE1EQUtCZ2dxaGtqT1BRUURBZ05JQURCRkFpRUEzUzZEckYxdVRweVpXL2VGM1hQZXlrWDJMNnVibC8yZmlOdWpUNEVOWDFjQ0lGL0QvZnRpSGlJS2N1RExySFJWRnhwY1hlUWZROE5tVUhoVGh0TlpSRFJDPC9uczQ6Q2VydGlmaWNhdGU+PG5zNDpTdWJDZXJ0aWZpY2F0ZXM+PG5zNDpDZXJ0aWZpY2F0ZT5NSUlDZ0RDQ0FpYWdBd0lCQWdJUVYzeHM1eDFTWlVRelVhTTFCeFZ6TkRBS0JnZ3Foa2pPUFFRREFqQldNUXN3Q1FZRFZRUUdFd0pFUlRFVk1CTUdBMVVFQ2hNTVNIVmlhbVZqZENCSGJXSklNUk13RVFZS0NaSW1pWlB5TEdRQkdSWURWakpITVJzd0dRWURWUVFERXhKTlR5QlRkV0l4SUVOQklGRkJJRWN4TGpFd0hoY05NVGt3TlRBeU1EZ3dPVFF3V2hjTk1qa3dOVEF5TURnd09UUXdXakJZTVFzd0NRWURWUVFHRXdKRVJURVZNQk1HQTFVRUNoTU1TSFZpYW1WamRDQkhiV0pJTVIwd0d3WURWUVFERXhSTlR5QlRkV0l5SUVOQklGRkJJRWN4TGpFdU1URVRNQkVHQ2dtU0pvbVQ4aXhrQVJrV0ExWXlSekJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCS0o0YXNwTVBYcEF4MVpERk1MQVNIUHByb1U4QzdQTVV6WnQwZHh5TzMxOEtaQlhhS3NVSTBSZUUxYkFBT214eGVPSG5OczFraWlVUFdNNktLZzBmSHlqZ2RNd2dkQXdFZ1lEVlIwVEFRSC9CQWd3QmdFQi93SUJBREFSQmdOVkhRNEVDZ1FJUi9wLzI5NnM3TlV3UlFZRFZSMGdCRDR3UERBNkJnd3JCZ0VFQVlMRU5RRUNBUUF3S2pBb0JnZ3JCZ0VGQlFjQ0FSWWNhSFIwY0hNNkx5OTNkM2N1YUhWaWFtVmpkQzVqYjIwdmNHdHBMekFUQmdOVkhTTUVEREFLZ0FoSW5oWS92SGQwbWpBN0JnZ3JCZ0VGQlFjQkFRUXZNQzB3S3dZSUt3WUJCUVVITUFHR0gyaDBkSEE2THk5dlkzTndMWEZoTG1oMVltcGxZM1F1WTI5dE9qZ3dPREF3RGdZRFZSMFBBUUgvQkFRREFnRUdNQW9HQ0NxR1NNNDlCQU1DQTBnQU1FVUNJUUN5aDFuRUJYUUFRZUpiei82RksrdnpyNjJJRHUxa1pIT1NKZXhaUGdEaC9BSWdMdEFldDhjOXVYNzljM3NrRytobXY0ZXUvWlBIMXlyNDhmQVdxMnVLbDBFPTwvbnM0OkNlcnRpZmljYXRlPjxuczQ6Q2VydGlmaWNhdGU+TUlJQ2ZUQ0NBaU9nQXdJQkFnSVFXdC90cVZoSDI3VFdORFhEdnVjRWVqQUtCZ2dxaGtqT1BRUURBakJWTVFzd0NRWURWUVFHRXdKRVJURVZNQk1HQTFVRUNoTU1TSFZpYW1WamRDQkhiV0pJTVJNd0VRWUtDWkltaVpQeUxHUUJHUllEVmpKSE1Sb3dHQVlEVlFRREV4RldNa2NnVW05dmRDQkRRU0JSUVNCSE1UQWVGdzB4T1RBME1qWXdPVEEwTURGYUZ3MHpPVEEwTWpZd09UQTBNREZhTUZZeEN6QUpCZ05WQkFZVEFrUkZNUlV3RXdZRFZRUUtFd3hJZFdKcVpXTjBJRWR0WWtneEV6QVJCZ29Ka2lhSmsvSXNaQUVaRmdOV01rY3hHekFaQmdOVkJBTVRFazFQSUZOMVlqRWdRMEVnVVVFZ1J6RXVNVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCTkRNWGdCandDL2ZWSE5CaFFrWE1OSHpURW5KRE1KK0tROVNtMEwydVBNNmZBOE0yeWsyOWR2VHd6STZtTENSK3hvVm5aeTc1ejJpVUNrQnFTVFBWRGFqZ2RNd2dkQXdFZ1lEVlIwVEFRSC9CQWd3QmdFQi93SUJBVEFSQmdOVkhRNEVDZ1FJU0o0V1A3eDNkSm93UlFZRFZSMGdCRDR3UERBNkJnd3JCZ0VFQVlMRU5RRUNBUUF3S2pBb0JnZ3JCZ0VGQlFjQ0FSWWNhSFIwY0hNNkx5OTNkM2N1YUhWaWFtVmpkQzVqYjIwdmNHdHBMekFUQmdOVkhTTUVEREFLZ0FoTFJmK0NKZndRbGpBN0JnZ3JCZ0VGQlFjQkFRUXZNQzB3S3dZSUt3WUJCUVVITUFHR0gyaDBkSEE2THk5dlkzTndMWEZoTG1oMVltcGxZM1F1WTI5dE9qZ3dPREF3RGdZRFZSMFBBUUgvQkFRREFnRUdNQW9HQ0NxR1NNNDlCQU1DQTBnQU1FVUNJUUNYVzI2cFdKM0xaMkdUblFZWEVIQnFyUjJCTGV5bDFQRWJZZnpZSzNwQVZnSWdZRTFrWnpZeGo2dFFVanJGVjhzRCsxSjlZV2VWVTNkNC9rbVV2d01vVWRvPTwvbnM0OkNlcnRpZmljYXRlPjwvbnM0OlN1YkNlcnRpZmljYXRlcz48L25zNzpDb250cmFjdFNpZ25hdHVyZUNlcnRDaGFpbj48bnM3OkNvbnRyYWN0U2lnbmF0dXJlRW5jcnlwdGVkUHJpdmF0ZUtleSBuczQ6SWQ9IklEMiI+UEQ1L3Y4WjAwNXlpYW5IZWd4dnMydkUvdVJQT2pCYVA0YnloQVZ3eWo2QVBnNkJGT1pleENwQ2FjSFR4Z0VMcjwvbnM3OkNvbnRyYWN0U2lnbmF0dXJlRW5jcnlwdGVkUHJpdmF0ZUtleT48bnM3OkRIcHVibGlja2V5IG5zNDpJZD0iSUQzIj5CQy8vYmptWEZXaXNXQ3huSmVvQTJrTUJabUVIZng5aC9aS2xUTWhiSlV2bTZjZGMvV0J1S3dQbEM1cVZIbnhndUk1Um91VTU5ZmM5UDN5MnFVMFF1MGM9PC9uczc6REhwdWJsaWNrZXk+PG5zNzplTUFJRCBuczQ6SWQ9IklENCI+RU1QOTlDUUFURVNUMDAxPC9uczc6ZU1BSUQ+PC9uczc6Q2VydGlmaWNhdGVJbnN0YWxsYXRpb25SZXM+PC9uczY6Qm9keT48L25zNjpWMkdfTWVzc2FnZT4="
+          }
+        },
+        "properties": {
+          "pcid": {
+            "type": "string",
+            "description": "PCID of the Provisioning certificate, if null - no pcid was provided",
+            "pattern": "^[a-zA-Z0-9]{17,18}$",
+            "minLength": 17,
+            "maxLength": 18,
+            "nullable": true
+          },
+          "emaid": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
+            "description": "contract identifier of contract certificate",
+            "minLength": 14,
+            "maxLength": 15
+          },
+          "xsdMsgDefNamespace": {
+            "type": "string",
+            "minLength": 0,
+            "pattern": "urn:iso:15118:2:2013:MsgDef",
+            "description": "ISO Version"
+          },
+          "signedData": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Format of certificationInstallationRes as defined in ISO 15118-2:2014 in XML encoded in Base64."
+          },
+          "cpsRootCertificateId": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
+            "example": "896b6655-180e-4304-b642-606bb00df8f0",
+            "description": "Id identifies the v2g root certificate registered in the Root Certificate Pool if available. If this field is not given, the CPS is a external CPS signer"
+          },
+          "cpsRootDistinguishedName": {
+            "type": "string",
+            "pattern": "^((CN|OU|O|C|DC|ST)=[^,]+,? ?)+$",
+            "example": "CN=V2G Root CA G2, DC=V2G, O=Hubject GmbH, C=DE",
+            "description": "Reflects the v2g root distinguished name field. (informative)"
+          },
+          "metaData": {
+            "type": "string",
+            "description": "Placeholder for future adaption"
+          }
+        },
+        "required": [
+          "emaid",
+          "xsdMsgDefNamespace",
+          "signedData",
+          "cpsRootDistinguishedName"
+        ]
+      },
+      "ContractData": {
+        "description": "Contract Data consisting of the contract certificate and its chain not including the MO Root CA itself. Furthermore the encrypted contract private key and the DH Public Key as descirbed in the ISO 15118 is included ",
+        "type": "object",
+        "x-examples": {
+          "example-1": {
+            "contractCertificate": "MIIB7jCCAZSgAwIBAgIQQihl/GZf3VrjEbtD8OftBDAKBggqhkjOPQQDAjBYMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMR0wGwYDVQQDExRNTyBTdWIyIENBIFFBIEcxLjEuMTETMBEGCgmSJomT8ixkARkWA1YyRzAeFw0yMjAyMDcyMzE3MzdaFw0yMjEyMTAxMTQyNTlaMDExFTATBgNVBAoTDEh1YmplY3QgR21iSDEYMBYGA1UEAxMPRU1QOTlDUUFURVNUMDAxMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDB59w53BxLuMBDDYTzDqpJLoJqIZEJoZWlYti+n97erJYD8JHaA0630uzghrNnjVa8sZKqBv8XX6V9H6H+gYS6NnMGUwEQYDVR0OBAoECEPJRNHvPWNdMBMGA1UdIwQMMAqACEf6f9verOzVMDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL29jc3AtcWEuaHViamVjdC5jb206ODA4MDAKBggqhkjOPQQDAgNIADBFAiEA3S6DrF1uTpyZW/eF3XPeykX2L6ubl/2fiNujT4ENX1cCIF/D/ftiHiIKcuDLrHRVFxpcXeQfQ8NmUHhThtNZRDRC",
+            "contractSubCa2Certificate": "MIICgDCCAiagAwIBAgIQV3xs5x1SZUQzUaM1BxVzNDAKBggqhkjOPQQDAjBWMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRswGQYDVQQDExJNTyBTdWIxIENBIFFBIEcxLjEwHhcNMTkwNTAyMDgwOTQwWhcNMjkwNTAyMDgwOTQwWjBYMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMR0wGwYDVQQDExRNTyBTdWIyIENBIFFBIEcxLjEuMTETMBEGCgmSJomT8ixkARkWA1YyRzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABKJ4aspMPXpAx1ZDFMLASHPproU8C7PMUzZt0dxyO318KZBXaKsUI0ReE1bAAOmxxeOHnNs1kiiUPWM6KKg0fHyjgdMwgdAwEgYDVR0TAQH/BAgwBgEB/wIBADARBgNVHQ4ECgQIR/p/296s7NUwRQYDVR0gBD4wPDA6BgwrBgEEAYLENQECAQAwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuaHViamVjdC5jb20vcGtpLzATBgNVHSMEDDAKgAhInhY/vHd0mjA7BggrBgEFBQcBAQQvMC0wKwYIKwYBBQUHMAGGH2h0dHA6Ly9vY3NwLXFhLmh1YmplY3QuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIQCyh1nEBXQAQeJbz/6FK+vzr62IDu1kZHOSJexZPgDh/AIgLtAet8c9uX79c3skG+hmv4eu/ZPH1yr48fAWq2uKl0E=",
+            "contractSubCa1Certificate": "MIICfTCCAiOgAwIBAgIQWt/tqVhH27TWNDXDvucEejAKBggqhkjOPQQDAjBVMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRowGAYDVQQDExFWMkcgUm9vdCBDQSBRQSBHMTAeFw0xOTA0MjYwOTA0MDFaFw0zOTA0MjYwOTA0MDFaMFYxCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxIdWJqZWN0IEdtYkgxEzARBgoJkiaJk/IsZAEZFgNWMkcxGzAZBgNVBAMTEk1PIFN1YjEgQ0EgUUEgRzEuMTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABNDMXgBjwC/fVHNBhQkXMNHzTEnJDMJ+KQ9Sm0L2uPM6fA8M2yk29dvTwzI6mLCR+xoVnZy75z2iUCkBqSTPVDajgdMwgdAwEgYDVR0TAQH/BAgwBgEB/wIBATARBgNVHQ4ECgQISJ4WP7x3dJowRQYDVR0gBD4wPDA6BgwrBgEEAYLENQECAQAwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuaHViamVjdC5jb20vcGtpLzATBgNVHSMEDDAKgAhLRf+CJfwQljA7BggrBgEFBQcBAQQvMC0wKwYIKwYBBQUHMAGGH2h0dHA6Ly9vY3NwLXFhLmh1YmplY3QuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIQCXW26pWJ3LZ2GTnQYXEHBqrR2BLeyl1PEbYfzYK3pAVgIgYE1kZzYxj6tQUjrFV8sD+1J9YWeVU3d4/kmUvwMoUdo=",
+            "contractSignatureEncryptedPrivateKey": "PD5/v8Z005yianHegxvs2vE/uRPOjBaP4byhAVwyj6APg6BFOZexCpCacHTxgELr",
+            "dHpublickey": "BC//bjmXFWisWCxnJeoA2kMBZmEHfx9h/ZKlTMhbJUvm6cdc/WBuKwPlC5qVHnxguI5RouU59fc9P3y2qU0Qu0c="
+          }
+        },
+        "title": "Contract Data",
+        "properties": {
+          "contractCertificate": {
+            "type": "string",
+            "description": "Contract Certificate in base64 encoded DER form",
+            "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
+            "maxLength": 800
+          },
+          "contractSubCa2Certificate": {
+            "type": "string",
+            "description": "Contract Certificate SUB CA 2 in base64 encoded DER form",
+            "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
+            "maxLength": 800
+          },
+          "contractSubCa1Certificate": {
+            "type": "string",
+            "description": "Contract Certificate SUB CA 1 in base64 encoded DER form",
+            "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
+            "maxLength": 800
+          },
+          "contractSignatureEncryptedPrivateKey": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Encryted contract certificate private key"
+          },
+          "dHpublickey": {
+            "type": "string",
+            "minLength": 1,
+            "description": "DH Public Key as defined in the ISO15118"
+          }
+        },
+        "required": [
+          "contractCertificate",
+          "contractSubCa1Certificate",
+          "contractSignatureEncryptedPrivateKey",
+          "dHpublickey"
+        ]
+      },
+      "Error": {
+        "title": "Error",
+        "type": "object",
+        "properties": {
+          "errorMessages": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "traceId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    }
+  }
+}

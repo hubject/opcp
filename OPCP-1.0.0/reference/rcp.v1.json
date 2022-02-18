@@ -1,0 +1,560 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "RCP Interface Description",
+    "version": "1.1",
+    "description": "All stakeholders participating at the ecosystem can use these interfaces for receiving root certificates of other participants.\n\nThis service provides the following interfaces:\n * Get all Root Certificates\n * Get Root Certificate\n * Add Root Certificate (Admin)\n * Delete Root Certificate (Admin)\n\n\n### Clients\n\nThe following client roles and systems access the RCP:\n\n  * Hubject PnC Ecosystem\n  * OEMs\n  * MOs\n  * CPOs\n  * PE-CA\n",
+    "contact": {
+      "name": "Hubject GmbH",
+      "url": "https://hubject.com",
+      "email": "support@pnc.hubject.com"
+    },
+    "termsOfService": "https://www.hubject.com/pki/",
+    "license": {
+      "name": "Attribution-ShareAlike 4.0 International",
+      "url": "http://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  "servers": [],
+  "paths": {
+    "/v1/root/rootCerts/{rootCertificateId}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "rootCertificateId",
+          "in": "path",
+          "required": true,
+          "description": "The internal ID of the certificate in the RCP"
+        }
+      ],
+      "get": {
+        "summary": "getRootCert",
+        "tags": [
+          "root-certificate-pool-controller",
+          "CPO",
+          "MO",
+          "OEM"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRootCertResponseV1"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "RootResponse": {
+                        "rootCertificateId": "b1b86334-7c74-4ccc-b78d-d4f773d3b559",
+                        "distinguishedName": "CN=V2G Root CA G2, DC=V2G, O=Hubject GmbH, C=DE",
+                        "caCertificate": "MIICTTCCAfOgAwIBAgIQALu7vBrEWtLf5bHYc8NchDAKBggqhkjOPQQDAjBSMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRcwFQYDVQQDEw5WMkcgUm9vdCBDQSBHMjAgFw0xOTAxMTAxMjU0MjZaGA8yMDU5MDEwOTE5MDAwMFowUjELMAkGA1UEBhMCREUxFTATBgNVBAoTDEh1YmplY3QgR21iSDETMBEGCgmSJomT8ixkARkWA1YyRzEXMBUGA1UEAxMOVjJHIFJvb3QgQ0EgRzIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQI+uelZzJzESGTP2ZkDfA+W0+7O9y0a8gVl0nZnS0Ko5H71VG2aacoUc+GHRWmXhXiutfDwauh4MtMp32zj5/Ro4GoMIGlMBMGA1UdJQQMMAoGCCsGAQUFBwMJMA8GA1UdEwEB/wQFMAMBAf8wEQYDVR0OBAoECEW4QJ7hOPi/MEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAIRbhAnuE4+L8wDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIAQlk+aOKUGJk7KoZs2ASAYv1D0w/BqN9Dpg82X0bFb8AiEAi1dL21fLl/wbYs7LYYzpi4ELaXBzZxy4tAVwBy9pia4=",
+                        "commonName": "V2G Root CA G2",
+                        "rootAuthorityKeyIdentifier": "RbhAnuE4+L8=",
+                        "rootIssuerSerialNumber": "bbbbbc1ac45ad2dfe5b1d873c35c84",
+                        "validFrom": "2019-01-10T12:54:26Z",
+                        "validTo": "2059-01-09T19:00:00Z",
+                        "organizationName": "Hubject GmbH",
+                        "rootType": "V2G",
+                        "fingerprint": "a76ae4c5d00e06a967554511865bfa89e79590e8a61b5a71f9ce22e039d6c370"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./cps.v1.json#/components/schemas/Error"
+                },
+                "examples": {
+                  "ROOT NOT FOUND": {
+                    "value": {
+                      "errorMessages": [
+                        "Root certificate with the given ID is not found"
+                      ],
+                      "traceId": "c52fe6ad-1e39-4f6e-a0d0-e2d51aacf09f"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "description": "The getRootCert method can be used with the unique ID (UID) of a root certificate in the pool. The UID of each root certificate can be retreived through get all endpoint.",
+        "operationId": "getRootCert",
+        "security": [
+          {
+            "All_roles": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "deleteRootCa",
+        "operationId": "delete-v1-root-rootCerts-rootCertificateId",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "Admin": []
+          }
+        ],
+        "description": "This method is used by the Ecosystem Operator to delete Root CAs from the Root Certificate Pool. This should not be used by other parties than the Root pool operator to prevent possible wrong usage.\nAlso 2 Factor authorization in the organization shall be considered\n\n<!-- theme: warning -->\n\n> A successful delete operation triggers events to all ecosystem users and informs about the deleletion of this Root CA. Existing OEM-Prov Certs or MO-Contract Certs which rely on this root CA, might not any more usable."
+      }
+    },
+    "/v1/root/rootCerts": {
+      "get": {
+        "summary": "getAllRootCerts",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllRootCertsResponseV1"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "RootCertificateCollection": {
+                        "rootCertificates": [
+                          {
+                            "rootCertificateId": "b1b86334-7c74-4ccc-b78d-d4f773d3b559",
+                            "distinguishedName": "CN=V2G Root CA G2, DC=V2G, O=Hubject GmbH, C=DE",
+                            "caCertificate": "MIICTTCCAfOgAwIBAgIQALu7vBrEWtLf5bHYc8NchDAKBggqhkjOPQQDAjBSMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRcwFQYDVQQDEw5WMkcgUm9vdCBDQSBHMjAgFw0xOTAxMTAxMjU0MjZaGA8yMDU5MDEwOTE5MDAwMFowUjELMAkGA1UEBhMCREUxFTATBgNVBAoTDEh1YmplY3QgR21iSDETMBEGCgmSJomT8ixkARkWA1YyRzEXMBUGA1UEAxMOVjJHIFJvb3QgQ0EgRzIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQI+uelZzJzESGTP2ZkDfA+W0+7O9y0a8gVl0nZnS0Ko5H71VG2aacoUc+GHRWmXhXiutfDwauh4MtMp32zj5/Ro4GoMIGlMBMGA1UdJQQMMAoGCCsGAQUFBwMJMA8GA1UdEwEB/wQFMAMBAf8wEQYDVR0OBAoECEW4QJ7hOPi/MEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAIRbhAnuE4+L8wDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIAQlk+aOKUGJk7KoZs2ASAYv1D0w/BqN9Dpg82X0bFb8AiEAi1dL21fLl/wbYs7LYYzpi4ELaXBzZxy4tAVwBy9pia4=",
+                            "commonName": "V2G Root CA G2",
+                            "rootAuthorityKeyIdentifier": "RbhAnuE4+L8=",
+                            "rootIssuerSerialNumber": "bbbbbc1ac45ad2dfe5b1d873c35c84",
+                            "validFrom": "2019-01-10T12:54:26Z",
+                            "validTo": "2059-01-09T19:00:00Z",
+                            "organizationName": "Hubject GmbH",
+                            "rootType": "V2G",
+                            "fingerprint": "a76ae4c5d00e06a967554511865bfa89e79590e8a61b5a71f9ce22e039d6c370"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "description": "For using getAllRootCert interface, no input is necessary. The Interface returns a list of all trusted root certificates available in this zone of the Ecosystem.",
+        "operationId": "getAllRootCerts",
+        "security": [
+          {
+            "All_roles": []
+          }
+        ],
+        "tags": [
+          "root-certificate-pool-controller",
+          "CPO",
+          "MO",
+          "OEM"
+        ]
+      },
+      "put": {
+        "summary": "saveRootCa",
+        "operationId": "put-v1-root-rootCerts",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Expects a Root Certificate Object and the Root Type.\nThis Function should not be called by other parties than the Root Certificate Pool operator to prevent possible wrong usage. Each Root CA in a Plug&Charge Ecosystem must be audited/checked upfront. All parties of the Plug&Charge Ecosystem need to relay on this audits of the different PKI Operators or consumers.\nA 2 Factor authorization in the organization shall be considered to add a Root CA into the RCP",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "",
+                "type": "object",
+                "x-examples": {
+                  "example-1": {
+                    "caCertificate": "MIICZzCCAg6gAwIBAgIBAzAKBggqhkjOPQQDAjCBiTEcMBoGA1UEAwwTUG5DLU9FTS1Sb290Q0EtMjAyMTETMBEGA1UECAwKUHJvZHVjdGlvbjETMBEGCgmSJomT8ixkARkWA1YyRzEeMBwGA1UECwwVUGx1ZyZDaGFyZ2VQS0ktUm9vdENBMRIwEAYDVQQKDAlCTVcgR3JvdXAxCzAJBgNVBAYTAkRFMCAXDTcwMDEwMTAwMDEwMFoYDzk5OTkxMjMxMjM1OTAwWjCBiTEcMBoGA1UEAwwTUG5DLU9FTS1Sb290Q0EtMjAyMTETMBEGA1UECAwKUHJvZHVjdGlvbjETMBEGCgmSJomT8ixkARkWA1YyRzEeMBwGA1UECwwVUGx1ZyZDaGFyZ2VQS0ktUm9vdENBMRIwEAYDVQQKDAlCTVcgR3JvdXAxCzAJBgNVBAYTAkRFMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEwXKLlHGk2Jrs7HBSguqJcv+BR4wg1oDOxvHLWITpDkNij8LbdqnRZpXG5Mk5vm9IbZO83p6nhiMsGrQmDiipT6NjMGEwHQYDVR0OBBYEFBLSlPOxUFRgMlC0aABJ1eyy1lwyMB8GA1UdIwQYMBaAFBLSlPOxUFRgMlC0aABJ1eyy1lwyMA4GA1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MAoGCCqGSM49BAMCA0cAMEQCIF1juxH/4AqqfulSZ7H8o3kQLYst2EroP6FdkAg8KS9cAiA8ZYLhAnrCu0HH5fyUuZ/O29WYcX447vyiypA9YiuqNw==",
+                    "rootType": "OEM"
+                  }
+                },
+                "properties": {
+                  "caCertificate": {
+                    "type": "string",
+                    "example": "MIICTTCCAfOgAwIBAgIQALu7vBrEWtLf5bHYc8NchDAKBggqhkjOPQQDAjBSMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRcwFQYDVQQDEw5WMkcgUm9vdCBDQSBHMjAgFw0xOTAxMTAxMjU0MjZaGA8yMDU5MDEwOTE5MDAwMFowUjELMAkGA1UEBhMCREUxFTATBgNVBAoTDEh1YmplY3QgR21iSDETMBEGCgmSJomT8ixkARkWA1YyRzEXMBUGA1UEAxMOVjJHIFJvb3QgQ0EgRzIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQI+uelZzJzESGTP2ZkDfA+W0+7O9y0a8gVl0nZnS0Ko5H71VG2aacoUc+GHRWmXhXiutfDwauh4MtMp32zj5/Ro4GoMIGlMBMGA1UdJQQMMAoGCCsGAQUFBwMJMA8GA1UdEwEB/wQFMAMBAf8wEQYDVR0OBAoECEW4QJ7hOPi/MEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAIRbhAnuE4+L8wDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIAQlk+aOKUGJk7KoZs2ASAYv1D0w/BqN9Dpg82X0bFb8AiEAi1dL21fLl/wbYs7LYYzpi4ELaXBzZxy4tAVwBy9pia4=",
+                    "maxLength": 800
+                  },
+                  "rootType": {
+                    "type": "string",
+                    "minLength": 2,
+                    "enum": [
+                      "MO",
+                      "V2G",
+                      "OEM",
+                      "PE"
+                    ],
+                    "maxLength": 3
+                  }
+                },
+                "required": [
+                  "caCertificate",
+                  "rootType"
+                ]
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "caCertificate": "MIICTTCCAfOgAwIBAgIQALu7vBrEWtLf5bHYc8NchDAKBggqhkjOPQQDAjBSMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRcwFQYDVQQDEw5WMkcgUm9vdCBDQSBHMjAgFw0xOTAxMTAxMjU0MjZaGA8yMDU5MDEwOTE5MDAwMFowUjELMAkGA1UEBhMCREUxFTATBgNVBAoTDEh1YmplY3QgR21iSDETMBEGCgmSJomT8ixkARkWA1YyRzEXMBUGA1UEAxMOVjJHIFJvb3QgQ0EgRzIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQI+uelZzJzESGTP2ZkDfA+W0+7O9y0a8gVl0nZnS0Ko5H71VG2aacoUc+GHRWmXhXiutfDwauh4MtMp32zj5/Ro4GoMIGlMBMGA1UdJQQMMAoGCCsGAQUFBwMJMA8GA1UdEwEB/wQFMAMBAf8wEQYDVR0OBAoECEW4QJ7hOPi/MEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAIRbhAnuE4+L8wDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIAQlk+aOKUGJk7KoZs2ASAYv1D0w/BqN9Dpg82X0bFb8AiEAi1dL21fLl/wbYs7LYYzpi4ELaXBzZxy4tAVwBy9pia4=",
+                    "rootType": "V2G"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Expects a V2G Root CA and the Root Type\n\n"
+        },
+        "security": [
+          {
+            "Admin": []
+          }
+        ]
+      }
+    },
+    "/v1/root/ctl": {
+      "get": {
+        "summary": "GetCertificateTrustList",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "signerCertificate": {
+                      "type": "string"
+                    },
+                    "timeStamp": {
+                      "type": "string"
+                    },
+                    "CTL": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "examples": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "get-v1-root-ctl",
+        "description": "Retrieves Certificate Trust List (CTL) object from a file or a DER-encoded byte array which is signed by a trusted party.\nAs this CTLs in the V2G contect are not yet defined, this method shall serve as a starting point to download CTLs in the future.",
+        "security": [
+          {
+            "All_roles": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            }
+          },
+          "description": "The exact body needs to be aligned by the stakeholders in market.\nThe trusted party which sets the signature for a CTL is still not defined."
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GetAllRootCertsResponseV1": {
+        "type": "object",
+        "title": "GetAllRootCertsResponseV1",
+        "description": "",
+        "x-examples": {},
+        "properties": {
+          "RootCertificateCollection": {
+            "type": "object",
+            "properties": {
+              "rootCertificates": {
+                "type": "array",
+                "description": "A list of root certificate objects.",
+                "items": {
+                  "$ref": "#/components/schemas/RootCertV1"
+                }
+              }
+            }
+          }
+        }
+      },
+      "GetRootCertResponseV1": {
+        "type": "object",
+        "title": "GetRootCertResponseV1",
+        "properties": {
+          "RootResponse": {
+            "$ref": "#/components/schemas/RootCertV1"
+          }
+        },
+        "x-examples": {
+          "example-1": {
+            "RootResponse": {
+              "rootCertificateId": "896b6655-180e-4304-b642-606bb00df8f0",
+              "distinguishedName": "DC=V2G, CN=V2G_ROOT_CA_001, O=V2G",
+              "caCertificate": "MIICWTCCA…",
+              "commonName": "V2G_ROOT_CA_001",
+              "rootAuthorityKeyIdentifier": "string",
+              "rootIssuerSerialNumber": "78d23d19f35b4e8819ebcd5e43091a48",
+              "validFrom": "2017-12-07T14:08:30Z",
+              "validTo": "2057-12-07T14:08:30Z",
+              "organizationName": "V2G",
+              "certificateRevocationList": "string",
+              "crossCertificatePair": "string",
+              "labeledUri": "string"
+            }
+          }
+        }
+      },
+      "RootCertV1": {
+        "type": "object",
+        "title": "Root Cert (V1)",
+        "description": "Object containing a root certificate registered in the Root Certificate Pool.\n\nFields marked with _informative_ are for information purpose only. Any certificate-based validations should refer to the certificates signed values instead of relying these fields.",
+        "x-examples": {},
+        "minProperties": 1,
+        "maxProperties": 1,
+        "properties": {
+          "rootCertificateId": {
+            "type": "string",
+            "description": "The UUID of each root certificate is generated by thy system when the root certificate gets registered. It can be used to request an individual certificate using the REST API.",
+            "format": "uuid",
+            "example": "896b6655-180e-4304-b642-606bb00df8f0",
+            "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$"
+          },
+          "distinguishedName": {
+            "type": "string",
+            "example": "CN=V2G Root CA G2, DC=V2G, O=Hubject GmbH, C=DE",
+            "pattern": "^((CN|OU|O|C|DC|ST)=[^,]+,? ?)+$",
+            "description": "Reflects the subjects distinguished name field. (informative)"
+          },
+          "rootType": {
+            "type": "string",
+            "enum": [
+              "MO",
+              "V2G",
+              "OEM",
+              "PE"
+            ]
+          },
+          "caCertificate": {
+            "type": "string",
+            "example": "MIICWTCCA…",
+            "pattern": "^[-A-Za-z0-9+/]+={0,3}$",
+            "description": "The root certificate in DER format encoded in Base64.",
+            "maxLength": 800
+          },
+          "commonName": {
+            "type": "string",
+            "description": "Reflects the subjects common name value. (informative)",
+            "example": "V2G_ROOT_CA_001"
+          },
+          "rootAuthorityKeyIdentifier": {
+            "type": "string",
+            "description": "SHA-1 hash of the certificates public key (informative)"
+          },
+          "rootIssuerSerialNumber": {
+            "type": "string",
+            "description": "serial number in hex format of the certificate (informative)",
+            "example": "78d23d19f35b4e8819ebcd5e43091a48"
+          },
+          "validFrom": {
+            "type": "string",
+            "description": "Reflects the subjects not before date. (infotmative)",
+            "format": "date-time",
+            "example": "2017-12-07T14:08:30Z"
+          },
+          "validTo": {
+            "type": "string",
+            "description": "Reflects the subjects not after date. (infotmative)",
+            "format": "date-time",
+            "example": "2057-12-07T14:08:30Z"
+          },
+          "organizationName": {
+            "type": "string",
+            "description": "Reflects the subjects organization name value. (informative)",
+            "example": "Hubject GmbH"
+          },
+          "certificateRevocationList": {
+            "type": "string",
+            "description": ""
+          },
+          "crossCertificatePair": {
+            "type": "string"
+          },
+          "labeledUri": {
+            "type": "string",
+            "description": "RFC 2079 labeledURI"
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "SHA256 certificate fingerprint (informative)"
+          }
+        },
+        "required": [
+          "rootType",
+          "caCertificate"
+        ]
+      },
+      "Error": {
+        "title": "Error",
+        "type": "object",
+        "properties": {
+          "errorMessages": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "traceId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "All_roles": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "",
+            "tokenUrl": "",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        },
+        "description": "OAuth2 is used to grant access to the endpoint. "
+      },
+      "Admin": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "",
+            "tokenUrl": "",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        },
+        "description": "OAuth2 is used to grant access to the endpoint. "
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "RCP",
+      "description": "Root Certificate Pool"
+    },
+    {
+      "name": "root-certificate-pool-controller",
+      "description": "internal identifier"
+    },
+    {
+      "name": "CPO",
+      "description": "Charge Point Operator"
+    },
+    {
+      "name": "MO",
+      "description": "Mobility Operator"
+    },
+    {
+      "name": "OEM",
+      "description": "Electric Vehicle Manufacturer"
+    },
+    {
+      "name": "root-certificate-pool-controller-v-2",
+      "description": "internal identifier"
+    }
+  ]
+}

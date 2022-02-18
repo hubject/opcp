@@ -1,0 +1,1156 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CCP Interface Description",
+    "version": "1.0",
+    "description": "The interfaces of the Contract Certificate Pool (CCP) are used to request the provisioning of Contract Data. It accepts Contract Data signed by a CPS. Optionally the data can be forwarded to the CCP directly by the CPS. \n\nThis service provides the following interfaces:\n * Get Signed Contract Data\n * Provide Signed Contract Data\n * Delete Signed Contract Data\n * Get Contracts for PCID\n * Lookup Contract\n * Define Contract as Default for Offline installation\n * Add Signed Contract Data\n\n\n\n\n### Clients\n\nThe CCP communicates with the following actors and services:\n\n * The _Mobility Operator_ calls the CCP API actively to send Signed Contract Data.\n * The _Contract Provisioning Service_ forwards Signed Contract Data to the CCP.\n * The _CPO_ both send CertificateInstallationRequests to receive \nCertificateInstallationResponses\n * The _OEM_ request CertificateInstallationRequests via PCID and EMAID to receive \nCertificateInstallationResponses\n * OCSP Responders of the Contract Certificates\n * Root Certificate Pool\n ",
+    "contact": {
+      "name": "Hubject GmbH",
+      "url": "https://hubject.com",
+      "email": "support@pnc.hubject.com"
+    },
+    "termsOfService": "https://www.hubject.com/pki/",
+    "license": {
+      "name": "Attribution-ShareAlike 4.0 International",
+      "url": "http://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  "servers": [],
+  "tags": [
+    {
+      "name": "MO",
+      "description": "API relevant for Mobility Operators"
+    },
+    {
+      "name": "OEM",
+      "description": "API relevant for EV OEMs"
+    },
+    {
+      "name": "CPO",
+      "description": "API relevant for CPOs"
+    },
+    {
+      "name": "contract-certificate-pool-controller",
+      "description": "internal identifier"
+    }
+  ],
+  "paths": {
+    "/v1/ccp/signedContractData": {
+      "post": {
+        "summary": "Get Signed Contract Data",
+        "operationId": "getSignedContractData",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSignedContractDataResponse"
+                },
+                "examples": {
+                  "Positive Response": {
+                    "value": {
+                      "CCPResponse": {
+                        "emaidContent": [
+                          {
+                            "messageDef": {
+                              "metaData": "string",
+                              "certificateInstallationRes": "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",
+                              "emaid": "EMP99CQAPAB004"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "negativeResponse as Exi Resposne": {
+                    "value": {
+                      "CCPResponse": {
+                        "emaidContent": [
+                          {
+                            "messageDef": {
+                              "certificateInstallationRes": "string",
+                              "emaid": "stringstringst",
+                              "metaData": "string"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Invalid EXI": {
+                    "value": {
+                      "errorMessages": [
+                        "EXI format is invalid!"
+                      ],
+                      "traceId": "f61bc043-9697-436f-8df6-3274f0befb1d"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "",
+                  "type": "object",
+                  "x-examples": {
+                    "example-1": {
+                      "CCPResponse": {
+                        "emaidContent": [
+                          {
+                            "messageDef": {
+                              "certificateInstallationRes": "gJgCCo9xtdUEfZHBAMIagnkDGyuToktzm6MLY2EDm6MLo6uYhhggEAJAIAQDMACAADMACAADMAGYAA=="
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "properties": {
+                    "CCPResponse": {
+                      "type": "object",
+                      "required": [
+                        "emaidContent"
+                      ],
+                      "properties": {
+                        "emaidContent": {
+                          "type": "array",
+                          "uniqueItems": true,
+                          "minItems": 1,
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "messageDef": {
+                                "type": "object",
+                                "properties": {
+                                  "certificateInstallationRes": {
+                                    "type": "string",
+                                    "minLength": 0
+                                  }
+                                },
+                                "required": [
+                                  "certificateInstallationRes"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "CCPResponse"
+                  ]
+                },
+                "examples": {
+                  "No Contract available - non ISO": {
+                    "value": {
+                      "errorMessages": [
+                        "Contract or Vehicle not found."
+                      ],
+                      "traceId": "bf57de9c-5dbb-485c-92cb-d11a76b1a02d"
+                    }
+                  },
+                  "No Contract available - ISO Complaint": {
+                    "value": {
+                      "CCPResponse": {
+                        "emaidContent": [
+                          {
+                            "messageDef": {
+                              "certificateInstallationRes": "gJgCCo9xtdUEfZHBAMIagnkDGyuToktzm6MLY2EDm6MLo6uYhhggEAJAIAQDMACAADMACAADMAGYAA=="
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "tags": [
+          "contract-certificate-pool-controller"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetSignedContractDataRequest"
+              },
+              "examples": {
+                "example-1": {
+                  "value": {
+                    "certificateInstallationReq": "gJgCGn8CYlRaMiyKiVodHRwOi8vd3d3LnczLm9yZy9UUi9jYW5vbmljYWwtZXhpL0NWh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI2VjZHNhLXNoYTI1NkQMRpKIYgStDo6OB0Xl7u7u5c7mZc3uTOXqikXsbC3N7c0sbC2FrK8NJekKWh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NkIK1O8wnKt6efDvR3pWICxd2kyZCJ3HKES2caSyC8P/zcEoFttSN5Az4wTstUXDZ5vwfSGBKkVj1g+vp0KOLkA2vgwM4k0rY/HW9tL8x9Y+dMDTKHfdBJAI00UjXhZYXfMmPsgUCpKIYnKCGEEBMJhBAQNQAYEAgQEIL1sZfbZuX+Jj15/wPo234xgFAwQVQyRnHoIBgRgtmIWYBIMBqoIDCYEiIpiKmAmDAaqCBQmGJDqxNTKxuhAjtrEkGImYCIMFBMkTRMn5FjIAjIsBqxkjmJAYDwMBqoIBiYunoqaQKbqxGRAhoJAqIqmqECOYlxkXGJgPC4aYnJgcmBsZGRkcmBgtC4aZGZgcmBsZGRkcmBgtGEDOmIWYBIMBqoIDCYEiIpiKGAkDAaqCBQmFtDqxNTKxuhcxt7aYhhgFAwGqggWJgag3IZiNmAyDAaqCAYmJNDqxNTKxuje4Mrc4NzGYGBgYmIeYBoMBqoIDiYMhMrk2NLcYlZgUgwSVQyRDe4aAhICLDjm6uDg3uToXNLm3mJqYmJwgNDqxNTKxuhcxt7aYh5gGgwGqggQJgyEyuTY0txgsmAmDA5VDJGcegQCDBBVDJGcegYCDgaEAAgle+htOjOdXUdNATiXAv/4SaKZn7pWxediFwMl6jsI/x8O/fmCDSIs1Y44F+VtmVzwlKN1atjRU0W6xL8Qqf2tRtJgzmAiDAaqOhwIFAgQl8akl5lNkq5gJgwGqjpGCBhgFQAQmhWKJKeVONhgegwQVgwCCgoOAgIIYmBeYFoMEFYMAgoKDmADDELQ6OjgdF5e3sbm4FroyuboXNDqxNTKxuhcxt7adHBgcGBgFAwQVQyRnHoIBgQGkgBgjARCAT3eCr3a0Cu0fHtRMn+ymNWfoQ1MCWv+d7B+caD5ZeveBEIBM1rweYaknIv8EoOI17bFtpsUY5egER1DAnCWuj2CVW4C1EQz1WMkcsQz1ERSxPPVJJU0UgVjJHIFByb2plY3QsQ049VjJHUm9vdENBC5YBAA=",
+                    "xsdMsgDefNamespace": "urn:iso:15118:2:2013:MsgDef"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "This interface delivers signed contract data to CPO backend. The CPO is sending the `certificateInstallationReqest` created by the vehicle to the CCP. The CCP will reply with a `certificateInstallationResponse` to be forwarded to the vehicle.\n\n> #### CPS Signer \n> The CCP will send regarding the provided V2G Roots installed in the EV (certificateInstallationReqest) the regarding signed contract data back as certificateInstallationResponse ",
+        "security": [
+          {
+            "CPO": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "boolean",
+              "example": "true",
+              "default": "true"
+            },
+            "in": "header",
+            "name": "alwaysReturnEXI",
+            "description": "To receive a ISO15118 response even for error cases, set this parameter to true "
+          }
+        ]
+      },
+      "parameters": [],
+      "put": {
+        "summary": "Add Signed Contract Data to CCP",
+        "operationId": "addSignedContractData",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContractCertificate"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "description": "This interface can be used by a CPS to send signed contract data to the Contract Certificate Pool. It is stored there to be provided to the OEM and CPO backend.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignedContractDataRequest"
+              }
+            }
+          }
+        },
+        "tags": [
+          "contract-certificate-pool-controller"
+        ],
+        "security": [
+          {
+            "CPS": []
+          }
+        ]
+      }
+    },
+    "/v1/ccp/signedContractData/{emaid}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
+            "minLength": 14,
+            "maxLength": 15
+          },
+          "name": "emaid",
+          "in": "path",
+          "required": true,
+          "description": "Contract identifier of contract certificate"
+        }
+      ],
+      "delete": {
+        "summary": "Delete Signed Contract Data",
+        "operationId": "deleteSignedContractData",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Invalid EMAID": {
+                    "value": {
+                      "errorMessages": [
+                        "emaid : must match \"^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$\""
+                      ],
+                      "traceId": "a079010e-4766-4f4a-9f4c-ccd0f0ddae1e"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "EMAID not found": {
+                    "value": {
+                      "errorMessages": [
+                        "The contract for the given EMAID not found."
+                      ],
+                      "traceId": "bc81a20d-e517-4b5d-b6d7-e6d1888a9662"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "tags": [
+          "MO",
+          "contract-certificate-pool-controller"
+        ],
+        "description": "The deletion of signed contract data from the CCP can be used to de-publish it by the MO. A revoked or expired contract certificate will be cleaned from the pool automatically. See the section [Data Cleansing in the CCP description](#contract-certificate-pool).\n\nThe PCP calls this method when a Provisioning Certificate has been deleted. See `DELETE /oem/provCerts/{pcid}` for more details.\n\n\n### Data validation steps\n\nThe Contract Certificate Pool performs the following validation steps before deleting signed contract data.\n\n| Target                   | Check                        |             \n|--------------------------|----------------------------- |\n| Authorization            | Sender must be allowed to delete contract data for the given EMAID. |\n| Request Parameter        | The EMAID must be provided.                                \n| Request Parameter        | The EMAID must match the specification                     |\n| Request Parameter        | The EMAID must reference an existing contract data package.  |\n\n\n## Automatic revocation\n\n<!-- theme: warning -->\n\n> If the Contract Certificate has been issued by a Operator-operated MO CA, the certificate will be revoked automatically. This functionality can be turned of by setting the `X-Skip-Revocation` header to `true`. This is not recommended and should just be used for test cases!\n\nThe procedure for this functionality is:\n\n1. CCP receives a DELETE for a EMAID.\n2. The CCP checks if the related Contract Certificated has been issued by a Operator MO V2G CA\n3. If so, the CCP sends a revocation request to the issuing CA.\n4. On successful revocation the Contract Data will be deleted from the pool. On error the Contract Data remains in the pool and an error message is returned.\n",
+        "parameters": [
+          {
+            "schema": {
+              "type": "boolean",
+              "enum": [
+                true,
+                false
+              ],
+              "default": false
+            },
+            "in": "header",
+            "name": "X-Skip-Revocation",
+            "description": "Do not revoke the contract certificate."
+          }
+        ],
+        "security": [
+          {
+            "MO": []
+          }
+        ]
+      }
+    },
+    "/v1/ccp/provideSignedContractData/{emaid}/{pcid}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$"
+          },
+          "name": "emaid",
+          "in": "path",
+          "required": true,
+          "description": "The EMAID of the requested contract."
+        },
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]{17,18}$"
+          },
+          "name": "pcid",
+          "in": "path",
+          "description": "The related Provisioning Certificate ID.",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Provide Signed Contract Data",
+        "tags": [
+          "contract-certificate-pool-controller",
+          "OEM"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProvideContractDataResponse"
+                },
+                "examples": {
+                  "Positive Response": {
+                    "value": {
+                      "certificateInstallationRes": "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",
+                      "xsdMsgDefNamespace": "urn:iso:15118:2:2013:MsgDef"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Invalid PCID": {
+                    "value": {
+                      "errorMessages": [
+                        "pcid : must match \"^[a-zA-Z0-9]{17,18}$\""
+                      ],
+                      "traceId": "1c8c56cb-b71f-46a5-8788-5ddcedc88e2a"
+                    }
+                  },
+                  "Invalid EMAID": {
+                    "value": {
+                      "errorMessages": [
+                        "emaid : must match \"^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$\""
+                      ],
+                      "traceId": "02be5c05-298b-4503-a685-8126951e0233"
+                    }
+                  },
+                  "Invalid SessionID": {
+                    "value": {
+                      "errorMessages": [
+                        "Invalid SessionID format, make sure the length is maximum 8 characters and it is represented in HEX binary"
+                      ],
+                      "traceId": "5712b40b-5003-4553-8539-2d1edaf56b6a"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {},
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./cps.v1.json#/components/schemas/Error"
+                },
+                "examples": {
+                  "Not Found": {
+                    "value": {
+                      "errorMessages": [
+                        "The contract for the given EMAID not found."
+                      ],
+                      "traceId": "ddb3e897-30c3-4901-b5fe-383c5edeadcb"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "operationId": "provideSignedContractData",
+        "description": "The CCP offers this additional interface to provide signed contract data to OEM backends without the need of a CertificateInstallationRequest. The OEM backend requests the endpoint with an EMAID and a PCID to receive the certificateInstallationResponse.\n\nThe OEM backend must check the validity of the contract, before the installation into the car, whether it is expired or revoked.\n\n| Check                                            | \n|--------------------------------------------------|\n| Contract for EMAID must be existing in the pool. |",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "00"
+            },
+            "in": "query",
+            "name": "sessionID",
+            "description": "Session ID as HEX shall be included into the xml if present",
+            "allowEmptyValue": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "urn:iso:15118:2:2013:MsgDef",
+              "example": "urn:iso:15118:2:2013:MsgDef"
+            },
+            "in": "query",
+            "name": "xsdMsgDefNamespace",
+            "description": "To receive signed contract data for a specific ISO Version"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
+              "example": "896b6655-180e-4304-b642-606bb00df8f0"
+            },
+            "in": "query",
+            "name": "cpsRootCertificateId",
+            "description": "The UUID of the used CPS V2G-Root CA, if not set, the latest contract data  will be replied"
+          }
+        ],
+        "security": [
+          {
+            "OEM": []
+          }
+        ]
+      }
+    },
+    "/v1/ccp/signedContractData/priorities/{emaid}/{pcid}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
+            "minLength": 14,
+            "maxLength": 15
+          },
+          "name": "emaid",
+          "in": "path",
+          "required": true,
+          "description": "The EMAID of the requested contract."
+        },
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]{17,18}$",
+            "maxLength": 18,
+            "minLength": 17
+          },
+          "name": "pcid",
+          "in": "path",
+          "required": true,
+          "description": "The related Provisioning Certificate ID."
+        }
+      ],
+      "put": {
+        "summary": "Define Contract as Default for Offline installation",
+        "tags": [
+          "contract-certificate-pool-controller",
+          "MO",
+          "OEM"
+        ],
+        "operationId": "setDefaultContract",
+        "description": "The CCP offers this additional interface to set an existing signed contract data as default. A starred Contract-Data will always be send in the CertificateInstallationRequest. The OEM will requests the endpoint to mark a contract as default for a PCID for an offline installation.\n\n| Prio                                            | \n|--------------------------------------------------|\n| The first created Contract will be always the default |\n| If a default contract gets deleted, the contract with the lowest prio number (1-is default) gets the new default contract - an notification will be send to the OEM  (not yet implemented)|",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": 1,
+              "default": 1,
+              "pattern": "^[1-9]\\d*$"
+            },
+            "in": "query",
+            "name": "priority",
+            "description": "Define position of contract"
+          }
+        ],
+        "security": [
+          {
+            "OEM": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/v1/ccp/lookupContract/{emaid}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$"
+          },
+          "name": "emaid",
+          "in": "path",
+          "required": true,
+          "description": "Contract identifier of contract certificate"
+        }
+      ],
+      "get": {
+        "summary": "Lookup Contract",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LookupContractResponse"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "XMLContracts": [
+                        {
+                          "pcid": "huboemprovcqa0615",
+                          "emaid": "EMP99CQATEST001",
+                          "xsdMsgDefNamespace": "urn:iso:15118:2:2013:MsgDef",
+                          "contractCertificate": "MIIB7jCCAZSgAwIBAgIQQihl/GZf3VrjEbtD8OftBDAKBggqhkjOPQQDAjBYMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMR0wGwYDVQQDExRNTyBTdWIyIENBIFFBIEcxLjEuMTETMBEGCgmSJomT8ixkARkWA1YyRzAeFw0yMjAyMDcyMzE3MzdaFw0yMjEyMTAxMTQyNTlaMDExFTATBgNVBAoTDEh1YmplY3QgR21iSDEYMBYGA1UEAxMPRU1QOTlDUUFURVNUMDAxMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEDB59w53BxLuMBDDYTzDqpJLoJqIZEJoZWlYti+n97erJYD8JHaA0630uzghrNnjVa8sZKqBv8XX6V9H6H+gYS6NnMGUwEQYDVR0OBAoECEPJRNHvPWNdMBMGA1UdIwQMMAqACEf6f9verOzVMDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL29jc3AtcWEuaHViamVjdC5jb206ODA4MDAKBggqhkjOPQQDAgNIADBFAiEA3S6DrF1uTpyZW/eF3XPeykX2L6ubl/2fiNujT4ENX1cCIF/D/ftiHiIKcuDLrHRVFxpcXeQfQ8NmUHhThtNZRDRC",
+                          "priority": 1,
+                          "certValidFrom": "2022-02-07T23:17:37Z",
+                          "certValidTo": "2022-12-10T11:42:59Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "Invalid EMAID": {
+                    "value": {
+                      "errorMessages": [
+                        "emaid : must match \"^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$\""
+                      ],
+                      "traceId": "02be5c05-298b-4503-a685-8126951e0233"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "operationId": "lookupContract",
+        "description": "The MO sends a request to the Contract Certificate Pool (CCP) to check the availability of the contract for the requested EMAID.",
+        "tags": [
+          "MO",
+          "CPO",
+          "contract-certificate-pool-controller"
+        ],
+        "security": [
+          {
+            "OEM": []
+          },
+          {
+            "CPO": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "default": "urn:iso:15118:2:2013:MsgDef",
+              "example": "urn:iso:15118:2:2013:MsgDef"
+            },
+            "in": "query",
+            "name": "xsdMsgDefNamespace",
+            "description": "to receive contract data for a specific ISO version"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
+              "example": "896b6655-180e-4304-b642-606bb00df8f0"
+            },
+            "in": "query",
+            "name": "cpsRootCertificateId",
+            "description": "The UUID of the used CPS V2G-Root CA, if not set, the latest contract data  will be replied"
+          }
+        ]
+      }
+    },
+    "/v1/ccp/signedContractData/{pcid}": {
+      "get": {
+        "summary": "Get Contracts for PCID",
+        "tags": [],
+        "operationId": "getContracts",
+        "x-internal": false,
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LookupContractResponse"
+                },
+                "examples": {}
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              },
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "description": "Lists available contract data for a given PCID.",
+        "security": [
+          {
+            "OEM": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "default": "urn:iso:15118:2:2013:MsgDef",
+              "example": "urn:iso:15118:2:2013:MsgDef"
+            },
+            "in": "query",
+            "name": "xsdMsgDefNamespace",
+            "description": "to receive contract data for a specific ISO version"
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]{17,18}$",
+            "minLength": 17,
+            "maxLength": 18
+          },
+          "name": "pcid",
+          "in": "path",
+          "required": true,
+          "description": "PCID of vehicle certificate"
+        }
+      ]
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "MO": {
+        "type": "oauth2",
+        "description": "OAuth2 is used to grant access to the endpoint. ",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "",
+            "tokenUrl": "",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        }
+      },
+      "OEM": {
+        "type": "oauth2",
+        "description": "OAuth2 is used to grant access to the endpoint. ",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "",
+            "tokenUrl": "",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        }
+      },
+      "CPO": {
+        "type": "oauth2",
+        "description": "OAuth2 is used to grant access to the endpoint. ",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "",
+            "tokenUrl": "",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        }
+      },
+      "CPS": {
+        "type": "oauth2",
+        "description": "OAuth2 is used to grant access to the endpoint. ",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "",
+            "tokenUrl": "",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        }
+      }
+    },
+    "schemas": {
+      "GetSignedContractDataRequest": {
+        "type": "object",
+        "title": "GetSignedContractDataRequest",
+        "description": "",
+        "minProperties": 2,
+        "properties": {
+          "certificateInstallationReq": {
+            "type": "string",
+            "description": "base64 encoded"
+          },
+          "xsdMsgDefNamespace": {
+            "type": "string",
+            "description": "ISO Version",
+            "example": "urn:iso:15118:2:2013:MsgDef"
+          },
+          "metadata": {
+            "type": "string",
+            "description": "open for future usage"
+          }
+        },
+        "required": [
+          "certificateInstallationReq",
+          "xsdMsgDefNamespace"
+        ]
+      },
+      "GetSignedContractDataResponse": {
+        "title": "GetSignedContractDataResponse",
+        "type": "object",
+        "description": "",
+        "x-examples": {
+          "example-1": {
+            "CCPResponse": {
+              "emaidContent": [
+                {
+                  "messageDef": {
+                    "certificateInstallationRes": "string",
+                    "emaid": "string",
+                    "metaData": "string"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "properties": {
+          "CCPResponse": {
+            "type": "object",
+            "properties": {
+              "emaidContent": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "messageDef": {
+                      "type": "object",
+                      "properties": {
+                        "certificateInstallationRes": {
+                          "type": "string",
+                          "description": "Base64 encoded EXI - Contract installation response as defined in the ISO15118 standard"
+                        },
+                        "emaid": {
+                          "type": "string",
+                          "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
+                          "minLength": 14,
+                          "maxLength": 15,
+                          "description": "contract identifier of contract certificate"
+                        },
+                        "metaData": {
+                          "type": "string",
+                          "description": "placeholder for future applications"
+                        },
+                        "cpsRootCertificateId": {
+                          "type": "string",
+                          "description": "The UUID of the root CA which was used to sign this contract data (regarding CPS signing certificate)",
+                          "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
+                          "example": "896b6655-180e-4304-b642-606bb00df8f0"
+                        }
+                      },
+                      "required": [
+                        "certificateInstallationRes"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ProvideContractDataResponse": {
+        "type": "object",
+        "title": "ProvideSignedContractDataResponse",
+        "description": "Contains a prepared certificateInstallationResponse without the checks defined in [V2G2-894]. These checks need to be performed by the OEM before forwarding the response to the vehicle.",
+        "properties": {
+          "certificateInstallationRes": {
+            "type": "string",
+            "description": "Base64 encoded EXI - Contract installation response as defined in the ISO15118 standard"
+          },
+          "xsdMsgDefNamespace": {
+            "type": "string",
+            "description": "ISO Version",
+            "example": "urn:iso:15118:2:2013:MsgDef"
+          },
+          "cpsRootCertificateId": {
+            "type": "string",
+            "description": "The UUID of the root CA which was used to sign this contract data (regarding CPS signing certificate)",
+            "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
+            "example": "896b6655-180e-4304-b642-606bb00df8f0"
+          }
+        },
+        "required": [
+          "certificateInstallationRes",
+          "xsdMsgDefNamespace"
+        ]
+      },
+      "LookupContractResponse": {
+        "type": "object",
+        "title": "LookupContractResponse",
+        "x-examples": {
+          "example-1": {
+            "XMLContracts": [
+              {
+                "pcid": "stringstringstrin",
+                "emaid": "stringstringst",
+                "xsdMsgDefNamespace": "urn:iso:15118:2:2013:MsgDef",
+                "contractCertificate": "string",
+                "priority": 1,
+                "certValidFrom": "2019-08-24T14:15:22Z",
+                "certValidTo": "2019-08-24T14:15:22Z",
+                "cpsRootCertificateId": "896b6655-180e-4304-b642-606bb00df8f0",
+                "cpsRootDistinguishedName": "\"CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE\""
+              }
+            ]
+          }
+        },
+        "description": "",
+        "properties": {
+          "XMLContracts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "pcid": {
+                  "type": "string",
+                  "description": "PCID of vehicle certificate",
+                  "pattern": "^[a-zA-Z0-9]{17,18}$",
+                  "minLength": 17,
+                  "maxLength": 18
+                },
+                "emaid": {
+                  "type": "string",
+                  "description": "contract identifier of contract certificate",
+                  "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
+                  "minLength": 14,
+                  "maxLength": 15
+                },
+                "xsdMsgDefNamespace": {
+                  "type": "string",
+                  "example": "urn:iso:15118:2:2013:MsgDef",
+                  "description": "ISO Version"
+                },
+                "contractCertificate": {
+                  "type": "string",
+                  "description": "Contract Certificate in base64 encoded DER form",
+                  "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
+                  "maxLength": 800
+                },
+                "priority": {
+                  "type": "integer",
+                  "description": "Priority for the certificateInstallationResponse. 1 supposed to be the highst priority ",
+                  "minimum": 1,
+                  "exclusiveMaximum": false,
+                  "example": 1
+                },
+                "certValidFrom": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2019-08-24T14:15:22Z",
+                  "description": "Valid From Date and Time of contract certificate"
+                },
+                "certValidTo": {
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2019-08-24T14:15:22Z",
+                  "description": "Valid to Date and Time of contract certificate"
+                },
+                "cpsRootCertificateId": {
+                  "type": "string",
+                  "example": "896b6655-180e-4304-b642-606bb00df8f0",
+                  "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
+                  "description": "The UUID of the root CA which was used to sign this contract data (regarding CPS signing certificate)"
+                },
+                "cpsRootDistinguishedName": {
+                  "type": "string",
+                  "description": "Reflects the subjects distinguished name of the used V2G Root PKI. (informative)",
+                  "pattern": "^((CN|OU|O|C|DC|ST)=[^,]+,? ?)+$",
+                  "example": "\"CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE\""
+                }
+              }
+            }
+          }
+        }
+      },
+      "SignedContractDataRequest": {
+        "type": "object",
+        "title": "SignedContractData",
+        "minProperties": 4,
+        "properties": {
+          "xsdMsgDefNamespace": {
+            "type": "string",
+            "description": "ISO Version",
+            "example": "urn:iso:15118:2:2013:MsgDef"
+          },
+          "emaid": {
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
+            "description": "contract identifier of contract certificate"
+          },
+          "pcid": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]{17,18}$",
+            "description": "PCID of vehicle certificate"
+          },
+          "signedContractDataXML": {
+            "description": "XML in base64 encoding, as generated by the Certificate Provisioning Service.",
+            "type": "string"
+          },
+          "metadata": {
+            "type": "string",
+            "description": "open for future application"
+          },
+          "cpsRootCertificateId": {
+            "type": "string",
+            "description": "The UUID of the root CA which was used to sign this contract data (regarding CPS signing certificate)",
+            "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
+            "example": "896b6655-180e-4304-b642-606bb00df8f0"
+          }
+        },
+        "required": [
+          "xsdMsgDefNamespace",
+          "emaid",
+          "pcid",
+          "signedContractDataXML"
+        ]
+      },
+      "Error": {
+        "title": "Error",
+        "type": "object",
+        "properties": {
+          "errorMessages": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "traceId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    }
+  }
+}

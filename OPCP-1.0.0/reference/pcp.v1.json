@@ -1,0 +1,604 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "PCP Interface Description",
+    "version": "1.0",
+    "description": "The interfaces of the Provisioning Certificate Pool are used to exchange Provisioning Certificates between the OEM and the MO\n\nThis service provides the following interfaces:\n * Add OEM Provisioning Certificate\n * Delete OEM Provisioning Certificate\n * Get OEM Provisioning Certificate\n * Lookup Vehicle\n\n\n### Clients\n\nThe PCP communicates with the following actors and services:\n\n * OEM\n * Mobility Operator\n * Contract Certificate Pool\n * OCSP Responders of the Provisioning Certificates\n * Root Certificate Pool",
+    "contact": {
+      "name": "Hubject GmbH",
+      "url": "https://hubject.com",
+      "email": "support@pnc.hubject.com"
+    },
+    "termsOfService": "https://www.hubject.com/pki/",
+    "license": {
+      "name": "Attribution-ShareAlike 4.0 International",
+      "url": "http://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  "servers": [],
+  "tags": [
+    {
+      "name": "MO",
+      "description": "Mobility Operator"
+    },
+    {
+      "name": "OEM",
+      "description": "Electric Vehicle Manufacturer"
+    },
+    {
+      "name": "oem-provisioning-certificate-pool-controller",
+      "description": "internal identifier"
+    },
+    {
+      "name": "oem-provisioning-certificate-pool-admin-controller",
+      "description": "internal identifier"
+    }
+  ],
+  "paths": {
+    "/v1/oem/provCerts/{pcid}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]{17,18}$"
+          },
+          "name": "pcid",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get Provisioning Certificate",
+        "tags": [
+          "MO",
+          "oem-provisioning-certificate-pool-controller"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetProvisioningCertificateResponse"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "OEMMessage": {
+                        "subCA1Certificate": "MIICcDCCAhagAwIBAgIQXMXiFXMtVoQuJEiVS6/hkDAKBggqhkjOPQQDAjBaMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMSHViamVjdCBJbmMuMRMwEQYKCZImiZPyLGQBGRYDVjJHMR8wHQYDVQQDExZVUyBWMkcgUm9vdCBDQSBURVNUIEcyMB4XDTIwMDQwMTIxNTk1OVoXDTMwMDQwMTIxNTk1OVowZTELMAkGA1UEBhMCVVMxHjAcBgNVBAoTFUVsZWN0cmlmeSBBbWVyaWNhIExMQzETMBEGCgmSJomT8ixkARkWA1YyRzEhMB8GA1UEAxMYVVMgT0VNIFN1YjEgQ0EgVEVTVCBHMi4xMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEsXy1jgnjOaAlV8XPoawTX6xVi5of7FpNCUvCT7MylIogG1wuNefIM4M5pmP2jwUqhFpnKqppUvWKj8QiTSxJj6OBsjCBrzASBgNVHRMBAf8ECDAGAQH/AgEBMBEGA1UdDgQKBAhKDP6+ZPsRazAZBgNVHSAEEjAQMA4GDCsGAQQBg64NAQIBAjATBgNVHSMEDDAKgAhPEzNrrjPLHDBGBggrBgEFBQcBAQQ6MDgwNgYIKwYBBQUHMAGGKmh0dHA6Ly9vY3NwLXRlc3QuZWxlY3RyaWZ5YW1lcmljYS5jb206ODA4MDAOBgNVHQ8BAf8EBAMCAQYwCgYIKoZIzj0EAwIDSAAwRQIgFbsW5u11EgVDNKlhWBPZXsy8USfHKrScrUMyRxyWJ2cCIQCvXRhAXn9SWLSoRtgU3ssFc/z++vCIO6RLTV/VMZAXiw==",
+                        "subCA2Certificate": "MIICfTCCAiOgAwIBAgIQV8r0UuTi+jfwY8ifpELM7jAKBggqhkjOPQQDAjBlMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVRWxlY3RyaWZ5IEFtZXJpY2EgTExDMRMwEQYKCZImiZPyLGQBGRYDVjJHMSEwHwYDVQQDExhVUyBPRU0gU3ViMSBDQSBURVNUIEcyLjEwHhcNMjAwNDAxMjE1OTU5WhcNMzAwNDAxMjE1OTU5WjBnMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVRWxlY3RyaWZ5IEFtZXJpY2EgTExDMRMwEQYKCZImiZPyLGQBGRYDVjJHMSMwIQYDVQQDExpVUyBPRU0gU3ViMiBDQSBURVNUIEcyLjEuMTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABDHsKEUHVmO1CnNsocXz8/Ix9nom93is1nIe2RvuCNNOTSQF15skyBu2tObjg5atZe+4D0FXll+pqafanYkHEhmjgbIwga8wEgYDVR0TAQH/BAgwBgEB/wIBADARBgNVHQ4ECgQISX1zCMOyu74wGQYDVR0gBBIwEDAOBgwrBgEEAYOuDQECAQIwEwYDVR0jBAwwCoAISgz+vmT7EWswRgYIKwYBBQUHAQEEOjA4MDYGCCsGAQUFBzABhipodHRwOi8vb2NzcC10ZXN0LmVsZWN0cmlmeWFtZXJpY2EuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIAvUXtdhtkSs31QApigXViBfI7GR7iZGN7dSQcSTEh/MAiEA22ao571oT6g1z81hdXe5o1dEOdp7dDLv8hfwhHKhDR4=",
+                        "vehicleCertificate": "MIICiDCCAi2gAwIBAgIQQmpXsT0VMde403UbiKILKzAKBggqhkjOPQQDAjBnMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVRWxlY3RyaWZ5IEFtZXJpY2EgTExDMRMwEQYKCZImiZPyLGQBGRYDVjJHMSMwIQYDVQQDExpVUyBPRU0gU3ViMiBDQSBURVNUIEcyLjEuMTAeFw0yMDA1MjcxNjI4MzdaFw0yNDA1MjcxNjI4MzdaMIGPMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRowGAYDVQQDExFodWJVc0VhVGVzdDAwMDAwMzEPMA0GA1UEBxMGQmVybGluMSswKQYJKoZIhvcNAQkBFhxzdXBwb3J0LmlzbzE1MTE4QGh1YmplY3QuY29tMQ8wDQYDVQQIEwZCZXJsaW4wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQfGur5wYXPC04O+cCM8Q/eOtqBjLA03z1g0yax9LPAtPk7rJ/k6GFxh1aMSeiVyyYTEqBpG+xM1fR5PR2MZxjPo4GRMIGOMBEGA1UdDgQKBAhLtQDVP/7MZjAcBgNVHREEFTATghFodWJVc0VhVGVzdDAwMDAwMzATBgNVHSMEDDAKgAhJfXMIw7K7vjBGBggrBgEFBQcBAQQ6MDgwNgYIKwYBBQUHMAGGKmh0dHA6Ly9vY3NwLXRlc3QuZWxlY3RyaWZ5YW1lcmljYS5jb206ODA4MDAKBggqhkjOPQQDAgNJADBGAiEA+UvYYcovadAA0RI1mAnQ72oL64jibCifbuKB3+0bJloCIQDW+r8yV5IZq1rHx0RtMYXWlsdMcM9fB002Fcj4WVrUcg==",
+                        "rootAuthorityKeyIdentifier": "4F:13:33:6B:AE:33:CB:1C",
+                        "rootIssuerDistinguishedName": "CN=US V2G Root CA TEST G2, DC=V2G, O=Hubject Inc., C=US",
+                        "rootIssuerSerialNumber": "413de92d304ea90af4c9710392b437cf"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "./cps.v1.json#/components/schemas/Error"
+                },
+                "examples": {
+                  "INVALID PCID": {
+                    "value": {
+                      "errorMessages": [
+                        "pcid : must match \"^[a-zA-Z0-9]{17,18}$\""
+                      ],
+                      "traceId": "1c8c56cb-b71f-46a5-8788-5ddcedc88e2a"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "NOT FOUND": {
+                    "value": {
+                      "errorMessages": [
+                        "The OEM provisioning certificate with given PCID is not found."
+                      ],
+                      "traceId": "807838e3-b058-447c-b6f8-233638cefc18"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "operationId": "getOEMProvCert",
+        "description": "This method is used by the MO to request Provisioning Certificates.\n\nBefore the delivery of OEM provisioning certificate from the PCP, it proceeds with the following steps:\n\n 1. Verifies the certificate status of each OEM certificate from the OCSP responders or CRL of an OEM.\n 2. Verifies trust chain with OEM root certificate\n\nFor each step, which cannot be validated, the PCP sends an error code to the MO.\nReturns a Provisioning Certificate V1 object if PCID/Prov Certificate was in the pool.\n\n",
+        "security": [
+          {
+            "MO": []
+          },
+          {
+            "OEM": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete Provisioning Certificate",
+        "operationId": "deleteOEMProvCert",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {}
+              }
+            }
+          }
+        },
+        "tags": [
+          "OEM",
+          "oem-provisioning-certificate-pool-controller"
+        ],
+        "description": "This method is used by the OEM to depublish Provisioning Certificates.\n\n<!-- theme: warning -->\n\n> A successful deletes triggers a call to the DELETE method of the Contract Certificate Pool for all EMAIDs related to this PCID! In case of contract certificates issued by one of the Operator owned MO CAs, this also involves revocation of the same.",
+        "security": [
+          {
+            "OEM": []
+          }
+        ]
+      }
+    },
+    "/v1/oem/provCerts": {
+      "put": {
+        "summary": "Add Provisioning Certificate",
+        "operationId": "addOEMProvCert",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProvisioningCertificateData"
+                },
+                "examples": {
+                  "example": {
+                    "value": {
+                      "subCA1Certificate": "MIICfjCCAiSgAwIBAgIQa4yoqBaIkMWyJWkyA5f3QjAKBggqhkjOPQQDAjBVMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRowGAYDVQQDExFWMkcgUm9vdCBDQSBRQSBHMTAeFw0xOTA0MjYwOTA4MTBaFw0zOTA0MjYwOTA4MTBaMFcxCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxIdWJqZWN0IEdtYkgxEzARBgoJkiaJk/IsZAEZFgNWMkcxHDAaBgNVBAMTE09FTSBTdWIxIENBIFFBIEcxLjEwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQNQNHIVWA98R4tQtxLnhDqyL9NAOIhYGbwibM3+z5jA6/pJQLb1JN2pu8gm3+0ES7LV+eIEbpnVJowK+SKIqTfo4HTMIHQMBIGA1UdEwEB/wQIMAYBAf8CAQEwEQYDVR0OBAoECEaqN5H3clMTMEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAIS0X/giX8EJYwOwYIKwYBBQUHAQEELzAtMCsGCCsGAQUFBzABhh9odHRwOi8vb2NzcC1xYS5odWJqZWN0LmNvbTo4MDgwMA4GA1UdDwEB/wQEAwIBBjAKBggqhkjOPQQDAgNIADBFAiEAq2eQ1/TdZnUU4MQvchW42klLsgO5dzwctB8MN8tZmxkCIEIJN6LTWOXCkSRAH08aXXuHwllggl9bwK7tFisBP5YX",
+                      "subCA2Certificate": "MIICgjCCAiigAwIBAgIQf+ITaxEkGSHSPaYnHGNLYzAKBggqhkjOPQQDAjBXMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRwwGgYDVQQDExNPRU0gU3ViMSBDQSBRQSBHMS4xMB4XDTE5MDUwMjA4MTA1OVoXDTI5MDUwMjA4MTA1OVowWTELMAkGA1UEBhMCREUxFTATBgNVBAoTDEh1YmplY3QgR21iSDEeMBwGA1UEAxMVT0VNIFN1YjIgQ0EgUUEgRzEuMS4xMRMwEQYKCZImiZPyLGQBGRYDVjJHMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEASPSKuXuhvYMBREmNku3MADHBdVOqZftJkQn3HcCEpr4yD9vjr5K+DOFUzlAqL+6zo7Gs0Fj7U2isRyacOiKwqOB0zCB0DASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdDgQKBAhE7MRAI1qfPzBFBgNVHSAEPjA8MDoGDCsGAQQBgsQ1AQIBADAqMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5odWJqZWN0LmNvbS9wa2kvMBMGA1UdIwQMMAqACEaqN5H3clMTMDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL29jc3AtcWEuaHViamVjdC5jb206ODA4MDAOBgNVHQ8BAf8EBAMCAQYwCgYIKoZIzj0EAwIDSAAwRQIhAKdTf8XBAto0Nbpy9RqdDtLwe5BhJ5OYYfrXlO0mrIMMAiBiNeNc2w/5u0hZRUmrP6GloeZE3mp90k/JeBSNk726Tg==",
+                      "vehicleCertificate": "MIICRDCCAeqgAwIBAgIQVQ7QprKCULtrvCsJQCfI+jAKBggqhkjOPQQDAjBZMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMR4wHAYDVQQDExVPRU0gU3ViMiBDQSBRQSBHMS4xLjExEzARBgoJkiaJk/IsZAEZFgNWMkcwHhcNMjEwNjE1MDc0NzIxWhcNMjUwNjE1MDc0NzIxWjBmMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRowGAYDVQQDExFodWJvZW1wcm92Y3FhMDYxNTEPMA0GA1UEBxMGQmVybGluMRMwEQYKCZImiZPyLGQBGRYDT0VNMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAElq9uyBG6jtfEwPAhdg/M3RbFbF424yrh1gnGZxEW94EcJOS9y86FBpZUPTahgOru18V2Y6gOIFPBKGG7pKva/KOBhjCBgzARBgNVHQ4ECgQIRiRDEHyeLfcwHAYDVR0RBBUwE4IRaHVib2VtcHJvdmNxYTA2MTUwEwYDVR0jBAwwCoAIROzEQCNanz8wOwYIKwYBBQUHAQEELzAtMCsGCCsGAQUFBzABhh9odHRwOi8vb2NzcC1xYS5odWJqZWN0LmNvbTo4MDgwMAoGCCqGSM49BAMCA0gAMEUCIQDNR68heSUSyS8YnKA+J8qCpxpQL0e6QuLNIwqFiWNyOwIgGPuXgxHji3BHdA5S8llH3/wdOCFmgSoDi+7ID6U/WQA=",
+                      "xsdMsgDefNamespace": "urn:iso:15118:2:2013:MsgDef",
+                      "rootIssuerDistinguishedName": "CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE",
+                      "rootIssuerSerialNumber": "69ab00d259bbdf42ce80529ad30ce5ed",
+                      "v2gRootAuthorityKeyIdentifier": "45:b8:40:9e:e1:38:f8:bf",
+                      "rootAuthorityKeyIdentifier": "4b:45:ff:82:25:fc:10:96"
+                    }
+                  }
+                }
+              }
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "INVALID PCID": {
+                    "value": {
+                      "errorMessages": [
+                        "pcid : must match \"^[a-zA-Z0-9]{17,18}$\""
+                      ],
+                      "traceId": "1c8c56cb-b71f-46a5-8788-5ddcedc88e2a"
+                    }
+                  },
+                  "INVALID POVISIONING CERTIFICATE": {
+                    "value": {
+                      "errorMessages": [
+                        "Invalid certificate format on vehicleCertificate"
+                      ],
+                      "traceId": "9d84ead1-544b-42b4-908c-1b0113767e05"
+                    }
+                  },
+                  "INVALID SUB CA 2 CERTIFICATE": {
+                    "value": {
+                      "errorMessages": [
+                        "Invalid certificate format on subCa2Certificate"
+                      ],
+                      "traceId": "26af28c1-06a5-4c20-9d20-fbf8b851b1a6"
+                    }
+                  },
+                  "INVALID SUB CA 1 CERTIFICATE": {
+                    "value": {
+                      "errorMessages": [
+                        "Invalid certificate format on subCa1Certificate"
+                      ],
+                      "traceId": "26af28c1-06a5-4c20-9d20-fbf8b851b1a6"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "description": "This method is used by the OEM to publish Provisioning Certificates.",
+        "tags": [
+          "OEM",
+          "oem-provisioning-certificate-pool-controller"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProvisioningCertificate"
+              },
+              "examples": {
+                "example complete": {
+                  "value": {
+                    "subCA1Certificate": "MIICfjCCAiSgAwIBAgIQa4yoqBaIkMWyJWkyA5f3QjAKBggqhkjOPQQDAjBVMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRowGAYDVQQDExFWMkcgUm9vdCBDQSBRQSBHMTAeFw0xOTA0MjYwOTA4MTBaFw0zOTA0MjYwOTA4MTBaMFcxCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxIdWJqZWN0IEdtYkgxEzARBgoJkiaJk/IsZAEZFgNWMkcxHDAaBgNVBAMTE09FTSBTdWIxIENBIFFBIEcxLjEwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQNQNHIVWA98R4tQtxLnhDqyL9NAOIhYGbwibM3+z5jA6/pJQLb1JN2pu8gm3+0ES7LV+eIEbpnVJowK+SKIqTfo4HTMIHQMBIGA1UdEwEB/wQIMAYBAf8CAQEwEQYDVR0OBAoECEaqN5H3clMTMEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAIS0X/giX8EJYwOwYIKwYBBQUHAQEELzAtMCsGCCsGAQUFBzABhh9odHRwOi8vb2NzcC1xYS5odWJqZWN0LmNvbTo4MDgwMA4GA1UdDwEB/wQEAwIBBjAKBggqhkjOPQQDAgNIADBFAiEAq2eQ1/TdZnUU4MQvchW42klLsgO5dzwctB8MN8tZmxkCIEIJN6LTWOXCkSRAH08aXXuHwllggl9bwK7tFisBP5YX",
+                    "subCA2Certificate": "MIICgjCCAiigAwIBAgIQf+ITaxEkGSHSPaYnHGNLYzAKBggqhkjOPQQDAjBXMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMRwwGgYDVQQDExNPRU0gU3ViMSBDQSBRQSBHMS4xMB4XDTE5MDUwMjA4MTA1OVoXDTI5MDUwMjA4MTA1OVowWTELMAkGA1UEBhMCREUxFTATBgNVBAoTDEh1YmplY3QgR21iSDEeMBwGA1UEAxMVT0VNIFN1YjIgQ0EgUUEgRzEuMS4xMRMwEQYKCZImiZPyLGQBGRYDVjJHMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEASPSKuXuhvYMBREmNku3MADHBdVOqZftJkQn3HcCEpr4yD9vjr5K+DOFUzlAqL+6zo7Gs0Fj7U2isRyacOiKwqOB0zCB0DASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdDgQKBAhE7MRAI1qfPzBFBgNVHSAEPjA8MDoGDCsGAQQBgsQ1AQIBADAqMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5odWJqZWN0LmNvbS9wa2kvMBMGA1UdIwQMMAqACEaqN5H3clMTMDsGCCsGAQUFBwEBBC8wLTArBggrBgEFBQcwAYYfaHR0cDovL29jc3AtcWEuaHViamVjdC5jb206ODA4MDAOBgNVHQ8BAf8EBAMCAQYwCgYIKoZIzj0EAwIDSAAwRQIhAKdTf8XBAto0Nbpy9RqdDtLwe5BhJ5OYYfrXlO0mrIMMAiBiNeNc2w/5u0hZRUmrP6GloeZE3mp90k/JeBSNk726Tg==",
+                    "vehicleCertificate": "MIICRDCCAeqgAwIBAgIQVQ7QprKCULtrvCsJQCfI+jAKBggqhkjOPQQDAjBZMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMR4wHAYDVQQDExVPRU0gU3ViMiBDQSBRQSBHMS4xLjExEzARBgoJkiaJk/IsZAEZFgNWMkcwHhcNMjEwNjE1MDc0NzIxWhcNMjUwNjE1MDc0NzIxWjBmMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRowGAYDVQQDExFodWJvZW1wcm92Y3FhMDYxNTEPMA0GA1UEBxMGQmVybGluMRMwEQYKCZImiZPyLGQBGRYDT0VNMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAElq9uyBG6jtfEwPAhdg/M3RbFbF424yrh1gnGZxEW94EcJOS9y86FBpZUPTahgOru18V2Y6gOIFPBKGG7pKva/KOBhjCBgzARBgNVHQ4ECgQIRiRDEHyeLfcwHAYDVR0RBBUwE4IRaHVib2VtcHJvdmNxYTA2MTUwEwYDVR0jBAwwCoAIROzEQCNanz8wOwYIKwYBBQUHAQEELzAtMCsGCCsGAQUFBzABhh9odHRwOi8vb2NzcC1xYS5odWJqZWN0LmNvbTo4MDgwMAoGCCqGSM49BAMCA0gAMEUCIQDNR68heSUSyS8YnKA+J8qCpxpQL0e6QuLNIwqFiWNyOwIgGPuXgxHji3BHdA5S8llH3/wdOCFmgSoDi+7ID6U/WQA=",
+                    "xsdMsgDefNamespace": "urn:iso:15118:2:2013:MsgDef"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Expects a Provisioning Certificate object."
+        },
+        "parameters": [],
+        "security": [
+          {
+            "OEM": []
+          }
+        ]
+      }
+    },
+    "/v1/oem/provCerts/lookupVehicle/{pcid}": {
+      "get": {
+        "summary": "Lookup Vehicle",
+        "tags": [
+          "MO",
+          "oem-provisioning-certificate-pool-controller"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "INVALID PCID": {
+                    "value": {
+                      "errorMessages": [
+                        "pcid : must match \"^[a-zA-Z0-9]{17,18}$\""
+                      ],
+                      "traceId": "1c8c56cb-b71f-46a5-8788-5ddcedc88e2a"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "NOT FOUND": {
+                    "value": {
+                      "errorMessages": [
+                        "The OEM provisioning certificate with given PCID is not found."
+                      ],
+                      "traceId": "807838e3-b058-447c-b6f8-233638cefc18"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "502": {
+            "description": "Bad Gateway"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        },
+        "operationId": "lookupVehicle",
+        "description": "This method is used by the MO to test if there is a certificate available for a given PCID.\n\n\n<!-- theme: warning -->\n\n> ### Change notice\n>\n> This method will be changed to the form `HEAD /{pcid}` in future versions to make the API more consistent.\n",
+        "security": [
+          {
+            "MO": []
+          },
+          {
+            "OEM": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]{17,18}$",
+            "minLength": 17,
+            "maxLength": 18
+          },
+          "name": "pcid",
+          "in": "path",
+          "required": true
+        }
+      ]
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "MO": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "",
+            "tokenUrl": "",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        },
+        "description": "OAuth2 is used to grant access to the endpoint. "
+      },
+      "OEM": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "",
+            "tokenUrl": "",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        },
+        "description": "OAuth2 is used to grant access to the endpoint. "
+      }
+    },
+    "schemas": {
+      "ProvisioningCertificate": {
+        "type": "object",
+        "title": "Provisioning Certificate",
+        "description": "Object containing a provisioning certificate handled by the Provisioning Certificate Pool. Used on addOEM operation as request body.",
+        "x-examples": {
+          "example": {
+            "subCA1Certificate": "MIICdDCCAhqgAwIBAgIQd6E8MyXPT8KasimANSaOHDAKBggqhkjOPQQDAjBHMQswCQYDVQQGEwJERTEQMA4GA1UEChMHSHViamVjdDETMBEGCgmSJomT8ixkARkWA1YyRzERMA8GA1UEAxMIVjJHIFJvb3QwHhcNMTkwNzI0MTAxNTU1WhcNMjkwNzI0MTAxNTU1WjBZMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMR4wHAYDVQQDExVPRU0gU3ViMSBDQSBURVNUIEcxLjIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAS5seXlzunHvx0hCoh8DszaqnViXGDv4cLozIJs7ci47tUxARhXcNF/tFbr6YK0DUse9fD9AHrFsBi5PlHwxg50o4HVMIHSMBIGA1UdEwEB/wQIMAYBAf8CAQEwEQYDVR0OBAoECEZzBfcYaWBDMEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAITnyuwUYTll4wPQYIKwYBBQUHAQEEMTAvMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC10ZXN0Lmh1YmplY3QuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIQDL2D6vTsU+h5Z3HbrCG6NeIDv5P+YuIRlK0MeY3M106QIgLq6pBy39xwr5AFTVSMJG2l/ioze+Y2HCKfwpxf0zsAY=",
+            "subCA2Certificate": "MIICdDCCAhqgAwIBAgIQd6E8MyXPT8KasimANSaOHDAKBggqhkjOPQQDAjBHMQswCQYDVQQGEwJERTEQMA4GA1UEChMHSHViamVjdDETMBEGCgmSJomT8ixkARkWA1YyRzERMA8GA1UEAxMIVjJHIFJvb3QwHhcNMTkwNzI0MTAxNTU1WhcNMjkwNzI0MTAxNTU1WjBZMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMR4wHAYDVQQDExVPRU0gU3ViMSBDQSBURVNUIEcxLjIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAS5seXlzunHvx0hCoh8DszaqnViXGDv4cLozIJs7ci47tUxARhXcNF/tFbr6YK0DUse9fD9AHrFsBi5PlHwxg50o4HVMIHSMBIGA1UdEwEB/wQIMAYBAf8CAQEwEQYDVR0OBAoECEZzBfcYaWBDMEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAITnyuwUYTll4wPQYIKwYBBQUHAQEEMTAvMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC10ZXN0Lmh1YmplY3QuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIQDL2D6vTsU+h5Z3HbrCG6NeIDv5P+YuIRlK0MeY3M106QIgLq6pBy39xwr5AFTVSMJG2l/ioze+Y2HCKfwpxf0zsAY=",
+            "vehicleCertificate": "MIICdDCCAhqgAwIBAgIQd6E8MyXPT8KasimANSaOHDAKBggqhkjOPQQDAjBHMQswCQYDVQQGEwJERTEQMA4GA1UEChMHSHViamVjdDETMBEGCgmSJomT8ixkARkWA1YyRzERMA8GA1UEAxMIVjJHIFJvb3QwHhcNMTkwNzI0MTAxNTU1WhcNMjkwNzI0MTAxNTU1WjBZMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMR4wHAYDVQQDExVPRU0gU3ViMSBDQSBURVNUIEcxLjIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAS5seXlzunHvx0hCoh8DszaqnViXGDv4cLozIJs7ci47tUxARhXcNF/tFbr6YK0DUse9fD9AHrFsBi5PlHwxg50o4HVMIHSMBIGA1UdEwEB/wQIMAYBAf8CAQEwEQYDVR0OBAoECEZzBfcYaWBDMEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAITnyuwUYTll4wPQYIKwYBBQUHAQEEMTAvMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC10ZXN0Lmh1YmplY3QuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIQDL2D6vTsU+h5Z3HbrCG6NeIDv5P+YuIRlK0MeY3M106QIgLq6pBy39xwr5AFTVSMJG2l/ioze+Y2HCKfwpxf0zsAY="
+          }
+        },
+        "minProperties": 3,
+        "properties": {
+          "subCA1Certificate": {
+            "type": "string",
+            "description": "Sub CA 1 Certificate in base64 encoded DER form. Deprecated in this form, will be changed to `subCa1Certificate` in future releases.",
+            "example": "MIICcDCCAhagAwIBAgIQXMXiFXMtVoQuJEiVS6/hkDAKBggqhkjOPQQDAjBaMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMSHViamVjdCBJbmMuMRMwEQYKCZImiZPyLGQBGRYDVjJHMR8wHQYDVQQDExZVUyBWMkcgUm9vdCBDQSBURVNUIEcyMB4XDTIwMDQwMTIxNTk1OVoXDTMwMDQwMTIxNTk1OVowZTELMAkGA1UEBhMCVVMxHjAcBgNVBAoTFUVsZWN0cmlmeSBBbWVyaWNhIExMQzETMBEGCgmSJomT8ixkARkWA1YyRzEhMB8GA1UEAxMYVVMgT0VNIFN1YjEgQ0EgVEVTVCBHMi4xMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEsXy1jgnjOaAlV8XPoawTX6xVi5of7FpNCUvCT7MylIogG1wuNefIM4M5pmP2jwUqhFpnKqppUvWKj8QiTSxJj6OBsjCBrzASBgNVHRMBAf8ECDAGAQH/AgEBMBEGA1UdDgQKBAhKDP6+ZPsRazAZBgNVHSAEEjAQMA4GDCsGAQQBg64NAQIBAjATBgNVHSMEDDAKgAhPEzNrrjPLHDBGBggrBgEFBQcBAQQ6MDgwNgYIKwYBBQUHMAGGKmh0dHA6Ly9vY3NwLXRlc3QuZWxlY3RyaWZ5YW1lcmljYS5jb206ODA4MDAOBgNVHQ8BAf8EBAMCAQYwCgYIKoZIzj0EAwIDSAAwRQIgFbsW5u11EgVDNKlhWBPZXsy8USfHKrScrUMyRxyWJ2cCIQCvXRhAXn9SWLSoRtgU3ssFc/z++vCIO6RLTV/VMZAXiw=="
+          },
+          "subCA2Certificate": {
+            "type": "string",
+            "description": "Sub CA 2 Certificate in base64 encoded DER form. Optional for leaf certificates with only one intermediate certificate. Deprecated in this form, will be changed to `subCa2Certificate` in future releases.",
+            "example": "MIICfTCCAiOgAwIBAgIQV8r0UuTi+jfwY8ifpELM7jAKBggqhkjOPQQDAjBlMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVRWxlY3RyaWZ5IEFtZXJpY2EgTExDMRMwEQYKCZImiZPyLGQBGRYDVjJHMSEwHwYDVQQDExhVUyBPRU0gU3ViMSBDQSBURVNUIEcyLjEwHhcNMjAwNDAxMjE1OTU5WhcNMzAwNDAxMjE1OTU5WjBnMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVRWxlY3RyaWZ5IEFtZXJpY2EgTExDMRMwEQYKCZImiZPyLGQBGRYDVjJHMSMwIQYDVQQDExpVUyBPRU0gU3ViMiBDQSBURVNUIEcyLjEuMTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABDHsKEUHVmO1CnNsocXz8/Ix9nom93is1nIe2RvuCNNOTSQF15skyBu2tObjg5atZe+4D0FXll+pqafanYkHEhmjgbIwga8wEgYDVR0TAQH/BAgwBgEB/wIBADARBgNVHQ4ECgQISX1zCMOyu74wGQYDVR0gBBIwEDAOBgwrBgEEAYOuDQECAQIwEwYDVR0jBAwwCoAISgz+vmT7EWswRgYIKwYBBQUHAQEEOjA4MDYGCCsGAQUFBzABhipodHRwOi8vb2NzcC10ZXN0LmVsZWN0cmlmeWFtZXJpY2EuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIAvUXtdhtkSs31QApigXViBfI7GR7iZGN7dSQcSTEh/MAiEA22ao571oT6g1z81hdXe5o1dEOdp7dDLv8hfwhHKhDR4="
+          },
+          "vehicleCertificate": {
+            "type": "string",
+            "description": "Provisioning Certificate in base64 encoded DER form. Deprecated in this form. Will be renamed to `provisioningCertificate` in future versions.",
+            "example": "MIIChzCCAi2gAwIBAgIQZqyzB7Lsiy3AEgqy3j16qzAKBggqhkjOPQQDAjBnMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVRWxlY3RyaWZ5IEFtZXJpY2EgTExDMRMwEQYKCZImiZPyLGQBGRYDVjJHMSMwIQYDVQQDExpVUyBPRU0gU3ViMiBDQSBURVNUIEcyLjEuMTAeFw0yMDA1MjcxNjI4MzlaFw0yNDA1MjcxNjI4MzlaMIGPMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRowGAYDVQQDExFodWJVc0VhVGVzdDAwMDAwNDEPMA0GA1UEBxMGQmVybGluMSswKQYJKoZIhvcNAQkBFhxzdXBwb3J0LmlzbzE1MTE4QGh1YmplY3QuY29tMQ8wDQYDVQQIEwZCZXJsaW4wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQ6W3xDW/bnPdyocQAW+rpOK54rfjBQznrtMlBFwdyVM1PYzuEf3kJtIQ4n3TTTwnqxquFZ+Cl3LhfZb4BJYmFwo4GRMIGOMBEGA1UdDgQKBAhKko8a3LDPuzAcBgNVHREEFTATghFodWJVc0VhVGVzdDAwMDAwNDATBgNVHSMEDDAKgAhJfXMIw7K7vjBGBggrBgEFBQcBAQQ6MDgwNgYIKwYBBQUHMAGGKmh0dHA6Ly9vY3NwLXRlc3QuZWxlY3RyaWZ5YW1lcmljYS5jb206ODA4MDAKBggqhkjOPQQDAgNIADBFAiEAuKsKk8xKIFo7wkg7CGvzCQXR08LqHFkuEQJ5jNWc7GMCICNVExUixZWDbGl0rd4Kqq4s87tDOxFGx4o1tLMRdY47"
+          },
+          "xsdMsgDefNamespace": {
+            "type": "string",
+            "enum": [
+              "urn:iso:15118:2:2013:MsgDef"
+            ],
+            "description": "ISO15118 Version. If no version is entered - default: urn:iso:15118:2:2013:MsgDef",
+            "example": "urn:iso:15118:2:2013:MsgDef",
+            "default": "urn:iso:15118:2:2013:MsgDef"
+          },
+          "v2gRootAuthorityKeyIdentifiers": {
+            "type": "array",
+            "description": "List of root authority key identifiers in a hex formated string (with \":\"as separator) which are installed in the EV.",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "previousPcid": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]{17,18}$",
+            "minLength": 17,
+            "maxLength": 18,
+            "description": "if the PCID of a vehicle changed, the OEM can use this field to store the previous identifier"
+          }
+        },
+        "required": [
+          "subCA1Certificate",
+          "subCA2Certificate",
+          "vehicleCertificate"
+        ]
+      },
+      "GetProvisioningCertificateResponse": {
+        "type": "object",
+        "title": "GetProvisioningCertificateResponse",
+        "description": "",
+        "properties": {
+          "OEMMessage": {
+            "$ref": "#/components/schemas/ProvisioningCertificateData"
+          }
+        }
+      },
+      "Error": {
+        "title": "Error",
+        "type": "object",
+        "properties": {
+          "errorMessages": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "traceId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ProvisioningCertificateData": {
+        "title": "ProvisioningCertificateData",
+        "type": "object",
+        "description": "Object containing provisioning certificate data stored in Provisioning Certificate Pool.",
+        "x-examples": {
+          "example": {
+            "subCA1Certificate": "MIICdDCCAhqgAwIBAgIQd6E8MyXPT8KasimANSaOHDAKBggqhkjOPQQDAjBHMQswCQYDVQQGEwJERTEQMA4GA1UEChMHSHViamVjdDETMBEGCgmSJomT8ixkARkWA1YyRzERMA8GA1UEAxMIVjJHIFJvb3QwHhcNMTkwNzI0MTAxNTU1WhcNMjkwNzI0MTAxNTU1WjBZMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMR4wHAYDVQQDExVPRU0gU3ViMSBDQSBURVNUIEcxLjIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAS5seXlzunHvx0hCoh8DszaqnViXGDv4cLozIJs7ci47tUxARhXcNF/tFbr6YK0DUse9fD9AHrFsBi5PlHwxg50o4HVMIHSMBIGA1UdEwEB/wQIMAYBAf8CAQEwEQYDVR0OBAoECEZzBfcYaWBDMEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAITnyuwUYTll4wPQYIKwYBBQUHAQEEMTAvMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC10ZXN0Lmh1YmplY3QuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIQDL2D6vTsU+h5Z3HbrCG6NeIDv5P+YuIRlK0MeY3M106QIgLq6pBy39xwr5AFTVSMJG2l/ioze+Y2HCKfwpxf0zsAY=",
+            "subCA2Certificate": "MIICdDCCAhqgAwIBAgIQd6E8MyXPT8KasimANSaOHDAKBggqhkjOPQQDAjBHMQswCQYDVQQGEwJERTEQMA4GA1UEChMHSHViamVjdDETMBEGCgmSJomT8ixkARkWA1YyRzERMA8GA1UEAxMIVjJHIFJvb3QwHhcNMTkwNzI0MTAxNTU1WhcNMjkwNzI0MTAxNTU1WjBZMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMR4wHAYDVQQDExVPRU0gU3ViMSBDQSBURVNUIEcxLjIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAS5seXlzunHvx0hCoh8DszaqnViXGDv4cLozIJs7ci47tUxARhXcNF/tFbr6YK0DUse9fD9AHrFsBi5PlHwxg50o4HVMIHSMBIGA1UdEwEB/wQIMAYBAf8CAQEwEQYDVR0OBAoECEZzBfcYaWBDMEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAITnyuwUYTll4wPQYIKwYBBQUHAQEEMTAvMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC10ZXN0Lmh1YmplY3QuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIQDL2D6vTsU+h5Z3HbrCG6NeIDv5P+YuIRlK0MeY3M106QIgLq6pBy39xwr5AFTVSMJG2l/ioze+Y2HCKfwpxf0zsAY=",
+            "vehicleCertificate": "MIICdDCCAhqgAwIBAgIQd6E8MyXPT8KasimANSaOHDAKBggqhkjOPQQDAjBHMQswCQYDVQQGEwJERTEQMA4GA1UEChMHSHViamVjdDETMBEGCgmSJomT8ixkARkWA1YyRzERMA8GA1UEAxMIVjJHIFJvb3QwHhcNMTkwNzI0MTAxNTU1WhcNMjkwNzI0MTAxNTU1WjBZMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRMwEQYKCZImiZPyLGQBGRYDVjJHMR4wHAYDVQQDExVPRU0gU3ViMSBDQSBURVNUIEcxLjIwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAS5seXlzunHvx0hCoh8DszaqnViXGDv4cLozIJs7ci47tUxARhXcNF/tFbr6YK0DUse9fD9AHrFsBi5PlHwxg50o4HVMIHSMBIGA1UdEwEB/wQIMAYBAf8CAQEwEQYDVR0OBAoECEZzBfcYaWBDMEUGA1UdIAQ+MDwwOgYMKwYBBAGCxDUBAgEAMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3Lmh1YmplY3QuY29tL3BraS8wEwYDVR0jBAwwCoAITnyuwUYTll4wPQYIKwYBBQUHAQEEMTAvMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC10ZXN0Lmh1YmplY3QuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIQDL2D6vTsU+h5Z3HbrCG6NeIDv5P+YuIRlK0MeY3M106QIgLq6pBy39xwr5AFTVSMJG2l/ioze+Y2HCKfwpxf0zsAY="
+          }
+        },
+        "minProperties": 3,
+        "properties": {
+          "subCA1Certificate": {
+            "type": "string",
+            "description": "Sub CA 1 Certificate in base64 encoded DER form. Deprecated in this form, will be changed to `subCa1Certificate` in future releases.",
+            "example": "MIICcDCCAhagAwIBAgIQXMXiFXMtVoQuJEiVS6/hkDAKBggqhkjOPQQDAjBaMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMSHViamVjdCBJbmMuMRMwEQYKCZImiZPyLGQBGRYDVjJHMR8wHQYDVQQDExZVUyBWMkcgUm9vdCBDQSBURVNUIEcyMB4XDTIwMDQwMTIxNTk1OVoXDTMwMDQwMTIxNTk1OVowZTELMAkGA1UEBhMCVVMxHjAcBgNVBAoTFUVsZWN0cmlmeSBBbWVyaWNhIExMQzETMBEGCgmSJomT8ixkARkWA1YyRzEhMB8GA1UEAxMYVVMgT0VNIFN1YjEgQ0EgVEVTVCBHMi4xMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEsXy1jgnjOaAlV8XPoawTX6xVi5of7FpNCUvCT7MylIogG1wuNefIM4M5pmP2jwUqhFpnKqppUvWKj8QiTSxJj6OBsjCBrzASBgNVHRMBAf8ECDAGAQH/AgEBMBEGA1UdDgQKBAhKDP6+ZPsRazAZBgNVHSAEEjAQMA4GDCsGAQQBg64NAQIBAjATBgNVHSMEDDAKgAhPEzNrrjPLHDBGBggrBgEFBQcBAQQ6MDgwNgYIKwYBBQUHMAGGKmh0dHA6Ly9vY3NwLXRlc3QuZWxlY3RyaWZ5YW1lcmljYS5jb206ODA4MDAOBgNVHQ8BAf8EBAMCAQYwCgYIKoZIzj0EAwIDSAAwRQIgFbsW5u11EgVDNKlhWBPZXsy8USfHKrScrUMyRxyWJ2cCIQCvXRhAXn9SWLSoRtgU3ssFc/z++vCIO6RLTV/VMZAXiw=="
+          },
+          "subCA2Certificate": {
+            "type": "string",
+            "description": "Sub CA 2 Certificate in base64 encoded DER form. Optional for leaf certificates with only one intermediate certificate. Deprecated in this form, will be changed to `subCa2Certificate` in future releases.",
+            "example": "MIICfTCCAiOgAwIBAgIQV8r0UuTi+jfwY8ifpELM7jAKBggqhkjOPQQDAjBlMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVRWxlY3RyaWZ5IEFtZXJpY2EgTExDMRMwEQYKCZImiZPyLGQBGRYDVjJHMSEwHwYDVQQDExhVUyBPRU0gU3ViMSBDQSBURVNUIEcyLjEwHhcNMjAwNDAxMjE1OTU5WhcNMzAwNDAxMjE1OTU5WjBnMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVRWxlY3RyaWZ5IEFtZXJpY2EgTExDMRMwEQYKCZImiZPyLGQBGRYDVjJHMSMwIQYDVQQDExpVUyBPRU0gU3ViMiBDQSBURVNUIEcyLjEuMTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABDHsKEUHVmO1CnNsocXz8/Ix9nom93is1nIe2RvuCNNOTSQF15skyBu2tObjg5atZe+4D0FXll+pqafanYkHEhmjgbIwga8wEgYDVR0TAQH/BAgwBgEB/wIBADARBgNVHQ4ECgQISX1zCMOyu74wGQYDVR0gBBIwEDAOBgwrBgEEAYOuDQECAQIwEwYDVR0jBAwwCoAISgz+vmT7EWswRgYIKwYBBQUHAQEEOjA4MDYGCCsGAQUFBzABhipodHRwOi8vb2NzcC10ZXN0LmVsZWN0cmlmeWFtZXJpY2EuY29tOjgwODAwDgYDVR0PAQH/BAQDAgEGMAoGCCqGSM49BAMCA0gAMEUCIAvUXtdhtkSs31QApigXViBfI7GR7iZGN7dSQcSTEh/MAiEA22ao571oT6g1z81hdXe5o1dEOdp7dDLv8hfwhHKhDR4="
+          },
+          "vehicleCertificate": {
+            "type": "string",
+            "description": "Provisioning Certificate in base64 encoded DER form. Deprecated in this form. Will be renamed to `provisioningCertificate` in future versions.",
+            "example": "MIIChzCCAi2gAwIBAgIQZqyzB7Lsiy3AEgqy3j16qzAKBggqhkjOPQQDAjBnMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVRWxlY3RyaWZ5IEFtZXJpY2EgTExDMRMwEQYKCZImiZPyLGQBGRYDVjJHMSMwIQYDVQQDExpVUyBPRU0gU3ViMiBDQSBURVNUIEcyLjEuMTAeFw0yMDA1MjcxNjI4MzlaFw0yNDA1MjcxNjI4MzlaMIGPMQswCQYDVQQGEwJERTEVMBMGA1UEChMMSHViamVjdCBHbWJIMRowGAYDVQQDExFodWJVc0VhVGVzdDAwMDAwNDEPMA0GA1UEBxMGQmVybGluMSswKQYJKoZIhvcNAQkBFhxzdXBwb3J0LmlzbzE1MTE4QGh1YmplY3QuY29tMQ8wDQYDVQQIEwZCZXJsaW4wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQ6W3xDW/bnPdyocQAW+rpOK54rfjBQznrtMlBFwdyVM1PYzuEf3kJtIQ4n3TTTwnqxquFZ+Cl3LhfZb4BJYmFwo4GRMIGOMBEGA1UdDgQKBAhKko8a3LDPuzAcBgNVHREEFTATghFodWJVc0VhVGVzdDAwMDAwNDATBgNVHSMEDDAKgAhJfXMIw7K7vjBGBggrBgEFBQcBAQQ6MDgwNgYIKwYBBQUHMAGGKmh0dHA6Ly9vY3NwLXRlc3QuZWxlY3RyaWZ5YW1lcmljYS5jb206ODA4MDAKBggqhkjOPQQDAgNIADBFAiEAuKsKk8xKIFo7wkg7CGvzCQXR08LqHFkuEQJ5jNWc7GMCICNVExUixZWDbGl0rd4Kqq4s87tDOxFGx4o1tLMRdY47"
+          },
+          "xsdMsgDefNamespace": {
+            "type": "string",
+            "enum": [
+              "urn:iso:15118:2:2013:MsgDef"
+            ],
+            "description": "ISO15118 Version"
+          },
+          "rootIssuerDistinguishedName": {
+            "type": "string",
+            "description": "Distinguished name of the root certificate which is the trust anchor of the given certificate chain. Deprecated in future versions. The root certificate will be determined from the Sub-CA 1 certificate automatically."
+          },
+          "rootIssuerSerialNumber": {
+            "type": "string",
+            "description": "Serial number of the root certificate which is the trust anchor of the given certificate chain. A serial number is a large integer. The interface expects and returns serial numbers in its hexadecimal representation in lower case _without_ separators. Deprecated in future versions. The root certificate will be determined from the Sub-CA 1 certificate automatically."
+          },
+          "v2gRootAuthorityKeyIdentifiers": {
+            "type": "array",
+            "description": "List of root authority key identifiers in a hex formated string (with \":\"as separator) which are installed in the EV.",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "rootAuthorityKeyIdentifier": {
+            "type": "string",
+            "description": "authority key identifier in a hex formated string (with \":\"as separator)"
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "SHA256 certificate fingerprint (informative)"
+          },
+          "previousPcid": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]{17,18}$",
+            "minLength": 17,
+            "maxLength": 18,
+            "description": "if the PCID of a vehicle changed, the OEM can use this field to store the previous identifier"
+          }
+        },
+        "required": [
+          "subCA1Certificate",
+          "vehicleCertificate",
+          "rootIssuerDistinguishedName",
+          "rootIssuerSerialNumber"
+        ]
+      }
+    }
+  }
+}

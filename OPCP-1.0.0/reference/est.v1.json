@@ -1,0 +1,246 @@
+{
+  "openapi": "3.0.0",
+  "tags": [
+    {
+      "name": "EST",
+      "description": "EST interface"
+    }
+  ],
+  "info": {
+    "title": "EST",
+    "version": "1.0",
+    "description": "The EST interface receives CSRs from CPOs, MOs, OEMs abd CPSs, signs them and delivers an ISO 15118 leaf certificate. The PKI Gateway/Certificate Manager creates the leaf certificates from the Sub 2 CA of the respective role.\n\nThis interface can create leaf certificates for CPOs (SECC Certificate), MOs (Contract Certificate), OEMs (Provisioning Certificate) and CPSs (Provisioning Signing Certificates)\n\nAn EST interface is a standard implementation, which is described in the RFC7030. For further information, please see https://tools.ietf.org/html/rfc7030 \n\nEach CA in the V2G PKI Service has its own Protocol Gateway handler, which need to be addressed in the URL postfix of the requests. The postfix is displayed below for the default named CAs:",
+    "contact": {
+      "name": "Hubject GmbH",
+      "url": "https://hubject.com",
+      "email": "support@pnc.hubject.com"
+    },
+    "termsOfService": "https://www.hubject.com/pki/",
+    "license": {
+      "url": "http://creativecommons.org/licenses/by-sa/4.0/",
+      "name": "Attribution-ShareAlike 4.0 International"
+    }
+  },
+  "servers": [],
+  "paths": {
+    "/{ca}/simpleenroll": {
+      "post": {
+        "summary": "simpleEnroll",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/pkcs7": {
+                "schema": {
+                  "type": "string",
+                  "description": "The response body is the base64 encoded PKCS7 blobb of the certificate"
+                },
+                "examples": {}
+              }
+            },
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "application/pkcs7-mime; smime-type=certs-only"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "5XX": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "simpleenroll",
+        "description": "The Certificate Request Functions are provided for each role. Each entity can get leaf certificates regarding to its role\n\n| role | CA  | End Entity ||\n| ---- | --- |--- |--- |\n| CPO  | cpo | EVSE Leaf Certificate from V2G PKI | \n| MO   | mo  | Contract Certificate from V2G PKI| \n| OEM  | oem | Provisioning (Vehicle) Certificate from V2G PKI| \n| CPS  | cps | Provisioning Signing Certificate (CPS) from V2G PKI | ",
+        "requestBody": {
+          "content": {
+            "application/pkcs10": {
+              "schema": {
+                "description": "The body is the base64 encoded CSR (Certificate Siging Request).\n\n+++Requirements for EVSE Leafs+++\n\nWhen `{ca}` path parameter is `cpo`, the CSR CommonName must match to the <EVSID> regex format `^[A-Za-z]{2}[\\*]?\\w{3}[\\*]?[E][\\w\\*]{1,30}$`. \n\nWhere `EVSEID` = `<Country Code>` `<S>` `<EVSE Operator ID>` `<S>` `<ID Type>` `<Power Outlet ID>` \n\n `Country Code` = 2 ALPHA two alphanumeric characters \n\n `EVSE Operator ID` = 3 (ALPHA / DIGIT) three alphanumeric characters, defined and listed by eMI3 group \n\n `ID Type` = “E” one character “E” indicating that this ID represents an “EVSE” \n\n `Power Outlet ID` = (ALPHA / DIGIT) *30 (ALPHA / DIGIT / S) sequence of alphanumeric characters or separators \n\n `S` = optional separator \n\n Reference: ISO 15118-2:2014, Annex H, H.2.1 EVSEID Syntax",
+                "type": "string"
+              },
+              "examples": {}
+            }
+          },
+          "description": "The Certificate Signing Request"
+        },
+        "security": [
+          {
+            "CPO": []
+          },
+          {
+            "MO_with_V2G_PKI": []
+          },
+          {
+            "OEM_with_V2G_PKI": []
+          },
+          {
+            "CPS": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "example": "mo",
+            "pattern": "^(\\w+-)?(mo|cpo|oem|cps)$"
+          },
+          "name": "ca",
+          "in": "path",
+          "required": true,
+          "description": "The Sub-CA identifier the certificate is requested from."
+        }
+      ]
+    },
+    "/{ca}/cacerts": {
+      "get": {
+        "summary": "Obtaining CA Certificates",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "content-transfer-encoding": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "base64"
+              },
+              "content-type": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "application/pkcs7-mime; smime-type=certs-only"
+              }
+            },
+            "content": {
+              "application/pkcs10": {
+                "schema": {
+                  "type": "string",
+                  "description": "The CA certificates"
+                }
+              },
+              "application/pkcs7": {
+                "schema": {
+                  "type": "string",
+                  "description": "The CA certificates"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "5XX": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "cacerts",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "Content-Transfer-Encoding",
+            "description": "application/pkcs10",
+            "required": true
+          }
+        ],
+        "description": "The distribution of CA certificates is provided by role.",
+        "security": [
+          {
+            "CPO": []
+          },
+          {
+            "MO_with_V2G_PKI": []
+          },
+          {
+            "OEM_with_V2G_PKI": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string",
+            "pattern": "^(\\w+-)?(mo|cpo|oem)$",
+            "example": "cpo"
+          },
+          "name": "ca",
+          "in": "path",
+          "required": true,
+          "description": "The Sub-CA identifier the certificate is requested from. To be prepended with a company-assigned slug for private CAs."
+        }
+      ]
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "CPO": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "",
+            "tokenUrl": "",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        },
+        "description": "OAuth2 is used to grant access to the CPO related endpoint.  "
+      },
+      "MO_with_V2G_PKI": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "",
+            "tokenUrl": "",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        },
+        "description": "OAuth2 is used to grant access to the MO related endpoint. "
+      },
+      "OEM_with_V2G_PKI": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "",
+            "tokenUrl": "",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        },
+        "description": "OAuth2 is used to grant access to the OEM related endpoint. "
+      },
+      "CPS": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "",
+            "tokenUrl": "",
+            "refreshUrl": "",
+            "scopes": {}
+          }
+        },
+        "description": "OAuth2 is used to grant access to the CPS Operator related endpoint. "
+      }
+    }
+  }
+}

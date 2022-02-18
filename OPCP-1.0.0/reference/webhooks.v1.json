@@ -1,0 +1,523 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Webhooks Interface Description",
+    "version": "1.0",
+    "contact": {
+      "name": "Hubject GmbH",
+      "url": "https://hubject.com",
+      "email": "support@pnc.hubject.com"
+    },
+    "description": "The webhooks service requires the partner to provide a simple payload-service with public endpoint to receive events as POST request. The partner can subscribe to events which are getting created in the Plug&Charge Ecosystem. This enables a flexible independend development of each partner with Plug&Charge and also a flexble improvement of the Ecosystem itself.",
+    "termsOfService": "https://www.hubject.com/pki/",
+    "license": {
+      "name": "Attribution-ShareAlike 4.0 International",
+      "url": "http://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  "servers": [],
+  "paths": {
+    "/v1/webhook/endpoints": {
+      "parameters": [],
+      "post": {
+        "description": "A webhook endpoint must have a url and a list of enabled_events,  then webhook endpoint notifies the specified url about events.\n",
+        "summary": "Create webhook endpoint",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EndpointResponse"
+                },
+                "examples": {
+                  "endpoint-created": {
+                    "value": {
+                      "id": "xyzedjds",
+                      "apiVersion": "v1",
+                      "created": 1623760573,
+                      "description": "Test webhook",
+                      "enabledEvents": [
+                        "oem.contract.created",
+                        "oem.contract.deleted"
+                      ],
+                      "metadata": {},
+                      "status": "enabled",
+                      "url": "https://mywebhooks.com/payload",
+                      "secret": "secret keyword"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "create-webhook-endpoint",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EndpointRequest"
+              },
+              "examples": {
+                "create-webhook-example": {
+                  "value": {
+                    "description": "This my webhook",
+                    "enabledEvents": [
+                      "oem.contract.created",
+                      "oem.contract.updated",
+                      "oem.contract.deleted"
+                    ],
+                    "status": "enabled",
+                    "url": "https://mywebhooks.com/payload"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Request body for creating webhook endpoint"
+        }
+      },
+      "get": {
+        "summary": "Get all endpoints",
+        "operationId": "get-webhook-endpoints",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EndpointResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "description": "Returns users all webhook endpoints"
+      }
+    },
+    "/v1/webhook/endpoints/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Endpoint ID"
+        }
+      ],
+      "get": {
+        "summary": "Get webhook endpoint",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EndpointResponse"
+                },
+                "examples": {
+                  "get-endpoint": {
+                    "value": {
+                      "id": "xyzedjds",
+                      "apiVersion": "v1",
+                      "created": 1623760573,
+                      "description": "Test webhook",
+                      "enabledEvents": [
+                        "oem.contract.created",
+                        "oem.contract.deleted"
+                      ],
+                      "metadata": {},
+                      "status": "enabled",
+                      "url": "https://mywebhooks.com/payload",
+                      "secret": "secret keyword",
+                      "providerIds": [
+                        "ABCDF",
+                        "DEQUF"
+                      ],
+                      "wmis": [
+                        "XXX",
+                        "YYY",
+                        "ZZZ"
+                      ],
+                      "userRole": "MO",
+                      "userName": "Test User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "get-webhook-endpoint",
+        "description": "Returns webhook endpoint for given ID",
+        "parameters": []
+      },
+      "put": {
+        "summary": "Update existing webhook endpoint",
+        "operationId": "update-webhook-endpoint",
+        "description": "Updates the webhook endpoint. You may edit the url, the list of enabled_events, and the status of your endpoint.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EndpointResponse"
+                },
+                "examples": {
+                  "endpoint-updated": {
+                    "value": {
+                      "id": "xyzedjds",
+                      "apiVersion": "v1",
+                      "created": 1623760573,
+                      "description": "Test webhook",
+                      "enabledEvents": [
+                        "oem.contract.created",
+                        "oem.contract.deleted"
+                      ],
+                      "metadata": {},
+                      "status": "enabled",
+                      "url": "https://mywebhooks.com/payload"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EndpointUpdateRequest"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete webhook endpoint",
+        "operationId": "delete-webhook-endpoint",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "description": "deletes webhook endpoint for given id"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Event": {
+        "type": "string",
+        "enum": [
+          "root.cert.added",
+          "root.cert.expired",
+          "mo.prov.cert.updated",
+          "mo.prov.cert.deleted",
+          "mo.prov.cert.updated.factory.reset",
+          "mo.contract.delivered.to.oem",
+          "mo.contract.created.sent.to.oem",
+          "mo.contract.updated.sent.to.oem",
+          "mo.contract.deleted.sent.to.oem",
+          "mo.contract.rejected.by.oem",
+          "mo.contract.queued.to.oem",
+          "oem.contract.created",
+          "oem.contract.updated",
+          "oem.contract.deleted"
+        ]
+      },
+      "Events": {
+        "type": "array",
+        "x-oapi-codegen-extra-tags": {
+          "validate": "required,contains-valid-event-type"
+        },
+        "description": "The list of events to enable for this endpoint. You may specify one or multiple events.",
+        "items": {
+          "$ref": "#/components/schemas/Event"
+        }
+      },
+      "EndpointRequest": {
+        "type": "object",
+        "properties": {
+          "apiVersion": {
+            "type": "string",
+            "description": "Optional: Events sent to this endpoint will be generated with this version."
+          },
+          "description": {
+            "type": "string",
+            "description": "An optional description of what the webhook is used for."
+          },
+          "enabledEvents": {
+            "$ref": "#/components/schemas/Events"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format."
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the webhook. It can be enabled or disabled."
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL of the webhook endpoint.",
+            "x-oapi-codegen-extra-tags": {
+              "validate": "required,url"
+            }
+          }
+        },
+        "required": [
+          "enabledEvents",
+          "url"
+        ],
+        "x-examples": {
+          "EndpointRequest example": {
+            "value": {
+              "description": "Description",
+              "enabledEvents": [
+                "oem.contract.created",
+                "contract.deleted"
+              ],
+              "metadata": {},
+              "status": "enabled",
+              "url": "https://mywebhooks.com/payload"
+            }
+          }
+        },
+        "description": ""
+      },
+      "EndpointUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "apiVersion": {
+            "type": "string",
+            "description": "Optional: Events sent to this endpoint will be generated with this version."
+          },
+          "description": {
+            "type": "string",
+            "description": "An optional description of what the webhook is used for."
+          },
+          "enabledEvents": {
+            "$ref": "#/components/schemas/Events"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format."
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the webhook. It can be enabled or disabled."
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL of the webhook endpoint.",
+            "x-oapi-codegen-extra-tags": {
+              "validate": "url,required"
+            }
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "x-examples": {
+          "EndpointRequest example": {
+            "value": {
+              "description": "Description",
+              "enabledEvents": [
+                "contract.created",
+                "contract.deleted"
+              ],
+              "metadata": {},
+              "status": "enabled",
+              "url": "https://mywebhooks.com/payload"
+            }
+          }
+        }
+      },
+      "EndpointResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the object."
+          },
+          "apiVersion": {
+            "type": "string",
+            "description": "The API version events are rendered as for this webhook endpoint."
+          },
+          "created": {
+            "type": "integer",
+            "description": "Created DateTime of endpoint"
+          },
+          "description": {
+            "type": "string",
+            "description": "An optional description of what the webhook is used for."
+          },
+          "enabledEvents": {
+            "type": "array",
+            "description": "The list of events to enable for this endpoint.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format."
+          },
+          "status": {
+            "type": "string",
+            "description": "The status of the webhook. It can be enabled or disabled."
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL of the webhook endpoint."
+          },
+          "secret": {
+            "type": "string",
+            "description": "The Secret of the webhook endpoint, it will be used authorization"
+          },
+          "providerIds": {
+            "type": "array",
+            "description": "The list of Provider ID's of MO user, provided when user role is MO",
+            "items": {
+              "type": "string"
+            }
+          },
+          "wmis": {
+            "type": "array",
+            "description": "The list of WMIs of OEM user, provided when user role is OEM",
+            "items": {
+              "type": "string"
+            }
+          },
+          "userRole": {
+            "type": "string",
+            "description": "User role e.g OEM, MO"
+          },
+          "userName": {
+            "type": "string",
+            "description": "UserName of the owner of the Webhook"
+          }
+        },
+        "required": [
+          "id",
+          "created",
+          "enabledEvents",
+          "url"
+        ],
+        "x-examples": {
+          "example": {
+            "value": {
+              "id": "xyzedjds",
+              "apiVersion": "v1",
+              "created": 1623760573,
+              "description": "Test webhook",
+              "enabledEvents": [
+                "oem.contract.created",
+                "oem.contract.deleted"
+              ],
+              "metadata": {},
+              "status": "enabled",
+              "url": "https://mywebhooks.com/payload",
+              "secret": "secret keyword",
+              "providerIds": [
+                "ABCDF",
+                "DEQUF"
+              ],
+              "wmis": [
+                "XXX",
+                "YYY",
+                "ZZZ"
+              ],
+              "userRole": "MO",
+              "userName": "Test User"
+            }
+          }
+        }
+      }
+    }
+  }
+}

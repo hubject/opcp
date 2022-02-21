@@ -20,7 +20,7 @@ As it is important to archieve best possible interoperability in the eMobility m
   - Interoperability between Ecosystems, V2G Root Operators etc
     - Multi Root -> CertificateSigningCertificate ability
     - Pool collaboration
-  - ISO15118-20 prepared (seperate Namespace already in account)   
+  - ISO15118-20 prepared (separate Namespace already in account)   
 
 ## Releases
   - [OPCP 1.0.0](./OPCP-1.0.0/docs/README.md)

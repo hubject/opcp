@@ -48,7 +48,7 @@ The CCP finds the contracts of this EV, verifies the validity of each certificat
 ### Contract Conclusion and Vehicle Assignment
 
 This process describes, the conclusion of contract between customer and MO and delivery of OEM provisioning certificate of vehicle to the MO.
-The MO must receive the contract information from a customer including the PCID of the vehicle. The Provisioning Certificate with the regarding PCID must be sent by the MO to the PCP beforehand. The PCP delivers the OEM provisioning certificate, including the corresponding Sub CA chain (See Figure 5).
+The MO must receive the contract information from a customer including the PCID of the vehicle. The MO can retrieve the Provisioning Certificate from the PCP with the supplied PCID. This Provisioning Certificate must've been sent by the OEM to the PCP beforehand. The PCP delivers the OEM provisioning certificate, including the corresponding Sub CA chain (See Figure 5).
 
 After verifying the authenticity of the trust chain with the OEM root certificate (which has been received from the Root Certificate Pool), the MO can generate a unique e-mobility account identifier for this contract. To create a contract for the customer, MOs have two possibilities:
 

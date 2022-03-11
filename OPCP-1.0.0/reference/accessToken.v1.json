@@ -12,7 +12,7 @@
     "termsOfService": "https://www.hubject.com/pki/",
     "license": {
       "name": "Attribution-ShareAlike 4.0 International",
-      "url": "http://creativecommons.org/licenses/by-sa/4.0/"
+      "url": "https://creativecommons.org/licenses/by-sa/4.0/"
     }
   },
   "servers": [],
@@ -135,7 +135,7 @@
                     "type": "string",
                     "format": "uri",
                     "example": "https://eu.plugncharge-qa.hubject.com",
-                    "description": "Url of the stage and worldregion"
+                    "description": "URL of the stage and worldregion"
                   },
                   "grant_type": {
                     "type": "string",

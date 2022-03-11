@@ -8,7 +8,7 @@
  * __CPS__: Certificate provisioning service
  * __CRL__: Certificate revocation list
  * __CSR__: Certificate signing request
- * __DHPublicKey__: Diffie-Helman public key
+ * __DHPublicKey__: Diffie–Hellman public key
  * __DN__: Distinguished name
  * __EMAID__: e-mobility account identifier
  * __EVSE__: Electric vehicle supply equipment

@@ -12,7 +12,7 @@
     "termsOfService": "https://www.hubject.com/pki/",
     "license": {
       "name": "Attribution-ShareAlike 4.0 International",
-      "url": "http://creativecommons.org/licenses/by-sa/4.0/"
+      "url": "https://creativecommons.org/licenses/by-sa/4.0/"
     }
   },
   "servers": [],
@@ -777,9 +777,9 @@
           },
           "subscriptionUrl": {
             "type": "string",
-            "example": "http://testmo.com/subscriptions/v2g",
+            "example": "https://testmo.com/subscriptions/v2g",
             "pattern": "^(https?|http)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]",
-            "description": "URL which could be given bei MO to allow extended information exchange for a given contract"
+            "description": "URL which could be given by MO to allow extended information exchange for a given contract"
           },
           "cpsRootCertificateId": {
             "type": "string",

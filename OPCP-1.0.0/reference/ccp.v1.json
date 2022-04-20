@@ -258,17 +258,43 @@
         "operationId": "addSignedContractData",
         "responses": {
           "201": {
-            "description": "Created",
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ContractCertificate"
+                  "description": "",
+                  "type": "object",
+                  "properties": {
+                    "errorMessages": {
+                      "type": "array",
+                      "items": {
+                        "required": [],
+                        "properties": {}
+                      }
+                    },
+                    "traceId": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "errorMessages",
+                    "traceId"
+                  ],
+                  "x-examples": {
+                    "example-1": {
+                      "errorMessages": [
+                        "The validUntil date of contract certificate is in the past."
+                      ],
+                      "traceId": "42893efb-2cc3-4b02-b570-d0cc31319e3b"
+                    }
+                  }
                 }
               }
             }
-          },
-          "400": {
-            "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"

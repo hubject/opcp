@@ -17,9 +17,9 @@ All CCP API's documentation are available at [ccp.v1.json](../../reference/ccp.v
 
 ## Processes
 
-The Contracy Certificate Pool (CCP) is involved in multiple processes across the ecosystem. The Direct Processes are described bellow:
+The Contract Certificate Pool (CCP) is involved in multiple processes across the ecosystem. The Direct Processes are described bellow:
 
-### 1. Publish a Provisioning Certificate
+### 1. Publish a Contract Certificate
 
 The Contract Certificate pool can receive contracts by two means: 
 1- Contracts forwarded by the CPS 

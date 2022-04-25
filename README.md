@@ -25,6 +25,9 @@ As it is important to achieve best possible interoperability in the eMobility ma
 ## Releases
   - [OPCP 1.0.0](./OPCP-1.0.0/docs/README.md)
 
+## Contribution
+  - [How to contribute](./OPCP-1.0.0/docs/CONTRIBUTION.md)
+
 ## License
 [![CC BY-SA 4.0][cc-by-sa-shield]][cc-by-sa]
 

@@ -684,7 +684,7 @@
           "emaid": {
             "type": "string",
             "description": "Contract identifier of contract certificate",
-            "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
+            "pattern": "^[A-Za-z]{2}\\w{12,13}$",
             "minLength": 14,
             "maxLength": 15
           },

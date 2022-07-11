@@ -6,7 +6,7 @@ To establish secure connections via HTTPS, Transport Layer Security via TLS 1.3 
 
 ## Oauth2
 
-It is recommended in using [OAuth2](https://tools.ietf.org/html/rfc6749)as authentication method. You will need to issue a [JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519) that can be obtained by different ways as described in the following sections. The token will contain information about what you are allowed to do, e.g. role (CPO, MO, OEM, CPS), what APIs you are allowed to use and which EMAIDs or PCIDs you are allowed to check.
+It is recommended in using [OAuth2](https://tools.ietf.org/html/rfc6749) as authentication method. You will need to issue a [JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519) that can be obtained by different ways as described in the following sections. The token will contain information about what you are allowed to do, e.g. role (CPO, MO, OEM, CPS), what APIs you are allowed to use and which EMAIDs or PCIDs you are allowed to check.
 
 The issued token will contain all necessary information to access the system (you can check this online on your own e.g. [jwt.io](https://jwt.io/)). 
 
@@ -15,7 +15,7 @@ The issued token will contain all necessary information to access the system (yo
 Depending on the role and the company the access rights are distinct. 
 
 ### OEM
-Depending on the WMI in the PCID (first 3 characters), the OEM has read/write access to its data. Please always inform the ecosystem operator of the needed WMIs activly. If the correct data are not configured, the Plug&Charge Ecosystem will deny the access to perfom the action.
+Depending on the WMI in the PCID (first 3 characters), the OEM has read/write access to its data. Please always inform the ecosystem operator of the needed WMIs actively. If the correct data are not configured, the Plug&Charge Ecosystem will deny the access to perfom the action.
 
 ### MO
 Depending on the EMAID (first 5 characters - CountryCode + ProviderID), the MO has read/write access to its data. Please always inform the ecosystem operator of the needed Country Codes and ProviderIDs activly. If the correct data are not configured, the Plug&Charge Ecosystem will deny the access to perfom the action.

@@ -22,9 +22,9 @@ MO Plug&Charge Contract Service can be part of Plug&Charge CPS Services and prov
 
 ## EST interface
 
-EST interface receives CSRs from CPOs, CPSs, MOs or OEMs, signs them and delivers an ISO 15118 leaf certificate. The Hubject Certificate Manager creates the leaf certificates from the reagarding Sub 2 CA of the respective part of the V2G Root CA.
+EST interface receives CSRs from CPOs, CPSs, MOs or OEMs, signs them and delivers an ISO 15118 leaf certificate. The Hubject Certificate Manager creates the leaf certificates from the regarding Sub 2 CA of the respective part of the V2G Root CA.
 
-This interface can create certificates for CPOs (EVSE leaf certificate), MOs (contract leaf certificate), CPSs (certificate provisioinig certificates) and OEMs (OEM provisioning certificates)
+This interface can create certificates for CPOs (EVSE leaf certificate), MOs (contract leaf certificate), CPSs (certificate provisioning certificates) and OEMs (OEM provisioning certificates)
 
 A valid authentication to the EST services is necessary to use this interface.
 

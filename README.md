@@ -2,11 +2,11 @@
 
 Here you can find all documents and information about the open-source "Open Plug&Charge Protocol" (OPCP).
 
-The OPCP protocol is already in productive use since 2019. Many vehicle OEMs, Mobility Operators and Chargepoint Operators are already using this protocol in creating, transfering, signing etc. of Plug&Charge related information based on the standard ISO15118-2 and the VDE Application Guide.
+The OPCP protocol is already in productive use since 2019. Many vehicle OEMs, Mobility Operators and Chargepoint Operators are already using this protocol in creating, transferring, signing etc. of Plug&Charge related information based on the standard ISO15118-2 and the VDE Application Guide.
 
-As it is important to achieve best possible interoperability in the eMobility market it is crucial to use the same protocols in the Plug&Charge usecase.
+As it is important to achieve the best possible interoperability in the eMobility market it is crucial to use the same protocols in the Plug&Charge use case.
 
-## OPCP enables and reflects following usecases:
+## OPCP enables and reflects following use cases:
   - independent Service Operation
     - [RCP Service](./OPCP-1.0.0/docs/components/01_root-certificate-pool.md)
     - [PCP Service](./OPCP-1.0.0/docs/components/02_provisioning-certificate-pool.md)
@@ -14,7 +14,6 @@ As it is important to achieve best possible interoperability in the eMobility ma
     - [CCP Service](./OPCP-1.0.0/docs/components/04_contract-certificate-pool.md)
     - [PKI Authorities](./OPCP-1.0.0/docs/components/05_v2g-pki-services.md)
   - [Authentication Method](./OPCP-1.0.0/docs/04_authentication.md)
-  - [Role specific authentication](./OPCP-1.0.0/docs/04_authentication.md)
   - Multiple Contracts (EMAIDs) for one Vehicle (PCID)
   - [Standardized Event Service](./OPCP-1.0.0/docs/components/06_webhook-service.md)
   - Interoperability between Ecosystems, V2G Root Operators etc

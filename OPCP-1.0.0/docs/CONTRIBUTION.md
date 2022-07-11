@@ -14,7 +14,7 @@ If you spot a problem with the docs, search if an issue already exists. If a rel
 
 When you're finished with the changes, create a pull request, also known as a PR.
 - we will check and comment
-- if no conflicts would occure while merging we will solve the PR
+- if no conflicts would occur while merging we will solve the PR
 - the solved PR will be merged into the repository
 
 ### Your PR is merged!

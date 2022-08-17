@@ -62,7 +62,7 @@
           }
         },
         "operationId": "simpleenroll",
-        "description": "The Certificate Request Functions are provided for each role. Each entity can get leaf certificates regarding to its role\n\n| role | CA  | End Entity ||\n| ---- | --- |--- |--- |\n| CPO  | cpo | EVSE Leaf Certificate from V2G PKI | \n| MO   | mo  | Contract Certificate from V2G PKI| \n| OEM  | oem | Provisioning (Vehicle) Certificate from V2G PKI| \n| CPS  | cps | Provisioning Signing Certificate (CPS) from V2G PKI | ",
+        "description": "The Certificate Request Functions are provided for each role. Each entity can get leaf certificates regarding to its role\n\n| role | CA  | End Entity ||\n| ---- | --- |--- |--- |\n| CPO  | cpo | EVSE Leaf Certificate from V2G PKI | \n| MO   | mo  | Contract Certificate from V2G PKI| \n| OEM  | oem | Provisioning Certificate from V2G PKI| \n| OEM  | veh | Vehicle Certificate from V2G PKI (ISO15118:20)| \n| CPS  | cps | Provisioning Signing Certificate (CPS) from V2G PKI | ",
         "requestBody": {
           "content": {
             "application/pkcs10": {
@@ -95,12 +95,48 @@
           "schema": {
             "type": "string",
             "example": "mo",
-            "pattern": "^(\\w+-)?(mo|cpo|oem|cps)$"
+            "pattern": "^(\\w+-)?(mo|cpo|oem|cps|veh)$",
+            "enum": [
+              "mo",
+              "cps",
+              "oem",
+              "cpo",
+              "veh"
+            ]
           },
           "name": "ca",
           "in": "path",
           "required": true,
           "description": "The Sub-CA identifier the certificate is requested from."
+        },
+        {
+          "schema": {
+            "type": "string",
+            "default": "urn:iso:15118:2:2013:MsgDef",
+            "enum": [
+              "urn:iso:15118:20:2020:MsgDef",
+              "urn:iso:15118:2:2013:MsgDef"
+            ],
+            "example": "urn:iso:15118:2:2013:MsgDef"
+          },
+          "in": "query",
+          "name": "xsdMsgDefNamespace",
+          "description": "specific ISO version"
+        },
+        {
+          "schema": {
+            "type": "string",
+            "example": "secp521r1",
+            "default": "secp256r1,secp521r1",
+            "enum": [
+              "secp256r1",
+              "ed448",
+              "secp521r1"
+            ]
+          },
+          "in": "query",
+          "name": "algorithm",
+          "description": "define which algorithm shall be used. In urn:iso:15118:2:2013:MsgDef: the default algorithm is secp256r1. In urn:iso:15118:20:2020:MsgDef: the default algorithm is secp521r1  "
         }
       ]
     },
@@ -160,9 +196,38 @@
             "name": "Content-Transfer-Encoding",
             "description": "application/pkcs10",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "default": "urn:iso:15118:2:2013:MsgDef",
+              "enum": [
+                "urn:iso:15118:20:2020:MsgDef",
+                "urn:iso:15118:2:2013:MsgDef"
+              ],
+              "example": "urn:iso:15118:2:2013:MsgDef"
+            },
+            "in": "query",
+            "name": "xsdMsgDefNamespace",
+            "description": "specific ISO version"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "secp521r1",
+              "default": "secp256r1,secp521r1",
+              "enum": [
+                "secp256r1",
+                "ed448",
+                "secp521r1"
+              ]
+            },
+            "in": "query",
+            "name": "algorithm",
+            "description": "define which algorithm shall be used. In urn:iso:15118:2:2013:MsgDef: the default algorithm is secp256r1. In urn:iso:15118:20:2020:MsgDef: the default algorithm is secp521r1  "
           }
         ],
-        "description": "The distribution of CA certificates is provided by role.",
+        "description": "The distribution of CA certificates is provided by role.\n| role | CA  | Chain||\n| ---- | --- |--- |--- |\n| CPO  | cpo | CPO/CPMS from V2G PKI | \n| MO   | mo  | MO from V2G PKI| \n| OEM  | oem | Provisioning Certificate chain from V2G PKI| \n| OEM  | veh | Vehicle Certificate chain from V2G PKI (ISO15118:20)| \n| CPS  | cps | Provisioning Signing Certificate (CPS) chain from V2G PKI | ",
         "security": [
           {
             "CPO": []
@@ -179,13 +244,20 @@
         {
           "schema": {
             "type": "string",
-            "pattern": "^(\\w+-)?(mo|cpo|oem)$",
-            "example": "cpo"
+            "pattern": "^(\\w+-)?(mo|cpo|oem|veh|cps)$",
+            "example": "cpo",
+            "enum": [
+              "cpo",
+              "oem",
+              "cps",
+              "veh",
+              "mo"
+            ]
           },
           "name": "ca",
           "in": "path",
           "required": true,
-          "description": "The Sub-CA identifier the certificate is requested from. To be prepended with a company-assigned slug for private CAs."
+          "description": "The Sub-CA identifier the certificate is requested from. "
         }
       ]
     }

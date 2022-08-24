@@ -249,6 +249,16 @@
             "in": "header",
             "name": "alwaysReturnEXI",
             "description": "To receive a ISO15118 response even for error cases, set this parameter to true "
+          },
+          {
+            "schema": {
+              "type": "boolean",
+              "default": "false",
+              "example": "true"
+            },
+            "in": "header",
+            "description": "if set to true - this call is not getting forwarded to other Ecosystems ",
+            "name": "broadcast"
           }
         ]
       },

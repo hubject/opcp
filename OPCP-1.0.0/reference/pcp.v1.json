@@ -143,6 +143,18 @@
           {
             "OEM": []
           }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "boolean",
+              "default": "false",
+              "example": "true"
+            },
+            "in": "header",
+            "description": "if set to true - this call is not getting forwarded to other Ecosystems ",
+            "name": "broadcast"
+          }
         ]
       },
       "delete": {

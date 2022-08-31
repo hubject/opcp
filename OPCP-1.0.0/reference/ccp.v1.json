@@ -243,8 +243,8 @@
           {
             "schema": {
               "type": "boolean",
-              "example": "true",
-              "default": "true"
+              "example": true,
+              "default": true
             },
             "in": "header",
             "name": "alwaysReturnEXI",
@@ -253,8 +253,8 @@
           {
             "schema": {
               "type": "boolean",
-              "default": "false",
-              "example": "true"
+              "default": false,
+              "example": true
             },
             "in": "header",
             "description": "if set to true - this call is not getting forwarded to other Ecosystems ",
@@ -633,7 +633,7 @@
           "description": "The related Provisioning Certificate ID."
         }
       ],
-      "put": {
+      "post": {
         "summary": "Define Contract as Default for Offline installation",
         "tags": [
           "contract-certificate-pool-controller",
@@ -641,20 +641,8 @@
           "OEM"
         ],
         "operationId": "setDefaultContract",
-        "description": "The CCP offers this additional interface to set an existing signed contract data as default. A starred Contract-Data will always be send in the CertificateInstallationRequest. The OEM will requests the endpoint to mark a contract as default for a PCID for an offline installation.\n\n| Prio                                            | \n|--------------------------------------------------|\n| The first created Contract will be always the default |\n| If a default contract gets deleted, the contract with the lowest prio number (1-is default) gets the new default contract - an notification will be send to the OEM  (not yet implemented)|",
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "example": 1,
-              "default": 1,
-              "pattern": "^[1-9]\\d*$"
-            },
-            "in": "query",
-            "name": "priority",
-            "description": "Define position of contract"
-          }
-        ],
+        "description": "The CCP offers this additional interface to set an existing signed contract data as default. The default Contract-Data will always be send in the CertificateInstallationRequest. The OEM will requests the endpoint to mark a contract (based on EMAID) as default for a PCID for an offline installation.\n\n| Prio                                            | \n|--------------------------------------------------|\n| The first created Contract will be always the default |\n| If a default contract gets deleted, no contract will automaticly set as the new default contract - an notification will be send to the OEM|",
+        "parameters": [],
         "security": [
           {
             "OEM": []

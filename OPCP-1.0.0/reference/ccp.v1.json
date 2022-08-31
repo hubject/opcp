@@ -1082,7 +1082,7 @@
                 "defaultContract": {
                   "type": "boolean",
                   "description": "If set to true it will get delivered as certificateInstallationResponse. the value is defined by the OEM/User if multiple contracts are stored in the CCP for one PCID.",
-                  "example": "true",
+                  "example": true,
                   "enum": [
                     true,
                     false
@@ -1110,7 +1110,7 @@
                   "type": "string",
                   "description": "Reflects the subjects distinguished name of the used V2G Root PKI. (informative)",
                   "pattern": "^((CN|OU|O|C|DC|ST)=[^,]+,? ?)+$",
-                  "example": "\"CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE\""
+                  "example": "CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE"
                 }
               }
             }

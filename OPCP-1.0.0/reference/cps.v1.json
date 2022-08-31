@@ -718,7 +718,7 @@
             "type": "string",
             "description": "Reflects the subjects distinguished name of the used V2G Root PKI. (informative)",
             "pattern": "^((CN|OU|O|C|DC|ST)=[^,]+,? ?)+$",
-            "example": "\"CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE\""
+            "example": "CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE"
           }
         },
         "required": [

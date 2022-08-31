@@ -606,7 +606,7 @@
         ]
       }
     },
-    "/v1/ccp/signedContractData/priorities/{emaid}/{pcid}": {
+    "/v1/ccp/signedContractData/{pcid}/{emaid}/default": {
       "parameters": [
         {
           "schema": {

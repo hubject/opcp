@@ -1050,7 +1050,7 @@
                 "emaid": "stringstringst",
                 "xsdMsgDefNamespace": "urn:iso:15118:2:2013:MsgDef",
                 "contractCertificate": "string",
-                "priority": 1,
+                "defaultContract": true,
                 "certValidFrom": "2019-08-24T14:15:22Z",
                 "certValidTo": "2019-08-24T14:15:22Z",
                 "cpsRootCertificateId": "896b6655-180e-4304-b642-606bb00df8f0",
@@ -1091,12 +1091,14 @@
                   "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
                   "maxLength": 800
                 },
-                "priority": {
-                  "type": "integer",
-                  "description": "Priority for the certificateInstallationResponse. 1 supposed to be the highst priority ",
-                  "minimum": 1,
-                  "exclusiveMaximum": false,
-                  "example": 1
+                "defaultContract": {
+                  "type": "boolean",
+                  "description": "If set to true it will get delivered as certificateInstallationResponse. the value is defined by the OEM/User if multiple contracts are stored in the CCP for one PCID.",
+                  "example": "true",
+                  "enum": [
+                    true,
+                    false
+                  ]
                 },
                 "certValidFrom": {
                   "type": "string",

@@ -14,7 +14,7 @@ A webhook enables our ecosystem to push real-time notifications to your backend 
 
 ### Available Events
 
-The available event notificationare listed in the interface API itself:
+The available event notifications are listed in the interface API itself:
 [Event Actions](../../reference/webhooks.v1.json)
 
 ## API

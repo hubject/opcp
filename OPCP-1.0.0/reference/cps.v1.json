@@ -643,16 +643,12 @@
           "pcid": {
             "type": "string",
             "pattern": "^[a-zA-Z0-9]{17,18}$",
-            "description": "PCID of the Provisioning certificate which need to fit to the common Name of the provisiong cetificate which shall be used for the validation.",
-            "minLength": 17,
-            "maxLength": 18
+            "description": "PCID of the Provisioning certificate which need to fit to the common Name of the provisiong cetificate which shall be used for the validation."
           },
           "emaid": {
             "type": "string",
             "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
-            "description": "EMAID of the contract which need to fit to the common Name of the contract certificate itself",
-            "minLength": 14,
-            "maxLength": 15
+            "description": "EMAID of the contract which need to fit to the common Name of the contract certificate itself"
           },
           "cpsRootCertificateId": {
             "type": "string",
@@ -684,16 +680,12 @@
           "emaid": {
             "type": "string",
             "description": "Contract identifier of contract certificate",
-            "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
-            "minLength": 14,
-            "maxLength": 15
+            "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$"
           },
           "pcid": {
             "type": "string",
             "description": "PCID of regarding vehicle certificate",
-            "pattern": "^[a-zA-Z0-9]{17,18}$",
-            "minLength": 17,
-            "maxLength": 18
+            "pattern": "^[a-zA-Z0-9]{17,18}$"
           },
           "signedData": {
             "type": "string",
@@ -757,16 +749,12 @@
           "emaid": {
             "type": "string",
             "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
-            "description": "contract identifier of contract certificate",
-            "minLength": 14,
-            "maxLength": 15
+            "description": "contract identifier of contract certificate"
           },
           "pcid": {
             "type": "string",
             "pattern": "^[a-zA-Z0-9]{17,18}$",
-            "description": "PCID of vehicle certificate",
-            "minLength": 17,
-            "maxLength": 18
+            "description": "PCID of vehicle certificate"
           },
           "xsdMsgDefNamespace": {
             "type": "string",
@@ -947,9 +935,7 @@
           "pcid": {
             "type": "string",
             "description": "PCID of the Provisioning certificate",
-            "pattern": "^[a-zA-Z0-9]{17,18}$",
-            "minLength": 17,
-            "maxLength": 18
+            "pattern": "^[a-zA-Z0-9]{17,18}$"
           },
           "xsdMsgDefNamespace": {
             "type": "string",
@@ -984,16 +970,12 @@
             "type": "string",
             "description": "PCID of the Provisioning certificate, if null - no pcid was provided",
             "pattern": "^[a-zA-Z0-9]{17,18}$",
-            "minLength": 17,
-            "maxLength": 18,
             "nullable": true
           },
           "emaid": {
             "type": "string",
             "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
-            "description": "contract identifier of contract certificate",
-            "minLength": 14,
-            "maxLength": 15
+            "description": "contract identifier of contract certificate"
           },
           "xsdMsgDefNamespace": {
             "type": "string",

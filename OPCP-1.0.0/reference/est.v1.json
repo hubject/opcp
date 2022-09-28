@@ -23,7 +23,7 @@
   },
   "servers": [],
   "paths": {
-    "/{ca}/simpleenroll": {
+    "/.well-known/est/{ca}/simpleenroll/{iso-version}": {
       "post": {
         "summary": "simpleEnroll",
         "tags": [],
@@ -88,7 +88,8 @@
           {
             "CPS": []
           }
-        ]
+        ],
+        "parameters": []
       },
       "parameters": [
         {
@@ -112,6 +113,20 @@
         {
           "schema": {
             "type": "string",
+            "example": "ISO15118-20",
+            "enum": [
+              "ISO15118-20",
+              "ISO15118-2"
+            ],
+            "default": "ISO15118-2"
+          },
+          "name": "iso-version",
+          "in": "path",
+          "description": "The ISO version which shall be used. If not set, ISO15118:2 will be used as default"
+        },
+        {
+          "schema": {
+            "type": "string",
             "default": "urn:iso:15118:2:2013:MsgDef",
             "enum": [
               "urn:iso:15118:20:2020:MsgDef",
@@ -122,25 +137,10 @@
           "in": "query",
           "name": "xsdMsgDefNamespace",
           "description": "specific ISO version"
-        },
-        {
-          "schema": {
-            "type": "string",
-            "example": "secp521r1",
-            "default": "secp256r1,secp521r1",
-            "enum": [
-              "secp256r1",
-              "ed448",
-              "secp521r1"
-            ]
-          },
-          "in": "query",
-          "name": "algorithm",
-          "description": "define which algorithm shall be used. In urn:iso:15118:2:2013:MsgDef: the default algorithm is secp256r1. In urn:iso:15118:20:2020:MsgDef: the default algorithm is secp521r1  "
         }
       ]
     },
-    "/{ca}/cacerts": {
+    "/{ca}/cacerts/{iso-version}/{algorithm}/": {
       "get": {
         "summary": "Obtaining CA Certificates",
         "tags": [],
@@ -196,38 +196,9 @@
             "name": "Content-Transfer-Encoding",
             "description": "application/pkcs10",
             "required": true
-          },
-          {
-            "schema": {
-              "type": "string",
-              "default": "urn:iso:15118:2:2013:MsgDef",
-              "enum": [
-                "urn:iso:15118:20:2020:MsgDef",
-                "urn:iso:15118:2:2013:MsgDef"
-              ],
-              "example": "urn:iso:15118:2:2013:MsgDef"
-            },
-            "in": "query",
-            "name": "xsdMsgDefNamespace",
-            "description": "specific ISO version"
-          },
-          {
-            "schema": {
-              "type": "string",
-              "example": "secp521r1",
-              "default": "secp256r1,secp521r1",
-              "enum": [
-                "secp256r1",
-                "ed448",
-                "secp521r1"
-              ]
-            },
-            "in": "query",
-            "name": "algorithm",
-            "description": "define which algorithm shall be used. In urn:iso:15118:2:2013:MsgDef: the default algorithm is secp256r1. In urn:iso:15118:20:2020:MsgDef: the default algorithm is secp521r1  "
           }
         ],
-        "description": "The distribution of CA certificates is provided by role.\n| role | CA  | Chain||\n| ---- | --- |--- |--- |\n| CPO  | cpo | CPO/CPMS from V2G PKI | \n| MO   | mo  | MO from V2G PKI| \n| OEM  | oem | Provisioning Certificate chain from V2G PKI| \n| OEM  | veh | Vehicle Certificate chain from V2G PKI (ISO15118:20)| \n| CPS  | cps | Provisioning Signing Certificate (CPS) chain from V2G PKI | ",
+        "description": "The distribution of CA certificates is provided by role.\n| role | CA  | Chain||\n| ---- | --- |--- |--- |\n| CPO  | cpo | CPO/CPMS from V2G PKI | \n| MO   | mo  | MO from V2G PKI| \n| OEM  | oem | Provisioning Certificate chain from V2G PKI| \n| OEM  | veh | Vehicle Certificate chain from V2G PKI secp256r1 (ISO15118:20)| \n| CPS  | cps | Provisioning Signing Certificate (CPS) chain from V2G PKI | ",
         "security": [
           {
             "CPO": []
@@ -258,6 +229,34 @@
           "in": "path",
           "required": true,
           "description": "The Sub-CA identifier the certificate is requested from. "
+        },
+        {
+          "schema": {
+            "type": "string",
+            "default": "ISO15118-2",
+            "enum": [
+              "ISO15118-20",
+              "ISO15118-2"
+            ]
+          },
+          "name": "iso-version",
+          "in": "path",
+          "description": "The ISO version which shall be used. If not set, ISO15118:2 will be used as default"
+        },
+        {
+          "schema": {
+            "type": "string",
+            "enum": [
+              "secp256r1",
+              "secp521r1",
+              "ed448"
+            ],
+            "default": "secp256r1",
+            "example": "secp521r1"
+          },
+          "name": "algorithm",
+          "in": "path",
+          "description": "Defines the algorithm for the PKI which shall be used. "
         }
       ]
     }

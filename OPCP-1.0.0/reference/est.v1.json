@@ -237,7 +237,8 @@
             "enum": [
               "ISO15118-20",
               "ISO15118-2"
-            ]
+            ],
+            "example": "ISO15118-20"
           },
           "name": "iso-version",
           "in": "path",

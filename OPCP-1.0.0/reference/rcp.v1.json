@@ -31,12 +31,6 @@
       ],
       "get": {
         "summary": "getRootCert",
-        "tags": [
-          "CPO",
-          "MO",
-          "OEM",
-          "RCP"
-        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -149,10 +143,7 @@
             "Admin": []
           }
         ],
-        "description": "This method is used by the Ecosystem Operator to delete Root CAs from the Root Certificate Pool. This should not be used by other parties than the Root pool operator to prevent possible wrong usage.\nAlso 2 Factor authorization in the organization shall be considered\n\n<!-- theme: warning -->\n\n> A successful delete operation triggers events to all ecosystem users and informs about the deleletion of this Root CA. Existing OEM-Prov Certs or MO-Contract Certs which rely on this root CA, might not any more usable.",
-        "tags": [
-          "RCP"
-        ]
+        "description": "This method is used by the Ecosystem Operator to delete Root CAs from the Root Certificate Pool. This should not be used by other parties than the Root pool operator to prevent possible wrong usage.\nAlso 2 Factor authorization in the organization shall be considered\n\n<!-- theme: warning -->\n\n> A successful delete operation triggers events to all ecosystem users and informs about the deleletion of this Root CA. Existing OEM-Prov Certs or MO-Contract Certs which rely on this root CA, might not any more usable."
       }
     },
     "/v1/root/rootCerts": {
@@ -224,12 +215,6 @@
           {
             "All_roles": []
           }
-        ],
-        "tags": [
-          "CPO",
-          "MO",
-          "OEM",
-          "RCP"
         ],
         "parameters": [
           {
@@ -307,9 +292,6 @@
           {
             "Admin": []
           }
-        ],
-        "tags": [
-          "RCP"
         ]
       }
     },

@@ -595,8 +595,8 @@
               "example": "896b6655-180e-4304-b642-606bb00df8f0"
             },
             "in": "query",
-            "name": "cpsRootCertificateId",
-            "description": "The UUID of the used CPS V2G-Root CA, if not set, the latest contract data  will be replied"
+            "name": "cpsV2GRootCertificateFingerprint",
+            "description": "The SHA256 Fingerprint of the desired V2G root CA which shall was used to sign these data with the regarding CPS signing certificate. Its optional. If not given, the CPS will decide which CPS signing V2G PKI will be renurned"
           }
         ],
         "security": [
@@ -788,8 +788,8 @@
               "example": "896b6655-180e-4304-b642-606bb00df8f0"
             },
             "in": "query",
-            "name": "cpsRootCertificateId",
-            "description": "The UUID of the used CPS V2G-Root CA, if not set, the latest contract data  will be replied"
+            "description": "The SHA256 Fingerprint of the desired V2G root CA which shall was used to sign these data with the regarding CPS signing certificate. Its optional. If not given, the CPS will decide which CPS signing V2G PKI will be renurned",
+            "name": "cpsV2GRootCertificateFingerprint"
           }
         ]
       }
@@ -940,7 +940,6 @@
       "GetSignedContractDataResponse": {
         "title": "GetSignedContractDataResponse",
         "type": "object",
-        "description": "",
         "x-examples": {
           "example-1": {
             "CCPResponse": {
@@ -983,11 +982,14 @@
                           "type": "string",
                           "description": "placeholder for future applications"
                         },
-                        "cpsRootCertificateId": {
+                        "cpsV2GRootCertificateFingerprint": {
                           "type": "string",
-                          "description": "The UUID of the root CA which was used to sign this contract data (regarding CPS signing certificate)",
+                          "description": "The SHA256 Fingerprint of the desired V2G root CA which shall was used to sign these data with the regarding CPS signing certificate. Its optional. If not given, the CPS will decide which CPS signing V2G PKI will be renurned\n",
                           "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
-                          "example": "896b6655-180e-4304-b642-606bb00df8f0"
+                          "example": "896b6655-180e-4304-b642-606bb00df8f0",
+                          "x-stoplight": {
+                            "id": "t4cyeu1zs8bm7"
+                          }
                         }
                       },
                       "required": [
@@ -1015,11 +1017,14 @@
             "description": "ISO Version",
             "example": "urn:iso:15118:2:2013:MsgDef"
           },
-          "cpsRootCertificateId": {
+          "cpsV2GRootCertificateFingerprint": {
             "type": "string",
-            "description": "The UUID of the root CA which was used to sign this contract data (regarding CPS signing certificate)",
+            "description": "The SHA256 Fingerprint of the desired V2G root CA which shall was used to sign these data with the regarding CPS signing certificate. Its optional. If not given, the CPS will decide which CPS signing V2G PKI will be renurned\n",
             "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
-            "example": "896b6655-180e-4304-b642-606bb00df8f0"
+            "example": "896b6655-180e-4304-b642-606bb00df8f0",
+            "x-stoplight": {
+              "id": "2vroqpvzwjab0"
+            }
           }
         },
         "required": [
@@ -1047,7 +1052,6 @@
             ]
           }
         },
-        "description": "",
         "properties": {
           "XMLContracts": {
             "type": "array",
@@ -1100,20 +1104,44 @@
                   "example": "2019-08-24T14:15:22Z",
                   "description": "Valid to Date and Time of contract certificate"
                 },
-                "cpsRootCertificateId": {
+                "cpsRootCertificateDN": {
                   "type": "string",
                   "example": "896b6655-180e-4304-b642-606bb00df8f0",
                   "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
-                  "description": "The UUID of the root CA which was used to sign this contract data (regarding CPS signing certificate)"
+                  "description": "The DN of the desired V2G root CA",
+                  "x-stoplight": {
+                    "id": "i0q8u31ihz6re"
+                  }
                 },
-                "cpsRootDistinguishedName": {
+                "cpsV2GRootCertificateFingerprint": {
                   "type": "string",
-                  "description": "Reflects the subjects distinguished name of the used V2G Root PKI. (informative)",
+                  "description": "The SHA256 Fingerprint of the desired V2G root CA which shall was used to sign these data with the regarding CPS signing certificate. Its optional. If not given, the CPS will decide which CPS signing V2G PKI will be renurned",
                   "pattern": "^((CN|OU|O|C|DC|ST)=[^,]+,? ?)+$",
-                  "example": "CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE"
+                  "example": "CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE",
+                  "x-stoplight": {
+                    "id": "vl0bfmhcp30fg"
+                  }
                 }
               }
             }
+          }
+        }
+      },
+      "Error": {
+        "title": "Error",
+        "type": "object",
+        "properties": {
+          "errorMessages": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "traceId": {
+            "type": "string",
+            "format": "uuid"
           }
         }
       },
@@ -1145,11 +1173,14 @@
             "type": "string",
             "description": "open for future application"
           },
-          "cpsRootCertificateId": {
+          "cpsV2GRootCertificateFingerprint": {
             "type": "string",
-            "description": "The UUID of the root CA which was used to sign this contract data (regarding CPS signing certificate)",
+            "description": "cpsV2GRootCertificateFingerprint",
             "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
-            "example": "896b6655-180e-4304-b642-606bb00df8f0"
+            "example": "896b6655-180e-4304-b642-606bb00df8f0",
+            "x-stoplight": {
+              "id": "qs5345a7g2f87"
+            }
           }
         },
         "required": [
@@ -1158,24 +1189,6 @@
           "pcid",
           "signedContractDataXML"
         ]
-      },
-      "Error": {
-        "title": "Error",
-        "type": "object",
-        "properties": {
-          "errorMessages": {
-            "type": "array",
-            "minItems": 1,
-            "uniqueItems": true,
-            "items": {
-              "type": "string"
-            }
-          },
-          "traceId": {
-            "type": "string",
-            "format": "uuid"
-          }
-        }
       }
     }
   }

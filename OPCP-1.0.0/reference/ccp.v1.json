@@ -1039,15 +1039,15 @@
           "example-1": {
             "XMLContracts": [
               {
-                "pcid": "stringstringstrin",
-                "emaid": "stringstringst",
+                "pcid": "WMIP12345678901234",
+                "emaid": "EMP99C123456789",
                 "xsdMsgDefNamespace": "urn:iso:15118:2:2013:MsgDef",
                 "contractCertificate": "string",
                 "defaultContract": true,
                 "certValidFrom": "2019-08-24T14:15:22Z",
                 "certValidTo": "2019-08-24T14:15:22Z",
-                "cpsRootCertificateId": "896b6655-180e-4304-b642-606bb00df8f0",
-                "cpsRootDistinguishedName": "\"CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE\""
+                "cpsRootCertificateId": "\"CN=V2G Root CA QA G1, DC=V2G, O=Hubject GmbH, C=DE\"",
+                "cpsRootDistinguishedName": "896b6655-180e-4304-b642-606bb00df8f0"
               }
             ]
           }

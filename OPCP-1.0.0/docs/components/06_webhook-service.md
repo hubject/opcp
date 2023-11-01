@@ -42,7 +42,8 @@ Body:
     "eventType": "oem.contract.created",
     "payload": {
         "emaid": "TESTEMAID",
-        "pcid": "TESTPCID"
+        "pcid": "TESTPCID",
+        "contractCert": "CONTRACT_CERTIFICATE_BASE64"
     }
 }
 ```

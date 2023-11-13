@@ -504,7 +504,6 @@
         },
         "required": [
           "subCA1Certificate",
-          "subCA2Certificate",
           "vehicleCertificate"
         ]
       },

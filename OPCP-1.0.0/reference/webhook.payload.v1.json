@@ -1,0 +1,290 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "webhook.payload.v1",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://selfdefined.url.for.recieving.webhooks"
+    }
+  ],
+  "paths": {
+    "/customer.defined.root.event.webhook.path": {
+      "parameters": [],
+      "post": {
+        "summary": "OPNC Root Payload",
+        "operationId": "post-users-userId",
+        "responses": {
+          "200": {
+            "description": "Webhook received successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "content-type",
+            "description": "application/json",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "7808b566f4057216e64c6298bfd5a184d4d715ffec6599311e5266f48865",
+              "pattern": " ^[a-fA-F0-9]{64}$",
+              "maxLength": 64,
+              "minLength": 64
+            },
+            "in": "header",
+            "name": "payload-signature",
+            "description": "Ssignatures using a hash-based message authentication code HMAC with SHA-256.",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "x-examples": {
+                  "Example 1": {
+                    "eventId": "xxxxx",
+                    "eventType": "root.cert.added",
+                    "payload": {
+                      "rootCertificateId": "xxxxx",
+                      "distinguishedName": "xxxxx",
+                      "commonName": "xxxxx"
+                    }
+                  }
+                },
+                "properties": {
+                  "timestamp": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2021-05-11T00:00:00Z",
+                    "description": "Timestamp when the event was created"
+                  },
+                  "eventId": {
+                    "type": "string",
+                    "description": "UUID of the event",
+                    "format": "uuid",
+                    "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$"
+                  },
+                  "eventType": {
+                    "description": "root.cert.added\nroot.cert.expired\nroot.cert.revoked",
+                    "enum": [
+                      "root.cert.added",
+                      "root.cert.expired",
+                      "root.cert.revoked"
+                    ]
+                  },
+                  "xsdMsgDefNamespace": {
+                    "description": "Which ISO Version\n",
+                    "example": "urn:iso:15118:2:2013:MsgDef",
+                    "enum": [
+                      "urn:iso:15118:2:2013:MsgDef",
+                      "urn:iso:15118:20:2022:MsgDef"
+                    ]
+                  },
+                  "payload": {
+                    "type": "object",
+                    "required": [
+                      "rootCertificateId",
+                      "distinguishedName",
+                      "commonName",
+                      "rootType"
+                    ],
+                    "properties": {
+                      "rootCertificateId": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$",
+                        "example": "b1b86334-7c74-4ccc-b78d-d4f773d3b559",
+                        "description": "UUID of the root "
+                      },
+                      "distinguishedName": {
+                        "type": "string",
+                        "pattern": "^(CN=[a-zA-Z0-9\\s\\-\\.]+,\\s)?(DC=[a-zA-Z0-9\\s\\-\\.]+,\\s)?(O=[a-zA-Z0-9\\s\\-\\.]+,\\s)?(OU=[a-zA-Z0-9\\s\\-\\.]+,\\s)?(C=[A-Z]{2})?$",
+                        "example": "CN=V2G Root CA G2, DC=V2G, O=Hubject GmbH, C=DE",
+                        "description": "Distingushed Name of the root for this event"
+                      },
+                      "commonName": {
+                        "type": "string",
+                        "example": "V2G Root CA G2",
+                        "description": "Common Name of the Root of this event"
+                      },
+                      "rootType": {
+                        "enum": [
+                          "MO",
+                          "OEM",
+                          "V2G"
+                        ],
+                        "description": "Root type which is meant"
+                      },
+                      "rootSerialNumber": {
+                        "type": "string",
+                        "description": "serial number in hex format of the certificate",
+                        "example": "bbbbbc1ac45ad2dfe5b1d873c35c84",
+                        "pattern": "^[0-9a-fA-F]+$"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "timestamp",
+                  "eventId",
+                  "eventType",
+                  "payload"
+                ]
+              }
+            }
+          },
+          "description": ""
+        },
+        "description": "This body will be used if events regarding a RCP change are fired.\n* root.cert.added\n* root.cert.expired\n* root.cert.revoked\n"
+      }
+    },
+    "/customer.defined.pcid.emaid.event.webhook.path": {
+      "parameters": [],
+      "post": {
+        "summary": "OPNC PCID EMAID Payload",
+        "operationId": "post-root-users-userId",
+        "responses": {
+          "200": {
+            "description": "Webhook received successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "content-type",
+            "description": "application/json",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "7808b566f4057216e64c6298bfd5a184d4d715ffec6599311e5266f48865",
+              "pattern": " ^[a-fA-F0-9]{64}$",
+              "maxLength": 64,
+              "minLength": 64
+            },
+            "in": "header",
+            "name": "payload-signature",
+            "description": "Ssignatures using a hash-based message authentication code HMAC with SHA-256.",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "timestamp": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2021-05-11T00:00:00Z",
+                    "description": "Timestamp when the event was created"
+                  },
+                  "eventId": {
+                    "type": "string",
+                    "description": "UUID of the event",
+                    "format": "uuid",
+                    "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$"
+                  },
+                  "eventType": {
+                    "description": "root.cert.added\nroot.cert.expired\nroot.cert.revoked",
+                    "enum": [
+                      "mo.prov.cert.updated",
+                      "mo.prov.cert.deleted",
+                      "mo.prov.cert.updated.factory.reset",
+                      "mo.contract.delivered.to.oem",
+                      "mo.contract.created.sent.to.oem",
+                      "mo.contract.updated.sent.to.oem",
+                      "mo.contract.deleted.sent.to.oem",
+                      "mo.contract.rejected.by.oem",
+                      "mo.contract.queued.to.oem",
+                      "oem.contract.created",
+                      "oem.contract.updated",
+                      "oem.contract.deleted"
+                    ]
+                  },
+                  "xsdMsgDefNamespace": {
+                    "description": "Which ISO Version\n",
+                    "example": "urn:iso:15118:2:2013:MsgDef",
+                    "enum": [
+                      "urn:iso:15118:2:2013:MsgDef",
+                      "urn:iso:15118:20:2022:MsgDef"
+                    ]
+                  },
+                  "payload": {
+                    "type": "object",
+                    "required": [
+                      "emaid",
+                      "pcid"
+                    ],
+                    "properties": {
+                      "emaid": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z]{2}[-]?\\w{3}[-]?\\w{9}[-]?(\\w{1})?$",
+                        "description": "The EMAID of the requested contract.\n"
+                      },
+                      "pcid": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z0-9]{17,18}$",
+                        "example": "WMI123456712345678",
+                        "description": "The related Provisioning Certificate ID."
+                      },
+                      "contractCert": {
+                        "type": "string",
+                        "description": "Contract Certificate in base64 encoded PEM form",
+                        "pattern": "Contract Certificate in base64 encoded DER form"
+                      },
+                      "cpsSignerRootFingerprint": {
+                        "type": "string",
+                        "description": "The SHA256 Fingerprint of the desired V2G root CA which shall was used to sign these data with the regarding CPS signing certificate. Its optional. If not given, the CPS will decide which CPS signing V2G PKI will be renurned",
+                        "example": "896b6655-180e-4304-b642-606bb00df8f0",
+                        "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$"
+                      },
+                      "cpsSignerRootCommonName": {
+                        "type": "string",
+                        "example": "V2G Root CA G2",
+                        "description": "Common Name of used CPS V2G Root CA"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "timestamp",
+                  "eventId",
+                  "eventType",
+                  "xsdMsgDefNamespace",
+                  "payload"
+                ]
+              },
+              "examples": {}
+            }
+          },
+          "description": ""
+        },
+        "description": "This body will be used if events regarding a PCIDs and EMAIDS are fired.\n\n### MO related:\n* mo.prov.cert.deleted\n* mo.prov.cert.updated\n* mo.prov.cert.updated.factory.reset\n* mo.contract.delivered.to.oem\n* mo.contract.created.sent.to.oem\n* mo.contract.updated.sent.to.oem\n* mo.contract.deleted.sent.to.oem\n* mo.contract.rejected.by.oem\n* mo.contract.queued.to.oem\n### OEM related:\n* oem.contract.created\n* oem.contract.updated\n* oem.contract.deleted\n"
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  }
+}

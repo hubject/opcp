@@ -14,7 +14,27 @@ A webhook enables our ecosystem to push real-time notifications to your backend 
 
 ### Available Events
 
-The available event notifications are listed in the interface API itself:
+| Relevant for Role | Event nNme               | Description                                                                                                    | Message (Logging examples for customer)                                        |
+|-------------------|----------------------|----------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| ALL               | root.cert.added      | A new root got added to the root pool (RCP), important for CPOs to check if a new V2G or MO Root CA needs to be pushed to the EVSEs for authentication. | "New root in RCP available"                                                     |
+| ALL               | root.cert.expired    | A root expired and it will be removed from the RCP. No emergency action needed as it is a natural phase out. | "Root Expired"                                                                   |
+| ALL               | root.cert.revoked    | A root got revoked and it was removed from the RCP. This requires action of multiple parties depending which root is affected. More manual communication will follow by the PKI provider. | "Root revoked"                                                                   |
+| MO                | mo.prov.cert.deleted | The OEM Prov. Certificate got deleted from PCP. Hubject deleted all Contract Data for that PCID on CCP. | "PnC is currently disabled, bacause the OEM Provisioning certificate was Deleted/Revoked." |
+| MO                | mo.prov.cert.factory.reset | The OEM triggered the deletion of all Contracts for a PCID/OEM Prov. Certificate. The MO shall not create new Contracts for the EMAID. (e.g. Factory Reset, Car is sold). | "Factory Reset was performed. All contracts for PCID where Removed." |
+| MO                | mo.prov.cert.updated.factory.reset | The OEM Prov. Certificate got updated (different private and public key). Hubject deleted all existing Contract Data for that PCID on CCP as they are not valid anymore. The MO shall communicate with the Customer if the contract shall be recreated for the known PCID. (WERKSTATTFALL) - DEPRECATED | "Contract deleted, because a new OEM Prov. Certificate was created. Sync with customer for next steps." |
+| MO                | mo.prov.cert.updated | The OEM Prov. Certificate got updated (different private and public key). Hubject deleted all existing Contract Data for that PCID on CCP as they are not valid anymore. The MO shall communicate with the Customer if the contract shall be recreated for the known PCID. (WERKSTATTFALL) | "Contract deleted, because a new OEM Prov. Certificate was created. Sync with customer for next steps." |
+| MO                | mo.contract.created.sent.to.oem | The contract information (oem.contract.created) has been sent to the OEM Backend. | "Contract information (oem.contract.created) has been sent to the OEM Backend." |
+| MO                | mo.contract.updated.sent.to.oem | The contract information (oem.contract.updated) has been sent to the OEM Backend. | "Contract information (oem.contract.updated) has been sent to the OEM Backend." |
+| MO                | mo.contract.deleted.sent.to.oem | The contract information (oem.contract.deleted) has been sent to the OEM Backend. | "Contract information (oem.contract.deleted) has been sent to the OEM Backend." |
+| MO                | mo.contract.delivered.to.oem | "Successfully delivery of the Contract Data. The Contract Data with the given EMAID got either:<br>- Pulled from the OEM Backend<br>- Installed over EVSE (certificateInstallationRequest)" | "Signed Contract Certificate Bundle successfully delivered to OEM or CPO-Backend" |
+| MO                | mo.contract.rejected.by.oem | The contract information Event got rejected by the OEM Backend. A negative response of the OEM Backend about new, updated or deleted contract data was received. Action stopped in case OEM send HTTP400 or HTTP409. Otherwise retry started to OEM. | "Info about contract Creation/Updated/Deletion (oem.contract.*) could not be delivered to OEM." |
+| MO                | mo.contract.queued.to.oem | Retry to OEM started for (oem.contract.*). OEM Backend is not answering properly. | "Retry started in direction of the OEM Backend from Hubject for (oem.contract.*) started." |
+| OEM               | oem.contract.created | Info to OEM Backend about a new Contract Data available in CCP. | "New contract available for PCID … with EMAID…." |
+| OEM               | oem.contract.updated | Info to OEM Backend about the update of the Contract Data in CCP. | "Updated contract data available for PCID… with EMAID…" |
+| OEM               | oem.contract.deleted | Info to OEM Backend about the deletion of Contract Data in CCP. | "Deleted contract for PCID…. With EMAID…" |
+
+
+The events can assigned to your webhook service in the API:
 [Event Actions](../../reference/webhooks.v1.json)
 
 ## API

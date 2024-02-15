@@ -233,7 +233,7 @@
             }
           }
         },
-        "description": "This interface delivers signed contract data to CPO backend. The CPO is sending the `certificateInstallationReqest` created by the vehicle to the CCP. The CCP will reply with a `certificateInstallationResponse` to be forwarded to the vehicle.\n\n> #### CPS Signer \n> The CCP will send regarding the provided V2G Roots installed in the EV (certificateInstallationReqest) the regarding signed contract data back as certificateInstallationResponse ",
+        "description": "This interface delivers signed contract data to CPO backend. The CPO is sending the `certificateInstallationReqest` created by the vehicle to the CCP. The CCP will reply with a `certificateInstallationResponse` to be forwarded to the vehicle.\n\n> #### CPS Signer \n> The CCP will send regarding the provided V2G Roots installed in the EV (certificateInstallationReqest) the regarding signed contract data back as certificateInstallationResponse \n\n> #### Default Contract\n> The CCP will provide in the ISO15118-2 just one item back - the Contract which is set to Default! The defined array is a preparation for the ISO15118-20",
         "security": [
           {
             "CPO": []

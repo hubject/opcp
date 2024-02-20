@@ -192,6 +192,13 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "timestamp",
+                  "eventId",
+                  "eventType",
+                  "xsdMsgDefNamespace",
+                  "payload"
+                ],
                 "properties": {
                   "timestamp": {
                     "type": "string",
@@ -219,7 +226,8 @@
                       "mo.contract.queued.to.oem",
                       "oem.contract.created",
                       "oem.contract.updated",
-                      "oem.contract.deleted"
+                      "oem.contract.deleted",
+                      "mo.prov.cert.updated.reset"
                     ]
                   },
                   "xsdMsgDefNamespace": {
@@ -266,21 +274,14 @@
                       }
                     }
                   }
-                },
-                "required": [
-                  "timestamp",
-                  "eventId",
-                  "eventType",
-                  "xsdMsgDefNamespace",
-                  "payload"
-                ]
+                }
               },
               "examples": {}
             }
           },
           "description": ""
         },
-        "description": "This body will be used if events regarding a PCIDs and EMAIDS are fired.\n\n### MO related:\n* mo.prov.cert.deleted\n* mo.prov.cert.updated\n* mo.prov.cert.updated.factory.reset\n* mo.contract.delivered.to.oem\n* mo.contract.created.sent.to.oem\n* mo.contract.updated.sent.to.oem\n* mo.contract.deleted.sent.to.oem\n* mo.contract.rejected.by.oem\n* mo.contract.queued.to.oem\n### OEM related:\n* oem.contract.created\n* oem.contract.updated\n* oem.contract.deleted\n"
+        "description": "This body will be used if events regarding a PCIDs and EMAIDS are fired.\n\n### MO related:\n* mo.prov.cert.deleted\n* mo.prov.cert.updated\n* mo.prov.cert.updated.reset\n* mo.prov.cert.updated.factory.reset\n* mo.contract.delivered.to.oem\n* mo.contract.created.sent.to.oem\n* mo.contract.updated.sent.to.oem\n* mo.contract.deleted.sent.to.oem\n* mo.contract.rejected.by.oem\n* mo.contract.queued.to.oem\n### OEM related:\n* oem.contract.created\n* oem.contract.updated\n* oem.contract.deleted\n"
       }
     }
   },

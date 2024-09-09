@@ -46,7 +46,7 @@ The EST interface of the Hubject Plug&Charge PKI Services is fully compliant wit
 By means of the charge point certificate, the charge point provides its authentication to the vehicle. During a TLS handshake, the charge point establishes a TLS connection to the vehicle. That provides its authentication to the vehicle by sending its charge point certificate and the CPO sub-CA certificates. This certificate chain has been derived from a V2G root CA.
 The associated private key of a charge point certificate is stored in the charge point.
 
-The EVSE leaf certificate contains its EVSE ID as common name, the structure of which is defined in the [identifier description chapter](../05_handling-of-ids.md).
+The EVSE leaf certificate contains its EVSE ID or SECCID as common name, the structure of which is defined in the [identifier description chapter](../05_handling-of-ids.md).
 
 ### Contract leaf certificates
 The contract certificate is used in the case of the Plug & Charge authentication and authorisation modes at a charge point, in contrast to external identification means (EIM). It shall be assigned to a valid contractual relationship between the vehicle user (or owner) and mobility operator and shall be saved in the vehicle together with the private key that is associated with this contract certificate.

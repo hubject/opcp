@@ -29,3 +29,13 @@ ABNF from the ISO 15118-2:2014(E):
 `<EVSEID>` = `<Country Code>` `<S>` `<EVSE Operator ID>` `<S>` `<ID Type>` `<Power Outlet ID>`
 
 An example for a valid EVSE ID is `DE*ICE*E45B*78C` with `DE` indicating Germany, `ICE` representing Hubjects EVSE Operator ID, `E` indicating that it is of type *EVSE*, `45B` representing the number of this EVSE and `78C` representing one particular power outlet of this specific EVSE.
+
+## SECC ID (Supply equipment communication controller ID)
+
+The SECC ID shall match the following structure (the notation corresponds to the augmented Backus-Naur Form (ABNF) as defined in IETF RFC 5234):
+
+ABNF from the ISO 15118-20:2022(E):
+
+`<SECCID>` = `<Country Code>` `<S>` `<EVSE Operator ID>` `<S>` `<ID Type>` `<S>` `<ControllerID>` `<S>` `<Check Digit>`
+
+An example for a valid SECC ID is `DE-ICE-S-00003C4D557878675645330967543476-2` with `DE` indicating Germany, `ICE` representing Hubjects EVSE Operator ID, `S` indicating that it is of type *Supplay Equipment*, `00003C4D557878675645330967543476` representing the number of the controller ID and `2` representing the check digit.

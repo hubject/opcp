@@ -365,7 +365,7 @@
                 "type": "array",
                 "description": "A list of root certificate objects.",
                 "items": {
-                  "$ref": "#/components/schemas/RootCertV1"
+                  "$ref": "#/components/schemas/RootCertV2"
                 }
               }
             }
@@ -377,7 +377,7 @@
         "title": "GetRootCertResponseV1",
         "properties": {
           "RootResponse": {
-            "$ref": "#/components/schemas/RootCertV1"
+            "$ref": "#/components/schemas/RootCertV2"
           }
         },
         "x-examples": {
@@ -399,9 +399,9 @@
           }
         }
       },
-      "RootCertV1": {
+      "RootCertV2": {
         "type": "object",
-        "title": "Root Cert (V1)",
+        "title": "Root Cert (V2)",
         "description": "Object containing a root certificate registered in the Root Certificate Pool.\n\nFields marked with _informative_ are for information purpose only. Any certificate-based validations should refer to the certificates signed values instead of relying these fields.",
         "x-examples": {},
         "minProperties": 1,
@@ -445,6 +445,10 @@
             "type": "string",
             "description": "SHA-1 hash of the certificates public key (informative)"
           },
+          "rootAuthorityKeyIdentifierHex": {
+            "type": "string",
+            "description": "Hex of the certificates public key (informative)"
+          },
           "rootIssuerSerialNumber": {
             "type": "string",
             "description": "serial number in hex format of the certificate (informative)",
@@ -481,6 +485,27 @@
           "fingerprint": {
             "type": "string",
             "description": "SHA256 certificate fingerprint (informative)"
+          },
+          "fingerprintSha1": {
+            "type": "string",
+            "description": "SHA-1 certificate fingerprint (informative)"
+          },
+          "xsdMsgDefNamespace": {
+            "type": "string",
+            "enum":[
+                "urn:iso:15118:2:2013:MsgDef",
+                "urn:iso:15118:20:2022:MsgDef"
+            ],
+            "description": "ISO15118 Version"
+          },
+          "signatureAlgorithm": {
+            "type": "string",
+            "enum":[
+                "secp256r1",
+                "secp521r1",
+                "ed448"
+            ],
+            "description": "Signature Algorithm of the Certificate"
           }
         },
         "required": [

@@ -13,7 +13,7 @@
     "/customer.defined.root.event.webhook.path": {
       "parameters": [],
       "post": {
-        "summary": "OPNC Root Payload",
+        "summary": "OPCP Root Payload",
         "operationId": "post-users-userId",
         "responses": {
           "200": {
@@ -36,15 +36,21 @@
           {
             "schema": {
               "type": "string",
-              "example": "7808b566f4057216e64c6298bfd5a184d4d715ffec6599311e5266f48865",
-              "pattern": " ^[a-fA-F0-9]{64}$",
-              "maxLength": 64,
-              "minLength": 64
+              "example": "7808b566f4057216e64c6298bfd5a184d4d715ffec6599311e5266f48865"
             },
             "in": "header",
             "name": "payload-signature",
-            "description": "Ssignatures using a hash-based message authentication code HMAC with SHA-256.",
+            "description": "Signatures using a hash-based message authentication code HMAC with SHA-256.",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "sha256=7808b566f4057216e64c6298bfd5a184d4d715ffec6599311e5266f48865XXXX"
+            },
+            "in": "header",
+            "name": "X-Hubject-Signature",
+            "description": "Signatures using a hash-based message authentication code HMAC with SHA-256."
           }
         ],
         "requestBody": {
@@ -153,7 +159,7 @@
     "/customer.defined.pcid.emaid.event.webhook.path": {
       "parameters": [],
       "post": {
-        "summary": "OPNC PCID EMAID Payload",
+        "summary": "OPCP PCID EMAID Payload",
         "operationId": "post-root-users-userId",
         "responses": {
           "200": {
@@ -176,15 +182,21 @@
           {
             "schema": {
               "type": "string",
-              "example": "7808b566f4057216e64c6298bfd5a184d4d715ffec6599311e5266f48865",
-              "pattern": " ^[a-fA-F0-9]{64}$",
-              "maxLength": 64,
-              "minLength": 64
+              "example": "7808b566f4057216e64c6298bfd5a184d4d715ffec6599311e5266f48865"
             },
             "in": "header",
             "name": "payload-signature",
-            "description": "Ssignatures using a hash-based message authentication code HMAC with SHA-256.",
+            "description": "Signatures using a hash-based message authentication code HMAC with SHA-256.",
             "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "example": "sha256=7808b566f4057216e64c6298bfd5a184d4d715ffec6599311e5266f48865XXXX"
+            },
+            "in": "header",
+            "name": "X-Hubject-Signature",
+            "description": "Signatures using a hash-based message authentication code HMAC with SHA-256."
           }
         ],
         "requestBody": {
@@ -192,6 +204,13 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "timestamp",
+                  "eventId",
+                  "eventType",
+                  "xsdMsgDefNamespace",
+                  "payload"
+                ],
                 "properties": {
                   "timestamp": {
                     "type": "string",
@@ -257,7 +276,7 @@
                         "type": "string",
                         "description": "The SHA256 Fingerprint of the desired V2G root CA which shall was used to sign these data with the regarding CPS signing certificate. Its optional. If not given, the CPS will decide which CPS signing V2G PKI will be renurned",
                         "example": "a76ae4c5d00e06a967554511865bfa89e79590e8a61b5a71f9ce22e039d6c370",
-                        "pattern": "^[0-9a-fA-F]{8}\\-([0-9a-fA-F]{4}\\-){3}[0-9a-fA-F]{12}$"
+                        "pattern": ""
                       },
                       "cpsSignerRootCommonName": {
                         "type": "string",
@@ -266,14 +285,7 @@
                       }
                     }
                   }
-                },
-                "required": [
-                  "timestamp",
-                  "eventId",
-                  "eventType",
-                  "xsdMsgDefNamespace",
-                  "payload"
-                ]
+                }
               },
               "examples": {}
             }

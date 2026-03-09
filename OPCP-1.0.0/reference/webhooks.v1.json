@@ -37,7 +37,7 @@
                       "apiVersion": "v1",
                       "created": 1623760573,
                       "description": "Test webhook",
-                      "enabledEvents": [
+                      "events": [
                         "oem.contract.created",
                         "oem.contract.deleted"
                       ],
@@ -222,7 +222,7 @@
                       "apiVersion": "v1",
                       "created": 1623760573,
                       "description": "Test webhook",
-                      "enabledEvents": [
+                      "events": [
                         "oem.contract.created",
                         "oem.contract.deleted"
                       ],
